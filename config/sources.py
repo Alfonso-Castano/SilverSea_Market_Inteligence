@@ -11,16 +11,15 @@ COUNTRIES = [
             {"name": "BCA", "url": "https://www.bca.gov.sg/newsroom/", "type": "government"},
             {"name": "MND", "url": "https://www.mnd.gov.sg/newsroom/", "type": "government"},
             {"name": "URA", "url": "https://www.ura.gov.sg/Corporate/Media-Room/Media-Releases", "type": "government"},
-            {"name": "HDB", "url": "https://www.hdb.gov.sg/about-us/news-and-publications/press-releases", "type": "government"},
-            {"name": "Smart Nation", "url": "https://www.smartnation.gov.sg/media-hub/press-releases", "type": "government"},
-            {"name": "JTC", "url": "https://www.jtc.gov.sg/who-we-are/newsroom", "type": "prospect"},
+            {"name": "HDB", "url": "https://www.hdb.gov.sg/about-us/news-and-publications/press-releases", "type": "government", "skip": True},  # blocks scrapers (403)
+            {"name": "Smart Nation", "url": "https://www.smartnation.gov.sg", "type": "government"},
+            {"name": "JTC", "url": "https://www.jtc.gov.sg", "type": "prospect"},
             # Industry News
-            {"name": "Construction Plus Asia", "url": "https://www.construction-plus.com/singapore/", "type": "industry"},
             {"name": "EdgeProp Singapore", "url": "https://www.edgeprop.sg/property-news", "type": "industry"},
             {"name": "The Business Times", "url": "https://www.businesstimes.com.sg/property", "type": "industry"},
             # Competitor Monitoring
             {"name": "Hiverlab", "url": "https://www.hiverlab.com/news", "type": "competitor"},
-            {"name": "Gelement", "url": "https://www.gelement.com/news", "type": "competitor"},
+            {"name": "Gelement", "url": "https://www.gelement.com/", "type": "competitor"},
         ],
         "keywords": [
             # Digital twin & immersive tech

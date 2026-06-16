@@ -1,3 +1,4 @@
-anthropic
+groq
 requests
 beautifulsoup4
+python-dotenv

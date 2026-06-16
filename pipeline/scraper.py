@@ -50,6 +50,9 @@ def scrape_all(sources: list) -> list:
     """Scrape all sources, return list of result dicts (including failures)."""
     results = []
     for source in sources:
+        if source.get("skip"):
+            print(f"  [{source['name']}] SKIPPED")
+            continue
         result = scrape_source(source)
         status = "OK" if not result["error"] else f"FAILED: {result['error']}"
         print(f"  [{source['name']}] {status}")

@@ -1,5 +1,7 @@
 # main.py — Runs the full market intelligence pipeline end-to-end
 import sys
+from dotenv import load_dotenv
+load_dotenv()  # loads .env file if present (local dev only; GitHub Actions uses secrets)
 from config.sources import COUNTRIES
 from pipeline.scraper import scrape_all
 from pipeline.filter import filter_results

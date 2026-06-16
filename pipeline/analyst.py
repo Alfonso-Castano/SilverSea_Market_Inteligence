@@ -1,8 +1,9 @@
-# pipeline/analyst.py — Claude API synthesis and opportunity scoring
+# pipeline/analyst.py — Groq API synthesis and opportunity scoring
 import os
-import anthropic
+import datetime
+from groq import Groq
 
-MODEL = "claude-haiku-4-5-20251001"
+MODEL = "llama-3.3-70b-versatile"
 
 SYSTEM_PROMPT = """You are a market intelligence analyst for Silversea Media, a Singapore-based
 digital twin and immersive technology company. Your products are MetaTwin Object, MetaTwin Space,
@@ -34,27 +35,28 @@ projects, and dollar amounts. Focus on what's actionable, not just what happened
 
 
 def analyse(filtered_results: list, country: dict) -> str:
-    """Send filtered content to Claude and return the structured report."""
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    """Send filtered content to Groq and return the structured report."""
+    client = Groq(api_key=os.environ["GROQ_API_KEY"])
 
-    # Build a compact content block for each source
     source_blocks = []
     for r in filtered_results:
-        block = f"### {r['name']} ({r['type'].upper()})\nURL: {r['url']}\n\n{r['content'][:3000]}"
+        block = f"### {r['name']} ({r['type'].upper()})\nURL: {r['url']}\n\n{r['content'][:2000]}"
         source_blocks.append(block)
 
     user_message = (
         f"Country: {country['name']}\n"
-        f"Report date: {__import__('datetime').date.today().strftime('%d %B %Y')}\n\n"
+        f"Report date: {datetime.date.today().strftime('%d %B %Y')}\n\n"
         f"SCRAPED SOURCES ({len(source_blocks)} sources passed filtering):\n\n"
         + "\n\n---\n\n".join(source_blocks)
     )
 
-    message = client.messages.create(
+    response = client.chat.completions.create(
         model=MODEL,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_message},
+        ],
         max_tokens=4096,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": user_message}],
     )
 
-    return message.content[0].text
+    return response.choices[0].message.content
