@@ -1,0 +1,89 @@
+{
+  "skill_name": "orchestrator",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I need to implement the StackWise onboarding flow. It includes an OnboardingCoordinatorView that manages the flow, individual step views for health goals, supplement history, and schedule preferences, plus unit tests for the coordinator logic. How should I approach this?",
+      "expected_output": "Diagnoses subagents as the right tool (not agent team — no peer coordination needed). Decomposes into clear tracks with non-overlapping file ownership. Produces ready-to-use spawn prompts with specific file paths, deliverable format, and verification steps.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "makes-explicit-tool-decision",
+          "description": "Response explicitly states which tool to use (single session, subagents, or agent team) and names the reason"
+        },
+        {
+          "name": "chooses-subagents-not-team",
+          "description": "Correctly chooses subagents over agent team (onboarding — no peer coordination needed between tracks)"
+        },
+        {
+          "name": "decomposes-into-named-tracks",
+          "description": "Breaks the work into named, distinct tracks with file ownership stated"
+        },
+        {
+          "name": "produces-actual-spawn-prompts",
+          "description": "Outputs usable spawn prompts, not just a description of what they would contain"
+        },
+        {
+          "name": "spawn-prompts-specify-deliverable",
+          "description": "Each spawn prompt states what the subagent should return and in what format"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "I want to improve our supplement interaction checker. Can you research how other iOS health apps handle interaction checking, look at our existing InteractionAnalyzer code, and write a spec for improvements?",
+      "expected_output": "Diagnoses subagents (research + codebase exploration + spec writing are all one-directional). Correctly identifies that no peer coordination is needed. Produces prompts that specify what each subagent should return and in what format.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "makes-explicit-tool-decision",
+          "description": "Response explicitly states which tool to use and names the reason"
+        },
+        {
+          "name": "chooses-subagents-not-team",
+          "description": "Correctly chooses subagents — research and spec writing don't require peer coordination"
+        },
+        {
+          "name": "identifies-context-pollution-or-specialization",
+          "description": "Explains WHY subagents: either that research results would pollute main context, or that specialization benefits each track"
+        },
+        {
+          "name": "produces-actual-spawn-prompts",
+          "description": "Outputs usable spawn prompts, not just a description of tracks"
+        },
+        {
+          "name": "seeds-agent-context",
+          "description": "Spawn prompts include domain context beyond what's in CLAUDE.md (e.g., what the interaction analyzer does, what to look for)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "There's a crash in the supplement scheduler that only happens occasionally. I have three theories: a threading issue in the notification manager, a race condition between the persistence layer and the scheduler, or corrupted data from the interaction analyzer. I want to investigate all three simultaneously. What's the best way to approach this?",
+      "expected_output": "Applies the decision ladder correctly. If recommending agent team: explicitly justifies peer coordination (teammates need to challenge each other's theories). If recommending subagents: explains that independent investigation is sufficient and cheaper. Either way: produces concrete, usable spawn prompts — not just a recommendation.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "makes-explicit-tool-decision",
+          "description": "Explicitly chooses single session / subagents / agent team and justifies the choice"
+        },
+        {
+          "name": "justifies-team-vs-subagents",
+          "description": "If choosing agent team: explains why peer coordination is required. If choosing subagents: explains why independent reporting is sufficient"
+        },
+        {
+          "name": "produces-actual-spawn-prompts",
+          "description": "Outputs usable spawn prompts for each hypothesis investigation track"
+        },
+        {
+          "name": "assigns-file-ownership",
+          "description": "Each track has defined file ownership — different code areas to investigate"
+        },
+        {
+          "name": "specifies-deliverable-format",
+          "description": "Spawn prompts tell investigators what to report back and how (severity, evidence, conclusion format)"
+        }
+      ]
+    }
+  ]
+}
