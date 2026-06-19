@@ -1,6 +1,11 @@
 # CLAUDE.md — Market Intelligence Pipeline
 ## Silversea Media | Alfonso's Internship Project
 
+@CONTEXT.md
+@STATE.md
+@ROADMAP.md
+@PLAN.md
+
 ---
 
 ## What This Project Is
@@ -16,10 +21,9 @@ Read `PROJECT_REQUIREMENTS.md` for full context before doing anything else.
 ## Session Protocol
 
 ### Starting a Session
-1. Read `CONTEXT.md` — architectural decisions and rationale (don't re-litigate these)
-2. Read `STATE.md` — current progress, what was last worked on, what's next
-3. If either file is missing or outdated, ask Alfonso before proceeding
-4. Confirm your understanding of the current task before touching any code
+1. `CONTEXT.md` and `STATE.md` are auto-loaded via @imports above — read them before touching code
+2. If either file appears outdated or contradicts the codebase, flag it to Alfonso before proceeding
+3. Confirm your understanding of the current task before touching any code
 
 ### Ending a Session
 1. Update `STATE.md` with: what was completed, any decisions made, blockers, next steps

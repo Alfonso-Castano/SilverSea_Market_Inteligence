@@ -40,11 +40,65 @@ company email swapped in for production.
 
 ---
 
+### [2026-06] Project scope expanded: pipeline → AI system
+
+**Decision:** The system is no longer a reporting pipeline. It is a stateful AI market intelligence system with a RAG-based feedback loop that learns and improves over time.
+**Reason:** Supervisor requirements expanded to include: sector-based scraping (gov agencies, associations, customers, partners, competitors), AI brain with persistent context, feedback form that reweights priorities, weekly summary, and a proper internal web dashboard.
+
+**Decision:** Sector-based scraper architecture — five sectors: gov_agencies, associations, customers, partners, competitors
+**Reason:** Supervisor wants intelligence organised by who the signal comes from, not just what topic it covers. Each sector has distinct BD relevance.
+
+**Decision:** Daily pipeline cadence, not weekly
+**Reason:** Supervisor confirmed daily reports are the target cadence. GitHub Actions cron to run at 09:00 SGT.
+
+**Decision:** Production hosting on company servers, not Vercel
+**Reason:** Supervisor confirmed internal web dashboard on company infrastructure. Vercel was prototype-only.
+
+**Decision:** Build fully for Singapore first, then expand to MY, VN, ID
+**Reason:** Avoids premature generalisation. SG system becomes the template; other countries just add their sector sources. Phase 4 handles expansion.
+
+**Decision:** RAG-based feedback loop using a vector store
+**Reason:** User feedback (submitted via form at end of each daily report) must update what the AI prioritises. Vector store accumulates context; weekly summarisation prevents bloat. No fine-tuning — prompt-time retrieval only.
+
+**Decision:** Lightweight context management (CLAUDE.md + 4 files + /phase + /context-update) over GSD framework
+**Reason:** Solo project, token efficiency is a constraint. GSD overhead not justified yet. Revisit if project grows to a team.
+
+---
+
+---
+
+### [2026-06-19] AI system design decisions locked
+
+**Decision:** Groq (Llama 3.3 70B) for development/testing; Claude Haiku 3.5 for production
+**Reason:** Groq free tier eliminates cost during development. Claude Haiku has better tool use support for future agent work. Model is a config variable — trivial to swap. Cost at production volume: ~$0.05–0.15/day.
+
+**Decision:** ChromaDB as vector store (local, free)
+**Reason:** No external API or cost. Runs on company server. Switch to Pinecone only if multi-server architecture is required in Phase 3+. Simpler to start.
+
+**Decision:** RAG + context only for Phase 2; no AI agents
+**Reason:** Agents add per-run cost (multiple LLM calls) and complexity without proportional gain at current scale. Agentic verification step (high-scoring opportunities trigger web search) deferred to Phase 3+ when base system is proven.
+
+**Decision:** Three Phase 2 AI enhancements confirmed: semantic deduplication, named entity extraction, source quality scoring
+**Reason:** All three add measurable signal quality improvement with low complexity. Deduplication reduces noise across sources. Named entity extraction improves RAG retrieval quality. Source quality scoring enables passive learning over time without extra LLM calls.
+
+**Decision:** Hard rate limit on LLM calls per run and per day
+**Reason:** Safety measure. Prevents runaway loops and API abuse from misconfigured cron or feedback pipeline. Pipeline logs breach and exits cleanly.
+
+**Decision:** Feedback form submissions are aggregated and LLM-summarised before vector store ingestion
+**Reason:** Raw submissions are too verbose and varied for clean retrieval. A short digest of consensus feedback is more useful context for the analyst than many individual paragraphs. Prevents context bloat.
+
+**Decision:** Pre-run context injection removed from scope
+**Reason:** Alfonso confirmed the feedback form covers this purpose. Team feedback submitted after reading a report becomes context for the next day's run. No separate injection mechanism needed.
+
+---
+
 ## Open Questions
 *(Remove entries when resolved, note the resolution)*
 
 - What email address(es) should receive the production report? → TBD, confirm with Ms. Mok
 - Should past reports be archived/browsable? → Not required for MVP
 - Any sources behind login/paywall that need special handling? → Assume no for MVP
-- Final approval on Vercel vs Alibaba Cloud OSS for hosting? → Vercel for prototype,
-  OSS when supervisor greenlight received
+- Hosting: Vercel for prototype → company servers for production (confirmed)
+- Embedding model for Phase 2 vector store → decide at Phase 2 start
+- Feedback form exact field types → TBD (design principles confirmed; fields need finalising)
+- Full customer/partner/association source lists → supervisor to provide before Phase 4
