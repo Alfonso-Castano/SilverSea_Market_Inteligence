@@ -4,56 +4,57 @@
 
 ---
 
-## Status: 🟡 Phase 1 In Progress — Plan Finalized, Execution Not Started
+## Status: 🟢 Phase 1 Complete — Phase 2 Planning Next
 
 **Last updated:** 2026-06-19
-**Last worked on:** Requirements clarification session — rewrote PROJECT_REQUIREMENTS.md, locked all major architectural decisions, explained AI system design to Alfonso
+**Last worked on:** Phase 1 full execution — rewrote analyst prompt (3 iterations, 12→13→21/25), restructured sources.py (25 sector-tagged sources with researched URLs), wired sector through scraper→filter→analyst, renamed workflow to daily, added semantic IDs and list wrapping to report HTML, researched LinkedIn scraping (deferred), ran quality reviews
 
 ---
 
 ## What's Done
 - [x] Full pipeline built and running end-to-end locally (scraper, filter, analyst, report, emailer, main.py)
-- [x] 9/9 sources attempted, 7/9 pass keyword filtering
+- [x] 24/25 sources attempted (23 OK, 1 SSL failure: Construction Plus Asia), 18 pass keyword filtering
 - [x] Groq (Llama 3.3 70B) confirmed working on free tier
-- [x] Quality review run 2026-06-16: Score 12/25 WEAK — see `quality/reviews/2026-06-16.md`
-- [x] `.claude/` directory configured: settings, custom commands, skills
+- [x] Quality reviews: 12/25 (2026-06-16) → 13/25 (2026-06-19 v1) → 21/25 (2026-06-19 v2)
+- [x] `.claude/` directory configured: settings, custom commands, skills, execution guide
 - [x] Context management system set up (CLAUDE.md, /context-update, /phase)
 - [x] Full project scope defined: AI market intelligence system with RAG, feedback loop, web dashboard
 - [x] ROADMAP.md created: 4-phase plan mapped
-- [x] PLAN.md created: Phase 1 tasks defined
 - [x] PROJECT_REQUIREMENTS.md fully rewritten to reflect new scope (2026-06-19)
-- [x] All major architectural decisions locked (see CONTEXT.md + Open Items in PROJECT_REQUIREMENTS.md)
+- [x] All major architectural decisions locked (see CONTEXT.md)
+- [x] **Phase 1 Task 1:** Analyst SYSTEM_PROMPT rewritten with grounding constraints (closed-book framing, quote-before-extract, negative few-shot, explicit abstain tokens)
+- [x] **Phase 1 Task 2:** config/sources.py restructured — 25 sources across 6 sectors with researched newsroom URLs
+- [x] **Phase 1 Task 3:** Sector field wired end-to-end through scraper → filter → analyst (grouped by sector in LLM prompt)
+- [x] **Phase 1 Task 4:** LinkedIn scraping researched and deferred — no free no-auth method viable
+- [x] **Phase 1 Task 5:** GitHub Actions workflow renamed weekly→daily, cron set to `0 1 * * *`
+- [x] **Phase 1 Task 6:** Report HTML cleanup — semantic IDs on headings, list items wrapped in `<ul>` tags
 
 ## What's In Progress
-- Nothing actively being built yet — ready to begin Phase 1 execution
+- Nothing — Phase 1 complete, Phase 2 not yet started
 
 ## What's Next (Ordered)
-1. New agent: discuss Phase 1 execution plan, break into context-window-safe sessions, create execution context files
-2. Apply 3 analyst.py prompt improvements — Phase 1, Task 1 (first execution task, can be done independently)
-3. Redesign config/sources.py for sector-based structure — Phase 1, Task 2
-4. Rebuild scraper for multi-sector support — Phase 1, Task 3 (depends on Task 2)
-5. LinkedIn scraper research + implementation — Phase 1, Task 4
-6. Daily cadence + report cleanup — Phase 1, Tasks 5 & 6
+1. **Phase 2 planning** — run `/phase` to create Phase 2 plan (AI Brain: ChromaDB, RAG, feedback loop)
+2. Decide embedding model for vector store
+3. Seed vector store with Silversea company context document
+4. Build semantic deduplication step
+5. Build feedback form + aggregation pipeline
+6. Fix Construction Plus Asia SSL error (minor — can be done anytime)
 
 ---
 
 ## Current Blockers
-- Real source lists (per sector) not yet received from supervisor — placeholders in use for now
+- Real source lists (per sector) not yet received from supervisor — placeholders in use
 - Partner source list entirely unknown — supervisor to provide
+- Embedding model for Phase 2 vector store — decide at Phase 2 start
 
 ## Recent Decisions
-- PROJECT_REQUIREMENTS.md rewritten: now reflects full 4-phase AI system scope
-- LLM: Groq (free) for dev/testing; Claude Haiku 3.5 for production
-- Vector store: ChromaDB (local) — switch to Pinecone only if multi-server needed in Phase 3+
-- No AI agents in Phase 2 — RAG + context only; agent verification step deferred to Phase 3+
-- Phase 2 AI enhancements confirmed: semantic deduplication, named entity extraction, source quality scoring
-- Rate limiting confirmed: hard cap on LLM calls per run and per day (safety measure)
-- Feedback: structured form, submissions aggregated + LLM-summarised before vector store ingestion
-- Pre-run context injection removed from scope — feedback form serves this purpose instead
-- No manual re-run trigger on dashboard — schedule-only
+- Analyst prompt uses grounding techniques: closed-book framing, quote-before-extract for opportunities, negative few-shot example, per-field abstain tokens (`NOT_FOUND_IN_SOURCE`)
+- Content per source truncated to 800 chars in analyst (Groq free tier has 12k TPM limit with 18+ sources)
+- LinkedIn scraping deferred — all free approaches blocked by LinkedIn's anti-bot measures or require auth
+- 3 gov source URLs fixed after testing (HDB→root domain, Smart Nation→/initiatives, JTC→/about-jtc/news-and-stories)
+- BCA domain migrated from www.bca.gov.sg to www1.bca.gov.sg
 
 ## Notes for Next Session
-- Hand off to a new agent using the handoff prompt from this session
-- That agent's job: plan Phase 1 execution in detail — how to break it into context-window-safe sessions, what files to create, dependencies between tasks
-- Phase 1 Task 1 (analyst.py prompt fixes) is fully independent — good first execution task
-- Embedding model for Phase 2 vector store is the one remaining TBD before Phase 2 can begin
+- Phase 1 is committed and verified. Start Phase 2 planning.
+- The 800 char content limit is a Groq free tier constraint — will be lifted when switching to Claude Haiku in production (200k context)
+- Quality review suggested adding a "Signals to Watch" subsection for near-miss items — consider for Phase 2 prompt refinement

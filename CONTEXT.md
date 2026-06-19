@@ -90,6 +90,17 @@ company email swapped in for production.
 **Decision:** Pre-run context injection removed from scope
 **Reason:** Alfonso confirmed the feedback form covers this purpose. Team feedback submitted after reading a report becomes context for the next day's run. No separate injection mechanism needed.
 
+### [2026-06-19] Phase 1 prompt engineering decisions
+
+**Decision:** Grounded prompting pattern for analyst — closed-book framing, quote-before-extract for opportunities, negative few-shot examples, per-field abstain tokens
+**Reason:** Llama 3.3 70B fabricates causal links and invents deadlines when given a structured template to fill. Three iterations proved that explicit grounding constraints (not just "be accurate") are required. Quality jumped from 13/25 to 21/25 after applying these techniques.
+
+**Decision:** Content truncated to 800 chars per source in analyst prompt (down from 2000)
+**Reason:** Groq free tier has 12k TPM limit. With 18+ sources passing filter, 2000 chars/source exceeds the limit. 800 chars fits within budget. This constraint is lifted when switching to Claude Haiku in production (200k context).
+
+**Decision:** LinkedIn scraping deferred from Phase 1
+**Reason:** All free no-auth approaches are blocked by LinkedIn's anti-bot measures (login walls, CDP detection, IP reputation). Paid options (Apify, PhantomBuster) require budget approval. Not a Phase 1 blocker — revisit when budget is available.
+
 ---
 
 ## Open Questions
