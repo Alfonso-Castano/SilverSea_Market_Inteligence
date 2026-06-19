@@ -21,5 +21,11 @@ def filter_results(scraped: list, keywords: list, min_score: int = 1) -> list:
             result["relevance_score"] = score
             filtered.append(result)
 
-    print(f"  Filter: {len(filtered)}/{len(scraped)} sources passed")
+    sector_counts = {}
+    for result in filtered:
+        sector = result.get("sector", "unknown")
+        sector_counts[sector] = sector_counts.get(sector, 0) + 1
+    breakdown = ", ".join(f"{sector}: {count}" for sector, count in sector_counts.items())
+
+    print(f"  Filter: {len(filtered)}/{len(scraped)} sources passed ({breakdown})")
     return filtered

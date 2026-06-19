@@ -33,6 +33,7 @@ def scrape_source(source: dict) -> dict:
             "name": source["name"],
             "url": url,
             "type": source.get("type", "unknown"),
+            "sector": source.get("sector", "unknown"),
             "content": text,
             "error": None,
         }
@@ -41,6 +42,7 @@ def scrape_source(source: dict) -> dict:
             "name": source["name"],
             "url": url,
             "type": source.get("type", "unknown"),
+            "sector": source.get("sector", "unknown"),
             "content": "",
             "error": str(e),
         }
@@ -50,11 +52,11 @@ def scrape_all(sources: list) -> list:
     """Scrape all sources, return list of result dicts (including failures)."""
     results = []
     for source in sources:
-        if source.get("skip"):
-            print(f"  [{source['name']}] SKIPPED")
+        if not source.get("active", True):
+            print(f"  [{source['name']} | {source.get('sector', 'unknown')}] INACTIVE")
             continue
         result = scrape_source(source)
         status = "OK" if not result["error"] else f"FAILED: {result['error']}"
-        print(f"  [{source['name']}] {status}")
+        print(f"  [{result['name']} | {result['sector']}] {status}")
         results.append(result)
     return results

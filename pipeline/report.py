@@ -1,8 +1,16 @@
 # pipeline/report.py — Generates the HTML report written to output/index.html
 import datetime
 import os
+import re
 
 OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "..", "output", "index.html")
+
+
+def _slugify(heading: str) -> str:
+    slug = heading.lower().strip()
+    slug = re.sub(r"[^a-z0-9\s-]", "", slug)
+    slug = re.sub(r"\s+", "-", slug)
+    return slug.strip("-")
 
 
 def generate_html(report_text: str, country_name: str) -> str:
@@ -11,20 +19,36 @@ def generate_html(report_text: str, country_name: str) -> str:
 
     # Convert newlines to HTML paragraphs for basic readability
     paragraphs = ""
+    in_list = False
     for line in report_text.split("\n"):
         line = line.strip()
         if not line:
             continue
+
+        is_list_item = line.startswith("- ") or line.startswith("* ")
+        if in_list and not is_list_item:
+            paragraphs += "</ul>\n"
+            in_list = False
+
         if line.startswith("###"):
-            paragraphs += f"<h3>{line.lstrip('#').strip()}</h3>\n"
+            heading = line.lstrip("#").strip()
+            paragraphs += f'<h3 id="{_slugify(heading)}">{heading}</h3>\n'
         elif line.startswith("##"):
-            paragraphs += f"<h2>{line.lstrip('#').strip()}</h2>\n"
+            heading = line.lstrip("#").strip()
+            paragraphs += f'<h2 id="{_slugify(heading)}">{heading}</h2>\n'
         elif line.startswith("#"):
-            paragraphs += f"<h1>{line.lstrip('#').strip()}</h1>\n"
-        elif line.startswith("- ") or line.startswith("* "):
+            heading = line.lstrip("#").strip()
+            paragraphs += f'<h1 id="{_slugify(heading)}">{heading}</h1>\n'
+        elif is_list_item:
+            if not in_list:
+                paragraphs += "<ul>\n"
+                in_list = True
             paragraphs += f"<li>{line[2:]}</li>\n"
         else:
             paragraphs += f"<p>{line}</p>\n"
+
+    if in_list:
+        paragraphs += "</ul>\n"
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
