@@ -68,33 +68,34 @@ Scope
 
 ---
 
-### Phase 2 — AI Brain `[PENDING]`
+### Phase 2 — AI Brain `[DONE]` *(completed 2026-06-22)*
 **Goal:** System learns and improves from user feedback over time.
 
-- [ ] Integrate ChromaDB vector store
-- [ ] Seed vector store with company context document (Silversea products, prospects, priorities)
-- [ ] Add semantic deduplication step (pre-analyst, uses embeddings)
-- [ ] Add named entity extraction step (pre-analyst, produces structured metadata)
-- [ ] Implement source quality scoring (passive, logged per run)
-- [ ] Modify analyst to retrieve relevant context from vector store at inference time (RAG)
-- [ ] Build feedback form — embedded at end of daily report (structured fields, whole-company)
-- [ ] Build feedback aggregation pipeline: submissions → LLM summarises → digest stored in vector store
-- [ ] Weekly summarizer: compress 7 daily reports → one summary, push to Google Drive, replace in vector store
+- [x] Integrate ChromaDB vector store
+- [x] Seed vector store with company context document (Silversea products, prospects, priorities)
+- [x] Add semantic deduplication step (pre-analyst, uses embeddings)
+- [x] Add named entity extraction step (pre-analyst, produces structured metadata)
+- [x] Implement source quality scoring (passive, logged per run)
+- [x] Modify analyst to retrieve relevant context from vector store at inference time (RAG)
+- [x] Build feedback form — embedded at end of daily report (structured fields, whole-company)
+- [x] Build feedback aggregation pipeline: submissions → LLM summarises → digest stored in vector store
+- [x] Weekly summarizer: compress 7 daily reports → one summary, replace in vector store *(Google Drive push deferred to Phase 4)*
 
-**Done when:** Submitting feedback on Day 1 measurably changes what the report surfaces on Day 7.
+**Result:** Full feedback loop verified end-to-end — feedback submitted measurably changes what the next report surfaces, demonstrated live with test data.
 
 ---
 
 ### Phase 3 — Web Dashboard `[PENDING]`
-**Goal:** Proper internal web application replacing static HTML output.
+**Goal:** Proper internal web application replacing static HTML output, split into two surfaces: a polished market-intelligence report view for the BD/sales team, and a separate AI-system internals/observability page for the developer/maintainer (vector store contents, source scores, feedback digests, last-run metadata).
 
-- [ ] Choose web framework (Flask / FastAPI backend — decide at Phase 3 start)
-- [ ] Daily report view — sector-organised, feedback form embedded at bottom
+- [ ] Choose web framework / front-end approach (decide at Phase 3 start)
+- [ ] Design + build polished market-intelligence dashboard (replaces plain-HTML `report.py` output)
+- [ ] Design + build AI-system internals dashboard (vector store state, source scores, feedback digests, run metadata)
 - [ ] Country-tab architecture — SG active, MY/VN/ID slots ready
 - [ ] Deploy to company servers (no authentication, internal access)
 - [ ] Consider: agentic verification step for high-scoring opportunities
 
-**Done when:** Company can read daily report and submit feedback from one internal URL.
+**Done when:** Company can read a polished daily report and submit feedback from one internal URL; developer can view AI-system internals on a separate page.
 
 ---
 
@@ -111,8 +112,7 @@ Scope
 ---
 
 ## Open Questions
-- Embedding model for Phase 2 vector store — decide at Phase 2 start
 - Web framework for Phase 3 (Flask vs FastAPI) — decide at Phase 3 start
 - Feedback form exact field types — finalise before Phase 2 feedback pipeline build
-- Real source lists (customers, partners, associations, MY/VN/ID) — supervisor to provide
+- Real source lists (customers, partners, associations, MY/VN/ID) — resolved 2026-06-23: supervisor provided full Singapore ecosystem list; ~24-source prioritized subset locked for prototype (see CONTEXT.md), full list + MY/VN/ID still feed Phase 4
 - Production email recipients — confirm with Ms. Mok before Phase 4

@@ -3,6 +3,12 @@ import os
 import datetime
 from groq import Groq
 
+try:
+    from pipeline.vectorstore import query, add_documents, COMPANY_CONTEXT, REPORT_HISTORY, FEEDBACK_DIGESTS
+    RAG_ENABLED = True
+except Exception:
+    RAG_ENABLED = False
+
 MODEL = "llama-3.3-70b-versatile"
 
 SYSTEM_PROMPT = """You are a market intelligence analyst for Silversea Media, a Singapore-based
@@ -80,6 +86,43 @@ Write in clear, concise, executive-readable English. Name specific companies, pr
 and amounts only when they appear in the source text."""
 
 
+def _build_rag_context(filtered_results: list) -> str:
+    """Query the vector store for company context, feedback priorities, and past
+    report themes relevant to today's sources. Returns an empty string if RAG is
+    unavailable or no collections have any documents yet."""
+    if not RAG_ENABLED or not filtered_results:
+        return ""
+
+    longest = sorted(filtered_results, key=lambda r: len(r.get("content", "")), reverse=True)[:3]
+    query_text = " ".join(r["content"][:200] for r in longest)
+
+    sections = []
+    for collection_name, label in (
+        (COMPANY_CONTEXT, "Company context"),
+        (FEEDBACK_DIGESTS, "Recent feedback priorities"),
+        (REPORT_HISTORY, "Past report themes"),
+    ):
+        try:
+            result = query(collection_name, query_text, n_results=3)
+        except Exception:
+            continue
+        docs = (result.get("documents") or [[]])[0]
+        if not docs:
+            continue
+        bullets = "\n".join(f"- {doc}" for doc in docs)
+        sections.append(f"{label}:\n{bullets}")
+
+    if not sections:
+        return ""
+
+    return (
+        "ACCUMULATED CONTEXT (use for relevance filtering and priority weighting — "
+        "NOT as source material):\n\n"
+        + "\n\n".join(sections)
+        + "\n\n---\n\n"
+    )
+
+
 def analyse(filtered_results: list, country: dict) -> str:
     """Send filtered content to Groq and return the structured report."""
     client = Groq(api_key=os.environ["GROQ_API_KEY"])
@@ -90,14 +133,18 @@ def analyse(filtered_results: list, country: dict) -> str:
 
     sector_sections = []
     for sector, results in sectors.items():
-        blocks = [
-            f"### {r['name']} ({r['type'].upper()})\nURL: {r['url']}\n\n{r['content'][:800]}"
-            for r in results
-        ]
+        blocks = []
+        for r in results:
+            name = r.get("name") or (r.get("names") or ["Unknown"])[0]
+            url = r.get("url") or (r.get("urls") or [""])[0]
+            blocks.append(f"### {name} ({r['type'].upper()})\nURL: {url}\n\n{r['content'][:800]}")
         sector_sections.append(f"=== {sector.upper()} ===\n\n" + "\n\n---\n\n".join(blocks))
 
+    rag_context = _build_rag_context(filtered_results)
+
     user_message = (
-        f"Country: {country['name']}\n"
+        rag_context
+        + f"Country: {country['name']}\n"
         f"Report date: {datetime.date.today().strftime('%d %B %Y')}\n\n"
         f"SCRAPED SOURCES ({len(filtered_results)} sources passed filtering):\n\n"
         + "\n\n".join(sector_sections)
@@ -112,4 +159,16 @@ def analyse(filtered_results: list, country: dict) -> str:
         max_tokens=4096,
     )
 
-    return response.choices[0].message.content
+    report_text = response.choices[0].message.content
+
+    if RAG_ENABLED:
+        try:
+            add_documents(
+                REPORT_HISTORY,
+                [report_text[:1500]],
+                metadatas=[{"date": datetime.date.today().isoformat(), "country": country["code"]}],
+            )
+        except Exception:
+            pass
+
+    return report_text

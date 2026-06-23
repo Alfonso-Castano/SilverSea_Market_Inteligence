@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 *.pyo
 .DS_Store
+data/chromadb/
+data/feedback/
+data/source_scores.json

@@ -103,6 +103,29 @@ company email swapped in for production.
 
 ---
 
+### [2026-06-22] Phase 2 completion decisions
+
+**Decision:** Google Drive export deferred from the weekly summarizer to Phase 4
+**Reason:** Supervisor's real source lists (customers, partners, associations, MY/VN/ID) aren't finalized yet. Building Drive export now would mean reworking it once the pipeline scope is locked. The weekly summarizer's core function — compressing daily reports and replacing them in the vector store to prevent bloat — is built and verified; only the external push is deferred.
+
+**Decision:** Phase 3 scope expanded to two separate dashboard surfaces
+**Reason:** Alfonso wants a polished, professional market-intelligence report view for the BD/sales team, plus a separate developer-facing page showing AI-system internals (vector store contents, source scores, feedback digests, run metadata) so anyone maintaining the system can see what's driving its output without reading code.
+
+---
+
+### [2026-06-23] Real source list received — prioritized subset locked for prototype
+
+**Decision:** Of the ~50 ecosystem sources in the supervisor's Built Environment doc, only a ~24-source prioritized subset will be wired in for tomorrow's presentation: gov_agencies +IMDA, associations +SGTech/REDAS, customers +Keppel, partners (newly populated) = AECOM/CPG Consultant/Honeywell/Cushman & Wakefield, competitors +FacilityBot/Cryotos (TwinMatrix dropped). Chinese state contractors (CSCEC/CCCC/CHEC), NUS/NTU/SGH, GeBIZ, Smart Nation/GovTech, BCI Asia, and Construction Plus Asia are left as-is/out of scope for this round.
+**Reason:** Finding a real newsroom/press URL per source (not just the homepage given in the PDF) is the slow part — same research cost Phase 1 already paid for the current 20 sources. Attempting all ~50 in one session risked discovering scraping failures only at demo time. A smaller, fully-verified set is more defensible than a larger, partially-broken one. Sector taxonomy stays exactly as Phase 1/2 built it (gov_agencies, associations, customers, partners, competitors) — no new sectors introduced.
+
+**Decision:** LinkedIn and Facebook source URLs (requested again by supervisor's doc) remain out of scope for this round.
+**Reason:** LinkedIn scraping was already ruled out in Phase 1 (anti-bot, no free no-auth method). Facebook carries the same risk profile and wasn't worth re-researching under the deadline. Still a Phase 4+ candidate if budget allows a paid scraping API.
+
+### [2026-06-23] Branding bug found: analyst prompt referenced wrong product names
+
+**Decision:** `pipeline/analyst.py`'s SYSTEM_PROMPT will be corrected to reference Silversea's real products (SpatioX Twin, SpatioX Ops, SpatioX Audit, SpatioX Walk) instead of the placeholder names it currently has ("MetaTwin Object/Space/Immerse/Augment").
+**Reason:** The placeholder names were never updated after the company profile was confirmed. Since this string drives the Product Fit field in every Opportunity the LLM generates, it would surface as a visible factual error in any report shown to the manager. Locked grounding-rule structure (closed-book framing, quote-before-extract, abstain tokens, scoring rubric) from Phase 1 is preserved — only the product-name content changes.
+
 ## Open Questions
 *(Remove entries when resolved, note the resolution)*
 
@@ -110,6 +133,5 @@ company email swapped in for production.
 - Should past reports be archived/browsable? → Not required for MVP
 - Any sources behind login/paywall that need special handling? → Assume no for MVP
 - Hosting: Vercel for prototype → company servers for production (confirmed)
-- Embedding model for Phase 2 vector store → decide at Phase 2 start
-- Feedback form exact field types → TBD (design principles confirmed; fields need finalising)
-- Full customer/partner/association source lists → supervisor to provide before Phase 4
+- Feedback form exact field types → resolved: relevance rating (1-5), most useful signal, missed topics, priority changes, optional submitter name
+- Full customer/partner/association source lists → resolved: supervisor provided full ecosystem list 2026-06-23; prioritized ~24-source subset locked for the prototype, remaining sources deferred to Phase 4 full rollout

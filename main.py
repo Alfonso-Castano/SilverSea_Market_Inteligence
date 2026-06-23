@@ -1,18 +1,25 @@
 # main.py — Runs the full market intelligence pipeline end-to-end
 import sys
 from dotenv import load_dotenv
-load_dotenv()  # loads .env file if present (local dev only; GitHub Actions uses secrets)
+load_dotenv()
 from config.sources import COUNTRIES
 from pipeline.scraper import scrape_all
 from pipeline.filter import filter_results
+from pipeline.dedup import deduplicate
+from pipeline.entities import extract_entities
 from pipeline.analyst import analyse
 from pipeline.report import generate_html
 from pipeline.emailer import send_digest
+from pipeline.scoring import update_scores
+from pipeline.feedback import aggregate_feedback
 
 
 def run_pipeline(send_email: bool = True) -> None:
     active_countries = [c for c in COUNTRIES if c["active"]]
     print(f"Running pipeline for {len(active_countries)} active country/countries...\n")
+
+    print("Processing feedback from previous run...")
+    aggregate_feedback()
 
     for country in active_countries:
         print(f"=== {country['name']} ({country['code']}) ===")
@@ -27,8 +34,17 @@ def run_pipeline(send_email: bool = True) -> None:
             print("  No relevant content found — skipping LLM analysis.\n")
             continue
 
+        print("Deduplicating signals...")
+        deduped = deduplicate(filtered)
+
+        print("Extracting entities...")
+        enriched = extract_entities(deduped)
+
         print("Analysing with Claude...")
-        report_text = analyse(filtered, country)
+        report_text = analyse(enriched, country)
+
+        print("Scoring sources...")
+        update_scores(filtered, report_text)
 
         print("Generating HTML report...")
         report_html = generate_html(report_text, country["name"])
@@ -41,6 +57,5 @@ def run_pipeline(send_email: bool = True) -> None:
 
 
 if __name__ == "__main__":
-    # Pass --no-email to skip sending the digest (useful for local testing)
     send_email = "--no-email" not in sys.argv
     run_pipeline(send_email=send_email)
