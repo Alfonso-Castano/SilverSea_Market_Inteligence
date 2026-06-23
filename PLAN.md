@@ -216,3 +216,20 @@ Files: `pipeline/weekly.py` (new), `.github/workflows/weekly_summary.yml` (new),
 ## Phase Complete
 **Date:** 2026-06-22
 **Summary:** Phase 2 (AI Brain) fully implemented and verified end-to-end. ChromaDB vector store with 3 collections (company_context, report_history, feedback_digests), RAG-enhanced analyst, semantic dedup, entity extraction, source scoring, feedback form + aggregation + weekly summarization all working. Full feedback loop demonstrated: test feedback → aggregated digest → stored in vector store → retrieved as context on next run. Google Drive export deferred to Phase 4.
+
+---
+
+## Real Sources Finalization (Post-Phase 2, Pre-Phase 3)
+
+**Executed:** 2026-06-23 — all 8 sessions of `.claude/execution/real-sources-prototype.md`
+
+- [x] Session 1: MetaTwin→SpatioX branding fix in `pipeline/analyst.py` + `data/company_context.md`
+- [x] Session 2: Newsroom URL research for 10 new sources (sub-agent)
+- [x] Session 3: `config/sources.py` updated — 30 active sources, 3 inactive, TwinMatrix dropped, partner keywords added
+- [x] Session 4: Dry-run scrape verification — 21/30 pass keyword filter across all 6 sectors
+- [x] Session 5: Cleared test ChromaDB data, re-seeded company_context with SpatioX branding (21 chunks)
+- [x] Session 6: Baseline report generated and saved (`output/baseline_no_feedback.html`)
+- [x] Session 7: Demo feedback injected (FM/SpatioX Ops priority), aggregated into feedback_digests
+- [x] Session 8: Second run diffed — "smart fm" 2→8, FM framing added to executive summary
+
+**Result:** Pipeline presentation-ready with real sources and demonstrated feedback-loop effect.

@@ -10,35 +10,35 @@ Customer relationship management runs on Bitrix24. Sales and BD activity should 
 
 ## Products
 
-**MetaTwin Object** — 3D scanning and digitization of physical objects, producing high-fidelity 3D models for catalogs, museum archiving, e-commerce, and virtual showrooms. Used where a client needs an accurate digital replica of a discrete physical item rather than a full space.
+**SpatioX Twin** — Digital Twin platform with live dashboard and high-fidelity 3D visualization. Combines 3D scanning, BIM data integration, and spatial modeling to produce a navigable digital replica of buildings, campuses, and large physical environments. This is Silversea's flagship offering and the primary fit for smart building, smart FM, and built-environment government tenders.
 
-**MetaTwin Space** — Digital twin creation for buildings, campuses, and large physical environments. Combines 3D scanning, BIM data integration, and spatial modeling to produce a navigable digital replica of a space. This is Silversea's flagship offering and the primary fit for smart building, smart FM, and built-environment government tenders.
+**SpatioX Ops** — Smart Facility Management platform: workflow/asset management, IoT/CCTV/access control integration. Digital twins integrated with building management systems to support predictive maintenance, space utilization tracking, and operational dashboards.
 
-**MetaTwin Immerse** — VR experiences built on top of digital twin data, allowing remote walkthroughs, training simulations, and immersive presentations. Relevant for real estate marketing, training, and tourism/MICE applications where a fully immersive experience adds value over a flat 3D model.
+**SpatioX Audit** — Smart virtual inspection for property TOP (Temporary Occupation Permit) inspection. Digitizes the inspection process for quality assurance in construction handover.
 
-**MetaTwin Augment** — AR overlays for physical spaces, layering live data, wayfinding, or contextual information onto a real-world view via mobile or wearable devices. Relevant for facilities management (overlaying maintenance data onto physical equipment), retail (in-store AR experiences), and event spaces.
+**SpatioX Walk** — 3D/VR virtual tour and WebGL virtual walkthrough. Enables remote walkthroughs, immersive presentations, and virtual site visits for real estate marketing, training, and tourism/MICE applications.
 
 ## Target Sectors & Use Cases
 
-**Real estate** — Digital twins of buildings and developments for asset management, leasing/marketing, and lifecycle documentation. Property developers and REITs are core customers (MetaTwin Space, Immerse).
+**Real estate** — Digital twins of buildings and developments for asset management, leasing/marketing, and lifecycle documentation. Property developers and REITs are core customers (SpatioX Twin, Walk).
 
-**Smart facilities management (Smart FM)** — Digital twins integrated with building management systems to support predictive maintenance, space utilization tracking, and operational dashboards. A strategic priority sector given Singapore's smart building policy push (MetaTwin Space, Augment).
+**Smart facilities management (Smart FM)** — Digital twins integrated with building management systems to support predictive maintenance, space utilization tracking, and operational dashboards. A strategic priority sector given Singapore's smart building policy push (SpatioX Twin, Ops).
 
-**Government / Smart Nation projects** — Public sector tenders for digital twin pilots, smart estate modeling, and built-environment digitalization initiatives under Singapore's Smart Nation and BCA Green Mark / IDD (Integrated Digital Delivery) programmes. High strategic value given policy tailwinds (MetaTwin Space).
+**Government / Smart Nation projects** — Public sector tenders for digital twin pilots, smart estate modeling, and built-environment digitalization initiatives under Singapore's Smart Nation and BCA Green Mark / IDD (Integrated Digital Delivery) programmes. High strategic value given policy tailwinds (SpatioX Twin).
 
-**Education** — Campus digital twins for facilities planning, virtual orientation, and remote learning environments at universities and institutions (MetaTwin Space, Immerse).
+**Education** — Campus digital twins for facilities planning, virtual orientation, and remote learning environments at universities and institutions (SpatioX Twin, Walk).
 
-**Retail** — In-store AR experiences and virtual showrooms for product visualization and customer engagement (MetaTwin Object, Augment).
+**Retail** — In-store AR experiences and virtual showrooms for product visualization and customer engagement (SpatioX Walk, Ops).
 
-**Tourism** — Virtual tours of attractions, heritage sites, and destinations for marketing and accessibility (MetaTwin Space, Immerse).
+**Tourism** — Virtual tours of attractions, heritage sites, and destinations for marketing and accessibility (SpatioX Twin, Walk).
 
-**MICE (meetings, incentives, conferences, exhibitions)** — Digital twins of event venues for virtual site visits, hybrid event experiences, and venue marketing to event planners (MetaTwin Space, Immerse).
+**MICE (meetings, incentives, conferences, exhibitions)** — Digital twins of event venues for virtual site visits, hybrid event experiences, and venue marketing to event planners (SpatioX Twin, Walk).
 
 ## Competitive Positioning
 
 Silversea's differentiation rests on two factors: breadth of product suite and regional presence.
 
-**Full suite vs. point solutions** — Most competitors offer a single capability (e.g., 3D scanning only, or VR content only). Silversea's four-product suite (Object, Space, Immerse, Augment) lets it bid for multi-phase projects that combine scanning, digital twin modeling, and immersive delivery without subcontracting, which is a meaningful advantage in government and large enterprise tenders that prefer a single accountable vendor.
+**Full suite vs. point solutions** — Most competitors offer a single capability (e.g., 3D scanning only, or VR content only). Silversea's four-product suite (SpatioX Twin, Ops, Audit, Walk) lets it bid for multi-phase projects that combine scanning, digital twin modeling, and immersive delivery without subcontracting, which is a meaningful advantage in government and large enterprise tenders that prefer a single accountable vendor.
 
 **Regional presence** — With offices across Singapore, Malaysia, Indonesia, and Vietnam, Silversea can service multi-country clients and bid on cross-border projects that single-country competitors cannot service directly.
 
@@ -54,15 +54,15 @@ Competitor moves to watch: new product launches, government tender wins, new par
 
 ## Key Prospects & Relationships
 
-**CapitaLand** — Major real estate developer/REIT manager. Prospective buyer of MetaTwin Space for portfolio-wide digital twin adoption across commercial and residential assets.
+**CapitaLand** — Major real estate developer/REIT manager. Prospective buyer of SpatioX Twin for portfolio-wide digital twin adoption across commercial and residential assets.
 
-**Mapletree** — Real estate developer/REIT manager with industrial, logistics, and commercial assets. Prospective buyer of MetaTwin Space for smart FM and asset management use cases.
+**Mapletree** — Real estate developer/REIT manager with industrial, logistics, and commercial assets. Prospective buyer of SpatioX Twin for smart FM and asset management use cases.
 
-**Lendlease** — International developer with Singapore operations. Prospective buyer of MetaTwin Space, particularly for new development projects requiring BIM-integrated digital twins from construction through operation.
+**Lendlease** — International developer with Singapore operations. Prospective buyer of SpatioX Twin, particularly for new development projects requiring BIM-integrated digital twins from construction through operation.
 
-**SGH (Singapore General Hospital)** — Healthcare institution. Prospective buyer of MetaTwin Space for campus/facility digital twins supporting hospital facilities management and wayfinding.
+**SGH (Singapore General Hospital)** — Healthcare institution. Prospective buyer of SpatioX Twin for campus/facility digital twins supporting hospital facilities management and wayfinding.
 
-**NUS (National University of Singapore)** — Education prospect for campus digital twin (MetaTwin Space) and immersive orientation/training experiences (MetaTwin Immerse).
+**NUS (National University of Singapore)** — Education prospect for campus digital twin (SpatioX Twin) and immersive orientation/training experiences (SpatioX Walk).
 
 **NTU (Nanyang Technological University)** — Same profile as NUS: campus digital twin and immersive learning/orientation use cases.
 

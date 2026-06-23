@@ -126,6 +126,19 @@ company email swapped in for production.
 **Decision:** `pipeline/analyst.py`'s SYSTEM_PROMPT will be corrected to reference Silversea's real products (SpatioX Twin, SpatioX Ops, SpatioX Audit, SpatioX Walk) instead of the placeholder names it currently has ("MetaTwin Object/Space/Immerse/Augment").
 **Reason:** The placeholder names were never updated after the company profile was confirmed. Since this string drives the Product Fit field in every Opportunity the LLM generates, it would surface as a visible factual error in any report shown to the manager. Locked grounding-rule structure (closed-book framing, quote-before-extract, abstain tokens, scoring rubric) from Phase 1 is preserved — only the product-name content changes.
 
+### [2026-06-23] Real sources finalization executed — branding + sources + feedback-loop demo
+
+**Decision:** `data/company_context.md` (vector store seed document) updated alongside `analyst.py` to replace all MetaTwin→SpatioX references, then re-seeded into ChromaDB.
+**Reason:** The RAG pipeline retrieves company context chunks at inference time. If the seed document still said "MetaTwin," the LLM could echo wrong product names even with the SYSTEM_PROMPT fixed. Both files must be consistent.
+
+**Decision:** SGTech, CPG Consultant, and FacilityBot marked `active: False` in `config/sources.py` after dry-run scrape verification.
+**Reason:** SGTech's ASP.NET news URLs return 404 (non-standard URL routing). CPG Consultant has no dedicated newsroom page. FacilityBot's /blog path returns 404. All three kept in config for future re-evaluation but excluded from daily pipeline to avoid error noise.
+
+**Decision:** Final active source count is 30 (not the ~24 originally estimated) because pre-existing sources were kept as-is per execution plan instructions.
+**Reason:** The execution plan explicitly said "leave existing ones as-is if already in the file" for sources like GeBIZ, Smart Nation, NUS/NTU/SGH. The ~24 estimate counted only the new + key existing sources but the file already had more active entries from Phase 1.
+
+---
+
 ## Open Questions
 *(Remove entries when resolved, note the resolution)*
 

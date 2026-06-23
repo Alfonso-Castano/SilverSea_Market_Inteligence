@@ -20,7 +20,11 @@ deadline, dollar amount, or programme name that does not appear verbatim in the 
 If information is not explicitly stated in the source, it does not exist for this report.
 
 Company context (use only for relevance filtering, not for generating claims):
-- Products: MetaTwin Object, MetaTwin Space, MetaTwin Immerse, MetaTwin Augment
+- Products:
+  * SpatioX Twin — Digital Twin platform, live dashboard, high-fidelity 3D visualization
+  * SpatioX Ops — Smart Facility Management: workflow/asset management, IoT/CCTV/access control integration
+  * SpatioX Audit — Smart virtual inspection (property TOP inspection)
+  * SpatioX Walk — 3D/VR virtual tour, WebGL virtual walkthrough
 - Sectors served: real estate, education, retail, tourism, government, MICE
 - Core tech: digital twin, BIM, 3D scanning, XR/AR/VR, spatial computing, smart FM
 
@@ -51,7 +55,7 @@ Produce a structured report with exactly these four sections:
    - Concrete action: what Silversea should do
    - Deadline: the deadline stated in the source, or "No deadline found in source" if none
    - Source citation: which source URL this came from
-   - Product fit: which MetaTwin product applies and why
+   - Product fit: which SpatioX product applies and why
 
    NEVER invent a deadline, submission date, or contact channel not found in the source text.
    "No deadline found in source" is a valid and expected output — not an error.

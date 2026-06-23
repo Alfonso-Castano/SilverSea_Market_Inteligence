@@ -114,5 +114,5 @@ Scope
 ## Open Questions
 - Web framework for Phase 3 (Flask vs FastAPI) — decide at Phase 3 start
 - Feedback form exact field types — finalise before Phase 2 feedback pipeline build
-- Real source lists (customers, partners, associations, MY/VN/ID) — resolved 2026-06-23: supervisor provided full Singapore ecosystem list; ~24-source prioritized subset locked for prototype (see CONTEXT.md), full list + MY/VN/ID still feed Phase 4
+- Real source lists (SG) — resolved 2026-06-23: 30 active sources across 6 sectors wired in and verified; remaining ~20 Singapore sources + MY/VN/ID deferred to Phase 4
 - Production email recipients — confirm with Ms. Mok before Phase 4
