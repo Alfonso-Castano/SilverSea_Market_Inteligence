@@ -137,6 +137,11 @@ company email swapped in for production.
 **Decision:** Final active source count is 30 (not the ~24 originally estimated) because pre-existing sources were kept as-is per execution plan instructions.
 **Reason:** The execution plan explicitly said "leave existing ones as-is if already in the file" for sources like GeBIZ, Smart Nation, NUS/NTU/SGH. The ~24 estimate counted only the new + key existing sources but the file already had more active entries from Phase 1.
 
+### [2026-06-23] Multi-pass analyst architecture for information density
+
+**Decision:** Rewrote `pipeline/analyst.py` from a single monolithic LLM call to a two-phase multi-pass approach: Phase 1 makes one Groq call per sector with full untruncated source content, extracting every named signal; Phase 2 synthesizes all sector extractions into the final structured report.
+**Reason:** Info-gap analysis showed the single-call approach was losing ~75% of actionable signals. Root causes: (1) the LLM silently dropped entire sectors (Competitors, Partners) when given 21 sources at once, (2) 800-char truncation cut rich sources (DataMesh 8000 chars → 800). Multi-pass eliminates truncation (each sector has 2-6 sources, fits under 12k TPM) and forces per-sector attention. Result: report size 4,600 → 8,000 chars, 17/17 key signals now present. Trade-off: ~3 min runtime (25s delay between calls for Groq TPM compliance) vs ~30s for single call.
+
 ---
 
 ## Open Questions
