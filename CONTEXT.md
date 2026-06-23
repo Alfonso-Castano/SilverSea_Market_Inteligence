@@ -144,6 +144,25 @@ company email swapped in for production.
 
 ---
 
+### [2026-06-23] Phase 3 dashboard architecture decisions
+
+**Decision:** Analyst output changes from freeform markdown text to structured JSON (dict with keys: executive_summary, signals_by_sector, opportunities, synthesis)
+**Reason:** The dashboard needs to render score badges, sector cards, and score-breakdown bars — all impossible when the only data source is a prose string that requires regex parsing. JSON output makes the report machine-readable. Grounding rules and scoring rubric in SYNTHESIS_PROMPT stay untouched; only an additive OUTPUT FORMAT instruction block is appended.
+
+**Decision:** Flask + Jinja2 with live per-request rendering (no SPA, no React, no FastAPI)
+**Reason:** The pipeline is batch-driven (runs once daily). Pages are server-rendered from JSON files + ChromaDB reads. Flask is already a dependency (feedback server). Adding a JS frontend framework would introduce npm/build tooling for no capability gain. Live rendering (vs pre-baked static HTML) is simpler — Flask reads `data/latest_report.json` fresh on each request, always current, no generation step to keep in sync.
+
+**Decision:** Tailwind CSS via CDN for styling; Chart.js via CDN for internals charts
+**Reason:** No build step (no npm, no webpack). CDN is fine for an internal low-traffic dashboard. Tailwind gives utility-class control for cards/badges/grids without custom CSS overhead. Chart.js is the lightest free charting library that covers bar/line/doughnut for the ops dashboard.
+
+**Decision:** Two-page split: report page built from scratch, internals page adapts free Volt Dashboard template
+**Reason:** The CEO-facing report page must not look generic — custom Tailwind + CSS variables gives control over visual identity. The maintainer-facing internals page has no such constraint — adapting a free admin template saves build time on a page no one judges aesthetically.
+
+**Decision:** Feedback endpoint consolidated from separate `scripts/feedback_server.py` (port 5050) into the main Flask app (`app.py`, port 5000)
+**Reason:** One server instead of two. Same CORS headers, same JSON-to-file logic. The feedback form's action URL changes from `http://localhost:5050/feedback` to `/feedback` (relative, same origin).
+
+---
+
 ## Open Questions
 *(Remove entries when resolved, note the resolution)*
 

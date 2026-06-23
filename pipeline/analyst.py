@@ -1,4 +1,5 @@
 # pipeline/analyst.py — Multi-pass Groq API synthesis and opportunity scoring
+import json
 import os
 import time
 import datetime
@@ -111,7 +112,47 @@ EXCLUDE from the entire report:
 - Signals where the link to digital twin / smart FM / BIM is your inference, not the source's
 
 Write in clear, concise, executive-readable English. Name specific companies, programmes,
-and amounts only when they appear in the extracted signals."""
+and amounts only when they appear in the extracted signals.
+
+OUTPUT FORMAT: Respond with valid JSON matching this exact schema. No markdown, no preamble,
+no explanation outside the JSON object.
+
+{
+  "executive_summary": ["bullet 1", "bullet 2", ...],
+  "signals_by_sector": {
+    "Government & Agencies": [
+      {"entity": "BCA", "signal": "description of the signal"}
+    ],
+    "Industry Associations": [...],
+    "Customers": [...],
+    "Partners": [...],
+    "Competitors": [...],
+    "General News": [...]
+  },
+  "opportunities": [
+    {
+      "title": "Short descriptive title",
+      "source_quote": "Exact quote from signals",
+      "named_entry_point": "Programme/tender/initiative name",
+      "concrete_action": "What Silversea should do",
+      "deadline": "As stated, or 'No deadline found in source'",
+      "source_url": "URL if available",
+      "product_fit": "Which SpatioX product and why",
+      "scores": {
+        "strategic_fit": 0,
+        "revenue_potential": 0,
+        "win_probability": 0,
+        "urgency": 0,
+        "intelligence_quality": 0
+      },
+      "total_score": 0
+    }
+  ],
+  "synthesis": ["bullet 1", "bullet 2", ...]
+}
+
+Only include sectors that have actual signals. "opportunities" may be an empty array.
+Every score field is an integer 0-5. "total_score" is the sum (0-25)."""
 
 
 def _build_rag_context(filtered_results: list) -> str:
@@ -177,8 +218,8 @@ def _extract_sector(client, sector_name: str, sources: list) -> str:
         return f"**{label}**: Extraction failed — {e}"
 
 
-def analyse(filtered_results: list, country: dict) -> str:
-    """Multi-pass analysis: extract signals per sector, then synthesize into report."""
+def analyse(filtered_results: list, country: dict) -> dict:
+    """Multi-pass analysis: extract signals per sector, then synthesize into structured JSON report."""
     client = Groq(api_key=os.environ["GROQ_API_KEY"])
 
     substantive = [r for r in filtered_results if len(r.get("content", "")) >= MIN_CONTENT_CHARS]
@@ -223,18 +264,31 @@ def analyse(filtered_results: list, country: dict) -> str:
             {"role": "user", "content": user_message},
         ],
         max_tokens=6000,
+        response_format={"type": "json_object"},
     )
 
     report_text = response.choices[0].message.content
 
+    try:
+        report_data = json.loads(report_text)
+    except json.JSONDecodeError:
+        report_data = {
+            "executive_summary": [report_text[:500]],
+            "signals_by_sector": {},
+            "opportunities": [],
+            "synthesis": ["Report generated but JSON parsing failed — raw text preserved."],
+            "_raw_text": report_text,
+        }
+
     if RAG_ENABLED:
         try:
+            summary_for_rag = json.dumps(report_data.get("executive_summary", []))[:1500]
             add_documents(
                 REPORT_HISTORY,
-                [report_text[:1500]],
+                [summary_for_rag],
                 metadatas=[{"date": datetime.date.today().isoformat(), "country": country["code"]}],
             )
         except Exception:
             pass
 
-    return report_text
+    return report_data

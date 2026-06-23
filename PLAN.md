@@ -5,231 +5,94 @@
 
 ---
 
-## Phase 2 — AI Brain
+## Phase 3 — Web Dashboard
 
-**Goal:** System learns and improves from user feedback over time. RAG-enhanced analyst retrieves accumulated context. Feedback submitted on Day 1 measurably changes what the report surfaces on Day 7.
+**Goal:** Replace static HTML output with a professional Flask-served dashboard. Two surfaces: a polished market intelligence report for BD/sales team, and an AI system internals page for the developer/maintainer.
 
 **Done when:**
-- ChromaDB seeded with company context, pipeline retrieves relevant context at inference time
-- Semantic deduplication reduces noise, named entities extracted as metadata
-- Feedback form in report → aggregation → digest in vector store → influences next run
-- Weekly summarizer compresses 7 daily reports into one summary
+- `app.py` serves both pages from one Flask app on port 5000
+- Report page renders structured JSON data with score badges, sector cards, visual hierarchy
+- Internals page shows vector store contents, source scores chart, feedback digests, run metadata
+- Feedback form submits to `/feedback` on the same app (replacing `scripts/feedback_server.py`)
+- Country tabs: SG active, MY/VN/ID slots greyed out
+
+**Execution file:** `.claude/execution/phase3-dashboard.md` — full implementation details for each session.
 
 ---
 
 ## Tasks
 
-### 1. Embedding model + ChromaDB setup `[DONE]`
-Choose embedding model and initialize ChromaDB infrastructure.
+### 1. Analyst JSON output `[DONE]`
+Modify `pipeline/analyst.py` to return structured JSON dict instead of freeform text string.
 
-**Decision:** `sentence-transformers/all-MiniLM-L6-v2` (384-dim, fast, free, local, no API key).
-Rationale: runs on CPU, ~80MB model, good retrieval quality for short documents, widely used.
-
-**Implementation:**
-- `requirements.txt` — add `chromadb`, `sentence-transformers`
-- `pipeline/vectorstore.py` — new module: init ChromaDB client (persistent storage in `data/chromadb/`), collection management, add/query helpers
-- Collections: `company_context`, `report_history`, `feedback_digests`
-
-**Verify:** `python -c "from pipeline.vectorstore import get_collection; print(get_collection('company_context'))"` runs without error.
-
-Files: `pipeline/vectorstore.py` (new), `requirements.txt`
+**Files:** `pipeline/analyst.py`
+**Details:** Append JSON output format instruction to SYNTHESIS_PROMPT (after locked grounding rules). Parse response with `json.loads`, fallback to wrapped raw text on parse failure. Return dict.
 
 ---
 
-### 2. Seed vector store with company context `[DONE]`
-Create Silversea company context document and ingest into ChromaDB.
+### 2. Pipeline + report refactor `[DONE]`
+Refactor `main.py` to write `data/latest_report.json` + `data/run_metadata.json`. Rewrite `pipeline/report.py` to a thin JSON writer (strip all HTML generation).
 
-**Implementation:**
-- `data/company_context.md` — structured document: products, target sectors, key prospects, competitive positioning, priorities
-- `scripts/seed_vectorstore.py` — reads company context, chunks it, embeds, stores in `company_context` collection
-- Chunking: split by section headers, ~300-500 chars per chunk
-
-**Verify:** Query "digital twin smart building" returns relevant company context chunks.
-
-Files: `data/company_context.md` (new), `scripts/seed_vectorstore.py` (new)
+**Files:** `main.py`, `pipeline/report.py`
+**Details:** Capture run metadata (source counts, dedup stats, timestamp). Replace `generate_html()` with `save_report_json()`. Adapt scoring and email calls for dict input.
 
 ---
 
-### 3. Semantic deduplication `[DONE]`
-Pre-analyst step: merge same-story signals that appear across multiple sources.
+### 3. Flask app + routes `[DONE]`
+Create `app.py` with three routes: `/` (report), `/internals`, `POST /feedback`.
 
-**Implementation:**
-- `pipeline/dedup.py` — new module
-- Embed each filtered result's content (title + first 300 chars)
-- Cosine similarity > 0.85 threshold → merge into one entry, note all source URLs
-- Runs after `filter.py`, before `analyst.py`
-- Merged entries carry `sources: [url1, url2, ...]` instead of single `url`
-
-**Verify:** Run pipeline with known duplicate content across sources → dedup reduces count.
-
-Files: `pipeline/dedup.py` (new), `main.py` (insert dedup step)
+**Files:** `app.py` (new), `templates/` directory (new), `static/` directory (new)
+**Details:** Migrate feedback endpoint from `scripts/feedback_server.py`. Read JSON files + ChromaDB for live rendering. Delete `scripts/feedback_server.py` when done.
+**Note:** `/feedback` accepts both JSON and form-encoded bodies (template posts JSON). `scripts/feedback_server.py` not yet deleted — deferred pending Alfonso's confirmation.
 
 ---
 
-### 4. Named entity extraction `[DONE]`
-Pre-analyst step: extract structured metadata from each signal.
+### 4. Report template — Surface 1 `[DONE]`
+Build `templates/base.html` + `templates/report.html` — polished market intelligence report page.
 
-**Implementation:**
-- `pipeline/entities.py` — new module
-- Extract: company names, dollar amounts, dates/deadlines, tender/reference numbers
-- Regex-based + simple heuristics (not LLM — saves tokens)
-- Output: adds `entities` dict to each filtered result
-- Entities stored alongside report in ChromaDB for future retrieval
-
-**Verify:** Run pipeline → filtered results contain `entities` field with extracted values.
-
-Files: `pipeline/entities.py` (new), `main.py` (insert entity step)
+**Files:** `templates/base.html` (new), `templates/report.html` (new), `static/style.css` (new)
+**Details:** Tailwind CDN, brand colors (#0a2540 navy, #2d6a4f green), score badges (color-coded 0-25), sector card grid, feedback form, country tabs. Must look professional — not a Bootstrap tutorial, not a text dump.
 
 ---
 
-### 5. RAG-enhanced analyst `[DONE]`
-Modify analyst to retrieve relevant context from vector store at inference time.
+### 5. Internals template — Surface 2 `[DONE]`
+Build `templates/internals.html` — AI system observability page.
 
-**Implementation:**
-- Before LLM call: query `company_context` + `feedback_digests` + `report_history` collections
-- Use top signal keywords as query → retrieve top 3-5 relevant chunks
-- Inject retrieved context into the USER message (not system prompt) as a new section:
-  ```
-  ACCUMULATED CONTEXT (from past reports and feedback):
-  - [chunk 1]
-  - [chunk 2]
-  ```
-- Do NOT modify SYSTEM_PROMPT grounding constraints
-- After LLM call: store today's report summary in `report_history` collection
-
-**Verify:** Run pipeline → report references context that only exists in vector store (not in scraped sources).
-
-Files: `pipeline/analyst.py` (modify `analyse` function), `pipeline/vectorstore.py`
+**Files:** `templates/internals.html` (new)
+**Details:** Chart.js horizontal bar chart for source scores, tabbed vector store browser (3 collections), feedback digest timeline, run metadata stat cards. Can adapt Volt Dashboard template shell.
 
 ---
 
-### 6. Source quality scoring `[DONE]`
-Passive scoring: track which sources produce signals that end up in the report.
+### 6. End-to-end verification `[DONE]`
+Run full pipeline → start Flask → verify both surfaces render real data → test feedback submission.
 
-**Implementation:**
-- `pipeline/scoring.py` — new module
-- After analyst runs: compare which source URLs are cited in the report
-- Increment score for cited sources, decay score for sources that pass filter but aren't cited
-- Store scores in `data/source_scores.json` (simple JSON, not ChromaDB)
-- Log scores per run to stdout
+**Verify checklist:**
+- [x] `python main.py --no-email` produces `data/latest_report.json` + `data/run_metadata.json`
+- [x] `python app.py` starts without errors
+- [x] `http://localhost:5000/` renders report with score badges and sector cards
+- [x] `http://localhost:5000/internals` renders source scores chart and vector store browser
+- [x] Feedback form submits and creates JSON in `data/feedback/`
+- [x] No regressions in scoring, feedback aggregation, or weekly summarizer
 
-**Verify:** Run pipeline twice → `data/source_scores.json` exists with per-source scores.
+**Note:** Verified using a temporary `llama-3.1-8b-instant` swap after the 70B model hit Groq's 100k TPD free-tier limit mid-run. Model reverted to `llama-3.3-70b-versatile`. A clean full-quality 70B run is still needed once the quota resets.
 
-Files: `pipeline/scoring.py` (new), `main.py` (insert scoring step), `data/source_scores.json` (generated)
-
----
-
-### 7. Feedback form `[DONE]`
-Embed a feedback form at the bottom of the HTML report.
-
-**Implementation:**
-- Add HTML form to `report.py` output (after report content)
-- Fields: relevance rating (1-5), most useful signal (text), missed topic (text), priority change (text), submitter name (optional)
-- Form submits to a simple endpoint (Phase 3 will host properly; for now, write to `data/feedback/` as JSON files via a minimal local Flask endpoint OR use a free form backend like Formspree)
-- No authentication required
-
-**Decision:** Use `scripts/feedback_server.py` — minimal Flask app that accepts POST and writes JSON to `data/feedback/`. Runs alongside pipeline on company server.
-
-**Verify:** Submit form in browser → JSON file appears in `data/feedback/`.
-
-Files: `pipeline/report.py` (modify), `scripts/feedback_server.py` (new), `data/feedback/` (directory)
-
----
-
-### 8. Feedback aggregation pipeline `[DONE]`
-Collect feedback submissions, LLM-summarize, store digest in vector store.
-
-**Implementation:**
-- `pipeline/feedback.py` — new module
-- Reads all JSON files in `data/feedback/` since last aggregation
-- Sends batch to LLM with prompt: "Summarize this team feedback into a concise priority digest"
-- Stores resulting digest in `feedback_digests` collection in ChromaDB
-- Marks processed files (move to `data/feedback/processed/`)
-- Triggered: daily, before main pipeline run (so today's context includes yesterday's feedback)
-
-**Verify:** Add test feedback files → run aggregation → query `feedback_digests` → digest returned.
-
-Files: `pipeline/feedback.py` (new), `main.py` (add feedback aggregation step before analysis)
-
----
-
-### 9. Weekly summarizer `[DONE — Google Drive export deferred]`
-Compress 7 daily reports into one weekly summary. Store in vector store, push to Google Drive.
-
-**Note:** Compression + vector store replacement implemented and verified (`pipeline/weekly.py`, `.github/workflows/weekly_summary.yml`). Google Drive export deliberately deferred until all real sources are in and the pipeline is finalized — revisit alongside Phase 4.
-
-**Implementation:**
-- `pipeline/weekly.py` — new module
-- Reads last 7 daily reports from `report_history` collection
-- Sends to LLM: "Compress these 7 daily reports into a weekly intelligence summary"
-- Stores weekly summary in `report_history` (replaces the 7 daily entries to prevent bloat)
-- Exports to Google Drive via API (service account)
-- Triggered: separate GitHub Actions workflow on Sunday
-
-**Google Drive integration:** service account with Drive API scope, writes to shared folder.
-
-**Verify:** After 7 daily runs, trigger weekly → summary appears in vector store and Google Drive.
-
-Files: `pipeline/weekly.py` (new), `.github/workflows/weekly_summary.yml` (new), `scripts/setup_google_drive.py` (new)
+## Phase Complete
+**Date:** 2026-06-23
+**Summary:** Flask dashboard live at `/` (report) and `/internals`, structured JSON pipeline output, feedback loop consolidated into one app — full chain verified end-to-end.
 
 ---
 
 ## Dependencies
 
 ```
-1 (ChromaDB setup)
-├── 2 (seed context) → 5 (RAG analyst)
-├── 3 (dedup) — independent after 1
-├── 4 (entities) — independent after 1
-└── 5 (RAG) → 8 (feedback aggregation) → 9 (weekly summarizer)
-
-6 (scoring) — independent, needs analyst output only
-7 (feedback form) — independent, needs report.py only
-8 (aggregation) — needs 1 + 7
-9 (weekly) — needs 5 + 8
+1 (analyst JSON) → 2 (pipeline refactor) → 3 (Flask app + routes)
+                                                    ↓
+                                            4 (report template)  ← parallel
+                                            5 (internals template) ← parallel
+                                                    ↓
+                                            6 (end-to-end verify)
 ```
 
-## Execution Order (session-safe chunks)
+## Subagent Strategy
 
-**Session A:** Tasks 1 + 2 (ChromaDB infra + seed)
-**Session B:** Tasks 3 + 4 (dedup + entities — parallel, independent)
-**Session C:** Task 5 (RAG analyst — core integration, needs focus)
-**Session D:** Tasks 6 + 7 (scoring + feedback form — parallel, independent)
-**Session E:** Task 8 (feedback aggregation)
-**Session F:** Task 9 (weekly summarizer + Google Drive)
-**Session G:** End-to-end verification + /context-update
-
----
-
-## Verify Phase Complete
-- [x] ChromaDB vector store initialized and seeded with company context (23 chunks)
-- [x] `py main.py --no-email` runs without errors (regression check)
-- [x] Analyst retrieves relevant context from vector store — visibly influences report
-- [x] Semantic deduplication reduces duplicate signals across sources
-- [x] Named entities extracted and stored as structured metadata
-- [x] Source quality scores logged per run
-- [x] Feedback form renders at bottom of HTML report
-- [x] Feedback → aggregation → digest in vector store works end-to-end
-- [x] Weekly summarizer compresses 7 daily reports into one summary
-- [x] Feedback on Day 1 measurably changes report on Day 7 (verified via test feedback)
-
-## Phase Complete
-**Date:** 2026-06-22
-**Summary:** Phase 2 (AI Brain) fully implemented and verified end-to-end. ChromaDB vector store with 3 collections (company_context, report_history, feedback_digests), RAG-enhanced analyst, semantic dedup, entity extraction, source scoring, feedback form + aggregation + weekly summarization all working. Full feedback loop demonstrated: test feedback → aggregated digest → stored in vector store → retrieved as context on next run. Google Drive export deferred to Phase 4.
-
----
-
-## Real Sources Finalization (Post-Phase 2, Pre-Phase 3)
-
-**Executed:** 2026-06-23 — all 8 sessions of `.claude/execution/real-sources-prototype.md`
-
-- [x] Session 1: MetaTwin→SpatioX branding fix in `pipeline/analyst.py` + `data/company_context.md`
-- [x] Session 2: Newsroom URL research for 10 new sources (sub-agent)
-- [x] Session 3: `config/sources.py` updated — 30 active sources, 3 inactive, TwinMatrix dropped, partner keywords added
-- [x] Session 4: Dry-run scrape verification — 21/30 pass keyword filter across all 6 sectors
-- [x] Session 5: Cleared test ChromaDB data, re-seeded company_context with SpatioX branding (21 chunks)
-- [x] Session 6: Baseline report generated and saved (`output/baseline_no_feedback.html`)
-- [x] Session 7: Demo feedback injected (FM/SpatioX Ops priority), aggregated into feedback_digests
-- [x] Session 8: Second run diffed — "smart fm" 2→8, FM framing added to executive summary
-
-**Result:** Pipeline presentation-ready with real sources and demonstrated feedback-loop effect.
+Sessions 4 and 5 are independent template-building work (HTML/Jinja2/CSS/JS). Each can be delegated to a subagent with the JSON schema and design spec as input. Sessions 1-3 modify core pipeline code with tight interdependencies — execute in main context.

@@ -1,0 +1,63 @@
+/* Custom CSS variables and overrides beyond Tailwind */
+:root {
+  --color-navy: #0a2540;
+  --color-green-accent: #2d6a4f;
+  --color-score-high: #16a34a;
+  --color-score-medium: #d97706;
+  --color-score-low: #6b7280;
+  --color-bg-card: #ffffff;
+  --color-bg-page: #f8fafc;
+  --color-border: #e2e8f0;
+}
+
+/* Score badge */
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.score-badge.score-high { background-color: var(--color-score-high); }
+.score-badge.score-medium { background-color: var(--color-score-medium); }
+.score-badge.score-low { background-color: var(--color-score-low); }
+
+/* Score mini bars */
+.score-bar-track {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Tab switching for internals page */
+.tab-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tab-btn:hover { color: #374151; }
+.tab-btn.active {
+  color: var(--color-navy);
+  border-bottom-color: var(--color-green-accent);
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }

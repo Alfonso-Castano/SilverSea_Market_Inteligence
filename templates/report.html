@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}Market Intelligence Report{% if report._metadata %} — {{ report._metadata.date_display }}{% endif %}{% endblock %}
+
+{% block content %}
+{% if not report or not report._metadata %}
+  <div class="bg-white rounded-xl shadow-sm border border-border-card p-12 text-center">
+    <h1 class="text-2xl font-bold text-navy mb-2">No report available</h1>
+    <p class="text-gray-500">The pipeline has not produced a report yet. Run the daily pipeline to generate one.</p>
+  </div>
+{% else %}
+
+<!-- Header bar -->
+<div class="bg-navy rounded-xl shadow-md text-white px-8 py-7 mb-8">
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Market Intelligence Report</h1>
+      <p class="text-gray-300 mt-1">{{ report._metadata.country }} — Built Environment &amp; Smart FM</p>
+    </div>
+    <div class="text-left sm:text-right">
+      <span class="inline-block text-xs uppercase tracking-wider text-gray-400">Report date</span>
+      <p class="text-lg font-semibold">{{ report._metadata.date_display }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- Executive Summary -->
+{% if report.executive_summary %}
+<section class="mb-10">
+  <div class="bg-white rounded-xl shadow-sm border border-border-card border-l-4 border-l-green-accent p-6">
+    <h2 class="text-lg font-bold text-navy mb-4 flex items-center gap-2">
+      Executive Summary
+    </h2>
+    <ul class="space-y-2.5">
+      {% for item in report.executive_summary %}
+      <li class="flex gap-3 text-gray-700 leading-relaxed">
+        <span class="mt-2 w-1.5 h-1.5 rounded-full bg-green-accent flex-shrink-0"></span>
+        <span>{{ item }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<!-- Signals by Sector -->
+{% if report.signals_by_sector %}
+<section class="mb-10">
+  <h2 class="text-xl font-bold text-navy mb-4">Signals by Sector</h2>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    {% for sector, signals in report.signals_by_sector.items() %}
+    {% if signals %}
+    <div class="bg-white rounded-xl shadow-sm border border-border-card p-5">
+      <h3 class="text-base font-bold text-navy mb-3 pb-2 border-b border-border-card">
+        {{ sector }}
+        <span class="text-xs font-normal text-gray-400">({{ signals | length }})</span>
+      </h3>
+      <ul class="space-y-3">
+        {% for signal in signals %}
+        <li class="text-sm leading-relaxed">
+          <span class="font-semibold text-gray-900">{{ signal.entity }}</span>
+          <span class="text-gray-600"> — {{ signal.signal }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Opportunities -->
+<section class="mb-10">
+  <h2 class="text-xl font-bold text-navy mb-4">Opportunities</h2>
+
+  {% if report.opportunities %}
+  <div class="space-y-6">
+    {% for opp in report.opportunities %}
+    {% set total = opp.total_score | default(0) %}
+    {% if total >= 20 %}{% set badge_class = 'score-high' %}
+    {% elif total >= 13 %}{% set badge_class = 'score-medium' %}
+    {% else %}{% set badge_class = 'score-low' %}{% endif %}
+
+    <div class="bg-white rounded-xl shadow-sm border border-border-card p-6">
+      <div class="flex items-start gap-5">
+        <!-- Score badge -->
+        <div class="flex flex-col items-center flex-shrink-0">
+          <div class="score-badge {{ badge_class }}">{{ total }}</div>
+          <span class="text-[10px] uppercase tracking-wide text-gray-400 mt-1">/ 25</span>
+        </div>
+
+        <!-- Body -->
+        <div class="flex-1 min-w-0">
+          <h3 class="text-lg font-bold text-navy mb-2">{{ opp.title }}</h3>
+
+          {% if opp.source_quote %}
+          <blockquote class="text-sm italic text-gray-600 border-l-2 border-gray-200 pl-3 mb-4">
+            &ldquo;{{ opp.source_quote }}&rdquo;
+          </blockquote>
+          {% endif %}
+
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-5">
+            {% if opp.named_entry_point %}
+            <div>
+              <dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Entry Point</dt>
+              <dd class="text-gray-800">{{ opp.named_entry_point }}</dd>
+            </div>
+            {% endif %}
+            {% if opp.deadline %}
+            <div>
+              <dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Deadline</dt>
+              <dd class="text-gray-800">{{ opp.deadline }}</dd>
+            </div>
+            {% endif %}
+            {% if opp.concrete_action %}
+            <div class="sm:col-span-2">
+              <dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Concrete Action</dt>
+              <dd class="text-gray-800">{{ opp.concrete_action }}</dd>
+            </div>
+            {% endif %}
+            {% if opp.product_fit %}
+            <div class="sm:col-span-2">
+              <dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Product Fit</dt>
+              <dd class="text-gray-800">{{ opp.product_fit }}</dd>
+            </div>
+            {% endif %}
+          </dl>
+
+          {% if opp.source_url %}
+          <a href="{{ opp.source_url }}" target="_blank" rel="noopener noreferrer"
+             class="inline-block text-sm text-green-accent hover:text-green-accent-light font-medium mb-5 break-all">
+            View source &rarr;
+          </a>
+          {% endif %}
+
+          <!-- Score breakdown -->
+          {% if opp.scores %}
+          <div class="bg-bg-page rounded-lg p-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5">
+            {% set labels = [
+              ('Strategic Fit', opp.scores.strategic_fit),
+              ('Revenue Potential', opp.scores.revenue_potential),
+              ('Win Probability', opp.scores.win_probability),
+              ('Urgency', opp.scores.urgency),
+              ('Intel Quality', opp.scores.intelligence_quality)
+            ] %}
+            {% for label, val in labels %}
+            {% set v = val | default(0) %}
+            {% if v >= 4 %}{% set fill = '#16a34a' %}
+            {% elif v >= 2 %}{% set fill = '#d97706' %}
+            {% else %}{% set fill = '#6b7280' %}{% endif %}
+            <div class="flex items-center gap-3">
+              <span class="text-xs text-gray-600 w-28 flex-shrink-0">{{ label }}</span>
+              <div class="score-bar-track flex-1">
+                <div class="score-bar-fill" style="width: {{ (v / 5 * 100) | round }}%; background-color: {{ fill }};"></div>
+              </div>
+              <span class="text-xs font-semibold text-gray-700 w-6 text-right">{{ v }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="bg-white rounded-xl shadow-sm border border-border-card p-6 text-center text-gray-500">
+    No opportunities passed the relevance gate this cycle.
+  </div>
+  {% endif %}
+</section>
+
+<!-- What This Means for Silversea -->
+{% if report.synthesis %}
+<section class="mb-10">
+  <div class="bg-white rounded-xl shadow-sm border border-border-card border-l-4 border-l-green-accent p-6">
+    <h2 class="text-lg font-bold text-navy mb-4">What This Means for Silversea</h2>
+    <ul class="space-y-2.5">
+      {% for item in report.synthesis %}
+      <li class="flex gap-3 text-gray-700 leading-relaxed">
+        <span class="mt-2 w-1.5 h-1.5 rounded-full bg-green-accent flex-shrink-0"></span>
+        <span>{{ item }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<!-- Feedback form -->
+<section class="mb-6">
+  <div id="feedback-card" class="bg-white rounded-xl shadow-sm border border-border-card p-6">
+    <h2 class="text-lg font-bold text-navy mb-1">Your Feedback</h2>
+    <p class="text-sm text-gray-500 mb-5">Help the system learn what matters to you. Submissions shape tomorrow&rsquo;s report.</p>
+
+    <form id="feedback-form" class="space-y-5">
+      <input type="hidden" name="report_date" value="{{ report._metadata.date }}" />
+
+      <!-- Relevance rating -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">How relevant was today&rsquo;s report?</label>
+        <div class="flex gap-2">
+          {% for n in range(1, 6) %}
+          <label class="cursor-pointer">
+            <input type="radio" name="relevance" value="{{ n }}" class="peer sr-only" {% if n == 3 %}required{% endif %} />
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-border-card text-sm font-semibold text-gray-600
+                         peer-checked:bg-green-accent peer-checked:text-white peer-checked:border-green-accent
+                         hover:border-green-accent transition-colors">{{ n }}</span>
+          </label>
+          {% endfor %}
+        </div>
+        <div class="flex justify-between text-xs text-gray-400 mt-1 max-w-[280px]">
+          <span>Not relevant</span><span>Very relevant</span>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Most useful signal</label>
+        <textarea name="most_useful" rows="2"
+          class="w-full rounded-lg border border-border-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent"
+          placeholder="Which signal or opportunity stood out?"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Missed topics</label>
+        <textarea name="missed_topics" rows="2"
+          class="w-full rounded-lg border border-border-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent"
+          placeholder="Anything we should have covered but didn't?"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Priority changes</label>
+        <textarea name="priority_changes" rows="2"
+          class="w-full rounded-lg border border-border-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent"
+          placeholder="Should we weight any sector, source, or topic differently?"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Your name <span class="text-gray-400 font-normal">(optional)</span></label>
+        <input type="text" name="submitter"
+          class="w-full max-w-xs rounded-lg border border-border-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent"
+          placeholder="Name" />
+      </div>
+
+      <div>
+        <button type="submit"
+          class="bg-navy hover:bg-navy-light text-white font-medium px-6 py-2.5 rounded-lg transition-colors">
+          Submit feedback
+        </button>
+      </div>
+    </form>
+
+    <div id="feedback-thanks" class="hidden text-center py-8">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-accent/10 text-green-accent text-2xl mb-3">&checkmark;</div>
+      <h3 class="text-lg font-bold text-navy">Thank you</h3>
+      <p class="text-sm text-gray-500 mt-1">Your feedback will shape the next report.</p>
+    </div>
+  </div>
+</section>
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    const form = document.getElementById('feedback-form');
+    if (!form) return;
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+      try {
+        const data = Object.fromEntries(new FormData(form).entries());
+        const res = await fetch('/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error('Request failed');
+        form.classList.add('hidden');
+        document.getElementById('feedback-thanks').classList.remove('hidden');
+      } catch (err) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Submit feedback'; }
+        alert('Sorry, something went wrong submitting your feedback. Please try again.');
+      }
+    });
+  })();
+</script>
+{% endblock %}

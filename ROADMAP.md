@@ -85,17 +85,20 @@ Scope
 
 ---
 
-### Phase 3 — Web Dashboard `[PENDING]`
+### Phase 3 — Web Dashboard `[DONE]` *(completed 2026-06-23)*
 **Goal:** Proper internal web application replacing static HTML output, split into two surfaces: a polished market-intelligence report view for the BD/sales team, and a separate AI-system internals/observability page for the developer/maintainer (vector store contents, source scores, feedback digests, last-run metadata).
 
-- [ ] Choose web framework / front-end approach (decide at Phase 3 start)
-- [ ] Design + build polished market-intelligence dashboard (replaces plain-HTML `report.py` output)
-- [ ] Design + build AI-system internals dashboard (vector store state, source scores, feedback digests, run metadata)
-- [ ] Country-tab architecture — SG active, MY/VN/ID slots ready
-- [ ] Deploy to company servers (no authentication, internal access)
-- [ ] Consider: agentic verification step for high-scoring opportunities
+- [x] Choose web framework / front-end approach — Flask + Jinja2, Tailwind CSS CDN, Chart.js CDN
+- [x] Switch analyst.py output from freeform text to structured JSON
+- [x] Refactor main.py + report.py for JSON artifacts + run metadata
+- [x] Build Flask app (app.py) with routes: /, /internals, POST /feedback
+- [x] Design + build polished market-intelligence report template (Surface 1)
+- [x] Design + build AI-system internals template (Surface 2)
+- [x] Country-tab architecture — SG active, MY/VN/ID slots ready
+- [x] End-to-end verification
+- [ ] Deploy to company servers (no authentication, internal access) — deferred, still running locally
 
-**Done when:** Company can read a polished daily report and submit feedback from one internal URL; developer can view AI-system internals on a separate page.
+**Result:** Company can read a polished daily report and submit feedback from one internal URL; developer can view AI-system internals on a separate page. Verified end-to-end locally; production server deployment not yet done.
 
 ---
 
@@ -112,7 +115,7 @@ Scope
 ---
 
 ## Open Questions
-- Web framework for Phase 3 (Flask vs FastAPI) — decide at Phase 3 start
-- Feedback form exact field types — finalise before Phase 2 feedback pipeline build
+- Web framework for Phase 3 — resolved 2026-06-23: Flask + Jinja2, Tailwind CSS via CDN, Chart.js via CDN. No SPA/React/FastAPI.
+- Feedback form exact field types — resolved: relevance rating (1-5), most useful signal, missed topics, priority changes, optional submitter name
 - Real source lists (SG) — resolved 2026-06-23: 30 active sources across 6 sectors wired in and verified; remaining ~20 Singapore sources + MY/VN/ID deferred to Phase 4
 - Production email recipients — confirm with Ms. Mok before Phase 4

@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}AI System Internals — Silversea Market Intelligence{% endblock %}
+
+{% block head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-navy">AI System Internals</h1>
+    <p class="text-sm text-gray-500 mt-1">Observability for the market intelligence pipeline — last run, source scoring, vector store contents, and feedback digests.</p>
+  </div>
+
+  <!-- 1. Last-Run Metadata banner -->
+  <section class="mb-10">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Last Run</h2>
+    {% if metadata %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4 col-span-2 sm:col-span-1">
+        <div class="text-base font-bold text-navy leading-tight">
+          {% if metadata.timestamp %}{{ metadata.timestamp[:10] }}<br><span class="text-sm font-medium text-gray-500">{{ metadata.timestamp[11:16] }} UTC</span>{% else %}&mdash;{% endif %}
+        </div>
+        <div class="text-xs text-gray-400 mt-1">Last run{% if metadata.country %} · {{ metadata.country }}{% endif %}</div>
+      </div>
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4">
+        <div class="text-2xl font-bold text-navy">{{ metadata.sources_scraped if metadata.sources_scraped is not none else '—' }}</div>
+        <div class="text-xs text-gray-400 mt-1">Sources scraped</div>
+      </div>
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4">
+        <div class="text-2xl font-bold text-navy">{{ metadata.sources_passed_filter if metadata.sources_passed_filter is not none else '—' }}</div>
+        <div class="text-xs text-gray-400 mt-1">Passed filter</div>
+      </div>
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4">
+        <div class="text-2xl font-bold text-navy">{{ metadata.dedup_merged if metadata.dedup_merged is not none else '—' }}</div>
+        <div class="text-xs text-gray-400 mt-1">Dedup merged</div>
+      </div>
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4">
+        <div class="text-2xl font-bold text-navy">{{ metadata.entities_extracted if metadata.entities_extracted is not none else '—' }}</div>
+        <div class="text-xs text-gray-400 mt-1">Entities extracted</div>
+      </div>
+    </div>
+    {% else %}
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-6 text-center text-gray-400">
+      No run metadata available.
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- 2. Source Quality Scores -->
+  <section class="mb-10">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Source Quality Scores</h2>
+    {% if scores %}
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-6 mb-4">
+      <div style="height: {{ (scores | length) * 28 + 40 }}px; min-height: 200px;">
+        <canvas id="scoresChart"></canvas>
+      </div>
+    </div>
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 text-left text-xs uppercase tracking-wider text-gray-400">
+            <th class="px-6 py-3 font-semibold">Source Name</th>
+            <th class="px-6 py-3 font-semibold text-right w-32">Score</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border-card">
+          {% for name, score in scores | dictsort(by='value', reverse=true) %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-3 text-gray-700">{{ name }}</td>
+            <td class="px-6 py-3 text-right font-semibold
+              {% if score > 10 %}text-score-high{% elif score >= 5 %}text-score-medium{% else %}text-score-low{% endif %}">
+              {{ '%.1f' | format(score) }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-6 text-center text-gray-400">
+      No source scores recorded yet.
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- 3. Vector Store Browser -->
+  <section class="mb-10">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Vector Store Browser</h2>
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm">
+      {% if collections and collections.error %}
+        <div class="p-6 text-center text-score-medium">
+          <span class="font-medium">Vector store unavailable:</span> {{ collections.error }}
+        </div>
+      {% else %}
+        {% set collection_names = ['company_context', 'report_history', 'feedback_digests'] %}
+        <div class="flex border-b border-border-card px-4">
+          {% for cname in collection_names %}
+          <button class="tab-btn{% if loop.first %} active{% endif %}" data-tab="tab-{{ cname }}">
+            {{ cname.replace('_', ' ') | title }}
+          </button>
+          {% endfor %}
+        </div>
+
+        {% for cname in collection_names %}
+        {% set col = collections.get(cname) if collections else none %}
+        <div id="tab-{{ cname }}" class="tab-content{% if loop.first %} active{% endif %} p-6">
+          {% if col %}
+            <div class="mb-4">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-accent/10 text-green-accent">
+                {{ col.count if col.count is not none else (col.documents | length) }} documents
+              </span>
+            </div>
+            {% if col.documents %}
+            <div class="space-y-3 max-h-96 overflow-y-auto pr-2">
+              {% for doc in col.documents %}
+              {% set meta = col.metadatas[loop.index0] if col.metadatas and col.metadatas | length > loop.index0 else {} %}
+              <div class="border border-border-card rounded-lg p-4 bg-gray-50/50">
+                <p class="text-sm text-gray-700 leading-relaxed">{{ doc[:200] }}{% if doc | length > 200 %}…{% endif %}</p>
+                {% if meta %}
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                  {% for k, v in meta.items() %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-navy/5 text-navy-light">{{ k }}: {{ v }}</span>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-400 text-sm text-center py-4">This collection is empty.</p>
+            {% endif %}
+          {% else %}
+            <p class="text-gray-400 text-sm text-center py-4">Collection not found.</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- 4. Feedback Digest Timeline -->
+  <section class="mb-10">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Feedback Digest Timeline</h2>
+    {% set fb = collections.get('feedback_digests') if (collections and not collections.error) else none %}
+    {% if fb and fb.documents %}
+    <div class="space-y-4">
+      {% set count = fb.documents | length %}
+      {% for i in range(count) %}
+      {% set idx = count - 1 - i %}
+      {% set doc = fb.documents[idx] %}
+      {% set meta = fb.metadatas[idx] if fb.metadatas and fb.metadatas | length > idx else {} %}
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-5 flex gap-4">
+        <div class="flex-shrink-0">
+          <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-navy text-white">
+            {% if meta and meta.date %}{{ meta.date }}{% elif meta and meta.timestamp %}{{ meta.timestamp[:10] }}{% else %}#{{ idx + 1 }}{% endif %}
+          </span>
+        </div>
+        <p class="text-sm text-gray-700 leading-relaxed">{{ doc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-6 text-center text-gray-400">
+      No feedback digests yet.
+    </div>
+    {% endif %}
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = btn.getAttribute('data-tab');
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active'); });
+      btn.classList.add('active');
+      var content = document.getElementById(target);
+      if (content) content.classList.add('active');
+    });
+  });
+
+  // Source scores chart
+  {% if scores %}
+  (function () {
+    var labels = {{ scores.keys() | list | tojson }};
+    var values = {{ scores.values() | list | tojson }};
+
+    // Sort descending by value
+    var paired = labels.map(function (l, i) { return { label: l, value: values[i] }; });
+    paired.sort(function (a, b) { return b.value - a.value; });
+
+    var sortedLabels = paired.map(function (p) { return p.label; });
+    var sortedValues = paired.map(function (p) { return p.value; });
+    var colors = sortedValues.map(function (v) {
+      if (v > 10) return '#16a34a';
+      if (v >= 5) return '#d97706';
+      return '#ef4444';
+    });
+
+    var ctx = document.getElementById('scoresChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: sortedLabels,
+        datasets: [{
+          label: 'Quality Score',
+          data: sortedValues,
+          backgroundColor: colors,
+          borderRadius: 4,
+          barThickness: 16
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (c) { return 'Score: ' + c.parsed.x.toFixed(1); }
+            }
+          }
+        },
+        scales: {
+          x: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+          y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+  })();
+  {% endif %}
+</script>
+{% endblock %}
