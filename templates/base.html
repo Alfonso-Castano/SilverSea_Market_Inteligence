@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Silversea Market Intelligence{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -12,6 +14,7 @@
           colors: {
             navy: '#0a2540',
             'navy-light': '#1a3a5c',
+            'navy-deep': '#050d18',
             'green-accent': '#2d6a4f',
             'green-accent-light': '#40916c',
             'score-high': '#16a34a',
@@ -23,6 +26,16 @@
           },
           fontFamily: {
             display: ['Inter', 'system-ui', 'sans-serif'],
+            heading: ['Space Grotesk', 'system-ui', 'sans-serif'],
+          },
+          keyframes: {
+            'fade-slide-up': {
+              '0%': { opacity: '0', transform: 'translateY(12px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          },
+          animation: {
+            'fade-slide-up': 'fade-slide-up 0.5s ease forwards',
           }
         }
       }
@@ -32,47 +45,52 @@
   {% block head %}{% endblock %}
 </head>
 <body class="bg-bg-page font-display text-gray-800 min-h-screen">
-  <!-- Navigation -->
-  <nav class="bg-navy text-white shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center gap-2">
-          <span class="text-xl font-bold tracking-tight">Silversea Media</span>
-          <span class="text-sm text-gray-300 hidden sm:inline">Market Intelligence</span>
-        </div>
-        <div class="flex gap-1">
-          <a href="/" class="px-4 py-2 rounded-md text-sm font-medium transition-colors
-            {% if request.path == '/' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
-            Report
-          </a>
-          <a href="/internals" class="px-4 py-2 rounded-md text-sm font-medium transition-colors
-            {% if request.path == '/internals' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
-            Internals
-          </a>
+  <!-- Dark zone: nav + country tabs (+ hero on report page via block) -->
+  <div class="{% block dark_zone_class %}bg-navy{% endblock %}" style="{% block dark_zone_style %}{% endblock %}">
+    <!-- Navigation -->
+    <nav class="text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-bold tracking-tight">Silversea Media</span>
+            <span class="text-sm text-gray-300 hidden sm:inline">Market Intelligence</span>
+          </div>
+          <div class="flex gap-1">
+            <a href="/" class="px-4 py-2 rounded-md text-sm font-medium transition-colors
+              {% if request.path == '/' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
+              Report
+            </a>
+            <a href="/internals" class="px-4 py-2 rounded-md text-sm font-medium transition-colors
+              {% if request.path == '/internals' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
+              Internals
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <!-- Country tabs -->
-  <div class="bg-white border-b border-border-card">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex gap-4 py-2">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-green-accent text-white">
-          <span class="w-2 h-2 rounded-full bg-green-300 inline-block"></span>
-          Singapore
-        </span>
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-400 cursor-not-allowed">
-          Malaysia
-        </span>
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-400 cursor-not-allowed">
-          Vietnam
-        </span>
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-400 cursor-not-allowed">
-          Indonesia
-        </span>
+    <!-- Country tabs -->
+    <div class="border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex gap-3 py-2">
+          <span class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-white border-green-accent/60" style="border-color: rgba(45,106,79,0.6);">
+            <span class="w-2 h-2 rounded-full bg-green-300 inline-block"></span>
+            Singapore
+          </span>
+          <span class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-gray-500 cursor-not-allowed" style="background: rgba(255,255,255,0.03);">
+            Malaysia
+          </span>
+          <span class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-gray-500 cursor-not-allowed" style="background: rgba(255,255,255,0.03);">
+            Vietnam
+          </span>
+          <span class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-gray-500 cursor-not-allowed" style="background: rgba(255,255,255,0.03);">
+            Indonesia
+          </span>
+        </div>
       </div>
     </div>
+
+    {% block hero %}{% endblock %}
   </div>
 
   <!-- Content -->
@@ -85,6 +103,9 @@
     Auto-generated by Silversea Market Intelligence System
   </footer>
 
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="{{ url_for('static', filename='animations.js') }}"></script>
+  <script>AOS.init({ duration: 500, once: true, offset: 40 });</script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

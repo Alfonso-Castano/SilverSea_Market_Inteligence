@@ -5,94 +5,92 @@
 
 ---
 
-## Phase 3 — Web Dashboard
+## Phase 3.5 — Visual Design Revamp
 
-**Goal:** Replace static HTML output with a professional Flask-served dashboard. Two surfaces: a polished market intelligence report for BD/sales team, and an AI system internals page for the developer/maintainer.
+**Goal:** Full structural and visual revamp of the report page (`/`) — dark glass hero, animated stat cards, sticky scroll nav, restructured opportunities — and a lighter matching restyle of the internals page (`/internals`). No architecture changes.
 
 **Done when:**
-- `app.py` serves both pages from one Flask app on port 5000
-- Report page renders structured JSON data with score badges, sector cards, visual hierarchy
-- Internals page shows vector store contents, source scores chart, feedback digests, run metadata
-- Feedback form submits to `/feedback` on the same app (replacing `scripts/feedback_server.py`)
-- Country tabs: SG active, MY/VN/ID slots greyed out
+- Report page has continuous dark gradient zone (nav + country tabs + hero) with glass stat cards, glow orbs, Space Grotesk headings
+- Sticky scroll-spy nav appears on scroll past hero, highlights active section
+- Opportunities sorted by score: top 3 fully expanded, rest collapsible with chevron toggle
+- Internals page restyled with matching shadow/hover/animation vocabulary (no dark hero)
+- Feedback form POST contract unchanged, no Python file changes
 
-**Execution file:** `.claude/execution/phase3-dashboard.md` — full implementation details for each session.
+**Execution file:** `.claude/execution/phase3-visual-design.md`
 
 ---
 
 ## Tasks
 
-### 1. Analyst JSON output `[DONE]`
-Modify `pipeline/analyst.py` to return structured JSON dict instead of freeform text string.
+### 1. Tailwind config + shared CSS tokens `[DONE]`
+Added `navy-deep`, `font-heading`, `fade-slide-up` keyframes to Tailwind config. Added Google Fonts + AOS CDN links. Added `.glass-card`, `.shadow-soft`, `.shadow-soft-lg`, `.card-hover` to `static/style.css`.
 
-**Files:** `pipeline/analyst.py`
-**Details:** Append JSON output format instruction to SYNTHESIS_PROMPT (after locked grounding rules). Parse response with `json.loads`, fallback to wrapped raw text on parse failure. Return dict.
-
----
-
-### 2. Pipeline + report refactor `[DONE]`
-Refactor `main.py` to write `data/latest_report.json` + `data/run_metadata.json`. Rewrite `pipeline/report.py` to a thin JSON writer (strip all HTML generation).
-
-**Files:** `main.py`, `pipeline/report.py`
-**Details:** Capture run metadata (source counts, dedup stats, timestamp). Replace `generate_html()` with `save_report_json()`. Adapt scoring and email calls for dict input.
+**Files:** `templates/base.html`, `static/style.css`
 
 ---
 
-### 3. Flask app + routes `[DONE]`
-Create `app.py` with three routes: `/` (report), `/internals`, `POST /feedback`.
+### 2. Continuous dark zone (nav + tabs + hero) `[DONE]`
+Restructured `base.html` with dark zone wrapper (`{% block dark_zone_class/style %}`). Glass country tab pills. Report page hero with gradient, glow orbs, glass stat cards, section IDs.
 
-**Files:** `app.py` (new), `templates/` directory (new), `static/` directory (new)
-**Details:** Migrate feedback endpoint from `scripts/feedback_server.py`. Read JSON files + ChromaDB for live rendering. Delete `scripts/feedback_server.py` when done.
-**Note:** `/feedback` accepts both JSON and form-encoded bodies (template posts JSON). `scripts/feedback_server.py` not yet deleted — deferred pending Alfonso's confirmation.
+**Files:** `templates/base.html`, `templates/report.html`
 
 ---
 
-### 4. Report template — Surface 1 `[DONE]`
-Build `templates/base.html` + `templates/report.html` — polished market intelligence report page.
+### 3. Sticky scroll nav + light body sections `[DONE]`
+Added fixed scroll nav with section links. Applied `shadow-soft`, `font-heading`, `data-aos="fade-up"` to Executive Summary, Sectors, Synthesis, Feedback sections.
 
-**Files:** `templates/base.html` (new), `templates/report.html` (new), `static/style.css` (new)
-**Details:** Tailwind CDN, brand colors (#0a2540 navy, #2d6a4f green), score badges (color-coded 0-25), sector card grid, feedback form, country tabs. Must look professional — not a Bootstrap tutorial, not a text dump.
-
----
-
-### 5. Internals template — Surface 2 `[DONE]`
-Build `templates/internals.html` — AI system observability page.
-
-**Files:** `templates/internals.html` (new)
-**Details:** Chart.js horizontal bar chart for source scores, tabbed vector store browser (3 collections), feedback digest timeline, run metadata stat cards. Can adapt Volt Dashboard template shell.
+**Files:** `templates/report.html`
 
 ---
 
-### 6. End-to-end verification `[DONE]`
-Run full pipeline → start Flask → verify both surfaces render real data → test feedback submission.
+### 4. Opportunities restructure `[DONE]`
+Sorted by `total_score` descending. Top 3 fully expanded with `shadow-soft` + `card-hover`. 4th+ rendered as collapsible rows with chevron toggle.
 
-**Verify checklist:**
-- [x] `python main.py --no-email` produces `data/latest_report.json` + `data/run_metadata.json`
+**Files:** `templates/report.html`
+
+---
+
+### 5. Shared animation JS `[DONE]`
+Created `static/animations.js`: count-up animator (`animateCount`), sticky nav IntersectionObserver, scroll-spy active section highlighting.
+
+**Files:** `static/animations.js` (new), referenced from `templates/base.html`
+
+---
+
+### 6. Internals page restyle `[DONE]`
+All `shadow-sm` → `shadow-soft`. `card-hover` on stat/timeline cards. Count-up data attributes on numeric cards. Chart.js animation. AOS on timeline/vector store cards. `font-heading` on page title.
+
+**Files:** `templates/internals.html`
+
+---
+
+### 7. End-to-end verification `[DONE]`
 - [x] `python app.py` starts without errors
-- [x] `http://localhost:5000/` renders report with score badges and sector cards
-- [x] `http://localhost:5000/internals` renders source scores chart and vector store browser
-- [x] Feedback form submits and creates JSON in `data/feedback/`
-- [x] No regressions in scoring, feedback aggregation, or weekly summarizer
-
-**Note:** Verified using a temporary `llama-3.1-8b-instant` swap after the 70B model hit Groq's 100k TPD free-tier limit mid-run. Model reverted to `llama-3.3-70b-versatile`. A clean full-quality 70B run is still needed once the quota resets.
+- [x] `http://localhost:5000/` — 200 OK, 34k chars, all key elements present (gradient, glass cards, font-heading, AOS, scroll nav, section IDs, shadow-soft, card-hover, gradient submit button)
+- [x] `http://localhost:5000/internals` — 200 OK, 43k chars, all key elements present (shadow-soft, card-hover, count-up targets, chart animation, AOS fade-up, font-heading, no dark hero)
+- [x] Feedback POST works — creates JSON in `data/feedback/`
+- [x] Country tabs: glass pills on both pages, SG active, MY/VN/ID disabled
+- [ ] Visual verification by Alfonso in browser (automated checks passed, human eyes needed)
+- [ ] Collapsible opportunities (4th+) not tested — test data only has 2 opportunities
 
 ## Phase Complete
 **Date:** 2026-06-23
-**Summary:** Flask dashboard live at `/` (report) and `/internals`, structured JSON pipeline output, feedback loop consolidated into one app — full chain verified end-to-end.
+**Summary:** Dark glass hero revamp, sticky scroll nav, restructured opportunities, internals restyle — all implemented per locked spec. Both pages render correctly. Pending: visual verification by Alfonso and testing with a dataset containing >3 opportunities.
 
 ---
 
 ## Dependencies
 
 ```
-1 (analyst JSON) → 2 (pipeline refactor) → 3 (Flask app + routes)
-                                                    ↓
-                                            4 (report template)  ← parallel
-                                            5 (internals template) ← parallel
-                                                    ↓
-                                            6 (end-to-end verify)
+1 (tokens/config)
+   │
+   ├─→ 2 (dark zone: nav+tabs+hero)
+   │      │
+   │      ├─→ 3 (sticky nav + summary/synthesis)
+   │      ├─→ 4 (opportunities restructure)
+   │      └─→ 5 (shared animation JS — after 2,3,4 markup exists)
+   │
+   └─→ 6 (internals, independent of 2-5) ← subagent
+            │
+   7 (verify, after everything)
 ```
-
-## Subagent Strategy
-
-Sessions 4 and 5 are independent template-building work (HTML/Jinja2/CSS/JS). Each can be delegated to a subagent with the JSON schema and design spec as input. Sessions 1-3 modify core pipeline code with tight interdependencies — execute in main context.

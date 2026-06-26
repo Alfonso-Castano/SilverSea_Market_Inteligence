@@ -2,33 +2,96 @@
 
 {% block title %}Market Intelligence Report{% if report._metadata %} — {{ report._metadata.date_display }}{% endif %}{% endblock %}
 
+{% block dark_zone_class %}relative overflow-hidden{% endblock %}
+{% block dark_zone_style %}background: linear-gradient(135deg, #050d18 0%, #0a2540 55%, #102a45 100%);{% endblock %}
+
+{% block hero %}
+{% if report and report._metadata %}
+<!-- Glow orbs -->
+<div class="absolute top-10 left-1/4 w-96 h-96 rounded-full pointer-events-none" style="background: rgba(45,106,79,0.2); filter: blur(100px); z-index: 0;"></div>
+<div class="absolute top-40 right-1/6 w-72 h-72 rounded-full pointer-events-none" style="background: rgba(45,106,79,0.15); filter: blur(80px); z-index: 0;"></div>
+<div class="absolute -bottom-20 left-1/2 w-80 h-80 rounded-full pointer-events-none" style="background: rgba(26,58,92,0.3); filter: blur(90px); z-index: 0;"></div>
+
+<!-- Hero content -->
+<div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12" id="hero">
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-10">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <h1 class="text-4xl sm:text-5xl font-bold font-heading tracking-tight text-white">Market Intelligence Report</h1>
+        {% if demo_mode %}
+        <span class="text-xs text-gray-400 border border-white/15 rounded-full px-2.5 py-1">{% if demo_mode == 'feedback' %}With Feedback{% else %}Clean Run{% endif %}</span>
+        {% endif %}
+      </div>
+      <p class="text-gray-300 mt-2 text-lg">{{ report._metadata.country }} — Built Environment &amp; Smart FM</p>
+    </div>
+    <div class="text-left sm:text-right">
+      <span class="inline-block text-xs uppercase tracking-wider text-gray-400">Report date</span>
+      <p class="text-lg font-semibold text-white">{{ report._metadata.date_display }}</p>
+    </div>
+  </div>
+
+  <!-- Stat cards -->
+  {% set ns = namespace(total_signals=0, top_score=0, sectors_covered=0) %}
+  {% for sector, signals in report.signals_by_sector.items() %}
+    {% set ns.total_signals = ns.total_signals + signals | length %}
+    {% if signals | length > 0 %}{% set ns.sectors_covered = ns.sectors_covered + 1 %}{% endif %}
+  {% endfor %}
+  {% for opp in report.opportunities %}
+    {% if (opp.total_score | default(0)) > ns.top_score %}{% set ns.top_score = opp.total_score | default(0) %}{% endif %}
+  {% endfor %}
+  {% set total_signals = ns.total_signals %}
+  {% set opp_count = report.opportunities | length %}
+  {% set top_score = ns.top_score %}
+  {% set sectors_covered = ns.sectors_covered %}
+
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="glass-card p-5 text-center">
+      <div class="text-3xl font-bold font-heading text-white" data-count-target="{{ total_signals }}">0</div>
+      <div class="text-xs uppercase tracking-wider text-gray-400 mt-1">Total Signals</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-3xl font-bold font-heading text-white" data-count-target="{{ opp_count }}">0</div>
+      <div class="text-xs uppercase tracking-wider text-gray-400 mt-1">Opportunities Found</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-3xl font-bold font-heading text-white" data-count-target="{{ top_score }}">0</div>
+      <div class="text-xs uppercase tracking-wider text-gray-400 mt-1">Top Score</div>
+    </div>
+    <div class="glass-card p-5 text-center">
+      <div class="text-3xl font-bold font-heading text-white" data-count-target="{{ sectors_covered }}">0</div>
+      <div class="text-xs uppercase tracking-wider text-gray-400 mt-1">Sectors Covered</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 {% if not report or not report._metadata %}
-  <div class="bg-white rounded-xl shadow-sm border border-border-card p-12 text-center">
+  <div class="bg-white rounded-xl shadow-soft border border-border-card p-12 text-center">
     <h1 class="text-2xl font-bold text-navy mb-2">No report available</h1>
     <p class="text-gray-500">The pipeline has not produced a report yet. Run the daily pipeline to generate one.</p>
   </div>
 {% else %}
 
-<!-- Header bar -->
-<div class="bg-navy rounded-xl shadow-md text-white px-8 py-7 mb-8">
-  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
-    <div>
-      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Market Intelligence Report</h1>
-      <p class="text-gray-300 mt-1">{{ report._metadata.country }} — Built Environment &amp; Smart FM</p>
-    </div>
-    <div class="text-left sm:text-right">
-      <span class="inline-block text-xs uppercase tracking-wider text-gray-400">Report date</span>
-      <p class="text-lg font-semibold">{{ report._metadata.date_display }}</p>
+<!-- Sticky scroll nav -->
+<nav id="scroll-nav" class="fixed top-0 left-0 right-0 z-50 nav-hidden pointer-events-none transition-all duration-300" style="opacity: 0; transform: translateY(-8px);">
+  <div class="flex justify-center pt-3 pb-2">
+    <div class="glass-card flex gap-1 px-2 py-1.5 pointer-events-auto" style="background: rgba(10,37,64,0.85); border-color: rgba(255,255,255,0.15);">
+      <a href="#summary" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Summary</a>
+      <a href="#sectors" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Sectors</a>
+      <a href="#opportunities" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Opportunities</a>
+      <a href="#synthesis" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Synthesis</a>
+      <a href="#feedback" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Feedback</a>
     </div>
   </div>
-</div>
+</nav>
 
 <!-- Executive Summary -->
 {% if report.executive_summary %}
-<section class="mb-10">
-  <div class="bg-white rounded-xl shadow-sm border border-border-card border-l-4 border-l-green-accent p-6">
-    <h2 class="text-lg font-bold text-navy mb-4 flex items-center gap-2">
+<section id="summary" class="mb-10" data-aos="fade-up">
+  <div class="bg-white rounded-xl shadow-soft border border-border-card border-l-4 border-l-green-accent p-6">
+    <h2 class="text-lg font-bold font-heading text-navy mb-4 flex items-center gap-2">
       Executive Summary
     </h2>
     <ul class="space-y-2.5">
@@ -45,12 +108,12 @@
 
 <!-- Signals by Sector -->
 {% if report.signals_by_sector %}
-<section class="mb-10">
-  <h2 class="text-xl font-bold text-navy mb-4">Signals by Sector</h2>
+<section id="sectors" class="mb-10" data-aos="fade-up">
+  <h2 class="text-xl font-bold font-heading text-navy mb-4">Signals by Sector</h2>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
     {% for sector, signals in report.signals_by_sector.items() %}
     {% if signals %}
-    <div class="bg-white rounded-xl shadow-sm border border-border-card p-5">
+    <div class="bg-white rounded-xl shadow-soft border border-border-card p-5 card-hover">
       <h3 class="text-base font-bold text-navy mb-3 pb-2 border-b border-border-card">
         {{ sector }}
         <span class="text-xs font-normal text-gray-400">({{ signals | length }})</span>
@@ -71,89 +134,57 @@
 {% endif %}
 
 <!-- Opportunities -->
-<section class="mb-10">
-  <h2 class="text-xl font-bold text-navy mb-4">Opportunities</h2>
+<section id="opportunities" class="mb-10" data-aos="fade-up">
+  <h2 class="text-xl font-bold font-heading text-navy mb-4">Opportunities</h2>
 
   {% if report.opportunities %}
+  {% set sorted_opps = report.opportunities | sort(attribute='total_score', reverse=true) %}
   <div class="space-y-6">
-    {% for opp in report.opportunities %}
+    {% for opp in sorted_opps %}
     {% set total = opp.total_score | default(0) %}
     {% if total >= 20 %}{% set badge_class = 'score-high' %}
     {% elif total >= 13 %}{% set badge_class = 'score-medium' %}
     {% else %}{% set badge_class = 'score-low' %}{% endif %}
 
-    <div class="bg-white rounded-xl shadow-sm border border-border-card p-6">
+    {% if loop.index <= 3 %}
+    <!-- Top 3: fully expanded -->
+    <div class="bg-white rounded-xl shadow-soft border border-border-card p-6 card-hover">
       <div class="flex items-start gap-5">
-        <!-- Score badge -->
         <div class="flex flex-col items-center flex-shrink-0">
-          <div class="score-badge {{ badge_class }}">{{ total }}</div>
+          <div class="score-badge {{ badge_class }} font-heading">{{ total }}</div>
           <span class="text-[10px] uppercase tracking-wide text-gray-400 mt-1">/ 25</span>
         </div>
-
-        <!-- Body -->
         <div class="flex-1 min-w-0">
           <h3 class="text-lg font-bold text-navy mb-2">{{ opp.title }}</h3>
-
           {% if opp.source_quote %}
-          <blockquote class="text-sm italic text-gray-600 border-l-2 border-gray-200 pl-3 mb-4">
-            &ldquo;{{ opp.source_quote }}&rdquo;
-          </blockquote>
+          <blockquote class="text-sm italic text-gray-600 border-l-2 border-gray-200 pl-3 mb-4">&ldquo;{{ opp.source_quote }}&rdquo;</blockquote>
           {% endif %}
-
           <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-5">
             {% if opp.named_entry_point %}
-            <div>
-              <dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Entry Point</dt>
-              <dd class="text-gray-800">{{ opp.named_entry_point }}</dd>
-            </div>
+            <div><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Entry Point</dt><dd class="text-gray-800">{{ opp.named_entry_point }}</dd></div>
             {% endif %}
             {% if opp.deadline %}
-            <div>
-              <dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Deadline</dt>
-              <dd class="text-gray-800">{{ opp.deadline }}</dd>
-            </div>
+            <div><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Deadline</dt><dd class="text-gray-800">{{ opp.deadline }}</dd></div>
             {% endif %}
             {% if opp.concrete_action %}
-            <div class="sm:col-span-2">
-              <dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Concrete Action</dt>
-              <dd class="text-gray-800">{{ opp.concrete_action }}</dd>
-            </div>
+            <div class="sm:col-span-2"><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Concrete Action</dt><dd class="text-gray-800">{{ opp.concrete_action }}</dd></div>
             {% endif %}
             {% if opp.product_fit %}
-            <div class="sm:col-span-2">
-              <dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Product Fit</dt>
-              <dd class="text-gray-800">{{ opp.product_fit }}</dd>
-            </div>
+            <div class="sm:col-span-2"><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Product Fit</dt><dd class="text-gray-800">{{ opp.product_fit }}</dd></div>
             {% endif %}
           </dl>
-
           {% if opp.source_url %}
-          <a href="{{ opp.source_url }}" target="_blank" rel="noopener noreferrer"
-             class="inline-block text-sm text-green-accent hover:text-green-accent-light font-medium mb-5 break-all">
-            View source &rarr;
-          </a>
+          <a href="{{ opp.source_url }}" target="_blank" rel="noopener noreferrer" class="inline-block text-sm text-green-accent hover:text-green-accent-light font-medium mb-5 break-all">View source &rarr;</a>
           {% endif %}
-
-          <!-- Score breakdown -->
           {% if opp.scores %}
           <div class="bg-bg-page rounded-lg p-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5">
-            {% set labels = [
-              ('Strategic Fit', opp.scores.strategic_fit),
-              ('Revenue Potential', opp.scores.revenue_potential),
-              ('Win Probability', opp.scores.win_probability),
-              ('Urgency', opp.scores.urgency),
-              ('Intel Quality', opp.scores.intelligence_quality)
-            ] %}
+            {% set labels = [('Strategic Fit', opp.scores.strategic_fit), ('Revenue Potential', opp.scores.revenue_potential), ('Win Probability', opp.scores.win_probability), ('Urgency', opp.scores.urgency), ('Intel Quality', opp.scores.intelligence_quality)] %}
             {% for label, val in labels %}
             {% set v = val | default(0) %}
-            {% if v >= 4 %}{% set fill = '#16a34a' %}
-            {% elif v >= 2 %}{% set fill = '#d97706' %}
-            {% else %}{% set fill = '#6b7280' %}{% endif %}
+            {% if v >= 4 %}{% set fill = '#16a34a' %}{% elif v >= 2 %}{% set fill = '#d97706' %}{% else %}{% set fill = '#6b7280' %}{% endif %}
             <div class="flex items-center gap-3">
               <span class="text-xs text-gray-600 w-28 flex-shrink-0">{{ label }}</span>
-              <div class="score-bar-track flex-1">
-                <div class="score-bar-fill" style="width: {{ (v / 5 * 100) | round }}%; background-color: {{ fill }};"></div>
-              </div>
+              <div class="score-bar-track flex-1"><div class="score-bar-fill" style="width: {{ (v / 5 * 100) | round }}%; background-color: {{ fill }};"></div></div>
               <span class="text-xs font-semibold text-gray-700 w-6 text-right">{{ v }}</span>
             </div>
             {% endfor %}
@@ -162,10 +193,66 @@
         </div>
       </div>
     </div>
+
+    {% else %}
+    <!-- Collapsed opportunity row -->
+    <div class="bg-white rounded-xl shadow-soft border border-border-card card-hover overflow-hidden">
+      <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-180')"
+        class="w-full flex items-center gap-4 p-4 text-left hover:bg-gray-50/50 transition-colors">
+        <div class="score-badge {{ badge_class }} font-heading !w-10 !h-10 !text-sm !rounded-lg flex-shrink-0">{{ total }}</div>
+        <div class="flex-1 min-w-0">
+          <h3 class="text-base font-bold text-navy truncate">{{ opp.title }}</h3>
+          <p class="text-sm text-gray-500 truncate mt-0.5">{{ (opp.source_quote or opp.concrete_action or '') | truncate(80) }}</p>
+        </div>
+        <svg class="chevron w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div class="hidden border-t border-border-card p-6">
+        <div class="flex items-start gap-5">
+          <div class="flex-1 min-w-0">
+            {% if opp.source_quote %}
+            <blockquote class="text-sm italic text-gray-600 border-l-2 border-gray-200 pl-3 mb-4">&ldquo;{{ opp.source_quote }}&rdquo;</blockquote>
+            {% endif %}
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-5">
+              {% if opp.named_entry_point %}
+              <div><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Entry Point</dt><dd class="text-gray-800">{{ opp.named_entry_point }}</dd></div>
+              {% endif %}
+              {% if opp.deadline %}
+              <div><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Deadline</dt><dd class="text-gray-800">{{ opp.deadline }}</dd></div>
+              {% endif %}
+              {% if opp.concrete_action %}
+              <div class="sm:col-span-2"><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Concrete Action</dt><dd class="text-gray-800">{{ opp.concrete_action }}</dd></div>
+              {% endif %}
+              {% if opp.product_fit %}
+              <div class="sm:col-span-2"><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Product Fit</dt><dd class="text-gray-800">{{ opp.product_fit }}</dd></div>
+              {% endif %}
+            </dl>
+            {% if opp.source_url %}
+            <a href="{{ opp.source_url }}" target="_blank" rel="noopener noreferrer" class="inline-block text-sm text-green-accent hover:text-green-accent-light font-medium mb-5 break-all">View source &rarr;</a>
+            {% endif %}
+            {% if opp.scores %}
+            <div class="bg-bg-page rounded-lg p-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5">
+              {% set labels = [('Strategic Fit', opp.scores.strategic_fit), ('Revenue Potential', opp.scores.revenue_potential), ('Win Probability', opp.scores.win_probability), ('Urgency', opp.scores.urgency), ('Intel Quality', opp.scores.intelligence_quality)] %}
+              {% for label, val in labels %}
+              {% set v = val | default(0) %}
+              {% if v >= 4 %}{% set fill = '#16a34a' %}{% elif v >= 2 %}{% set fill = '#d97706' %}{% else %}{% set fill = '#6b7280' %}{% endif %}
+              <div class="flex items-center gap-3">
+                <span class="text-xs text-gray-600 w-28 flex-shrink-0">{{ label }}</span>
+                <div class="score-bar-track flex-1"><div class="score-bar-fill" style="width: {{ (v / 5 * 100) | round }}%; background-color: {{ fill }};"></div></div>
+                <span class="text-xs font-semibold text-gray-700 w-6 text-right">{{ v }}</span>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
     {% endfor %}
   </div>
   {% else %}
-  <div class="bg-white rounded-xl shadow-sm border border-border-card p-6 text-center text-gray-500">
+  <div class="bg-white rounded-xl shadow-soft border border-border-card p-6 text-center text-gray-500">
     No opportunities passed the relevance gate this cycle.
   </div>
   {% endif %}
@@ -173,9 +260,9 @@
 
 <!-- What This Means for Silversea -->
 {% if report.synthesis %}
-<section class="mb-10">
-  <div class="bg-white rounded-xl shadow-sm border border-border-card border-l-4 border-l-green-accent p-6">
-    <h2 class="text-lg font-bold text-navy mb-4">What This Means for Silversea</h2>
+<section id="synthesis" class="mb-10" data-aos="fade-up">
+  <div class="bg-white rounded-xl shadow-soft border border-border-card border-l-4 border-l-green-accent p-6">
+    <h2 class="text-lg font-bold font-heading text-navy mb-4">What This Means for Silversea</h2>
     <ul class="space-y-2.5">
       {% for item in report.synthesis %}
       <li class="flex gap-3 text-gray-700 leading-relaxed">
@@ -189,8 +276,8 @@
 {% endif %}
 
 <!-- Feedback form -->
-<section class="mb-6">
-  <div id="feedback-card" class="bg-white rounded-xl shadow-sm border border-border-card p-6">
+<section id="feedback" class="mb-6" data-aos="fade-up">
+  <div id="feedback-card" class="bg-white rounded-xl shadow-soft border border-border-card p-6">
     <h2 class="text-lg font-bold text-navy mb-1">Your Feedback</h2>
     <p class="text-sm text-gray-500 mb-5">Help the system learn what matters to you. Submissions shape tomorrow&rsquo;s report.</p>
 
@@ -245,7 +332,8 @@
 
       <div>
         <button type="submit"
-          class="bg-navy hover:bg-navy-light text-white font-medium px-6 py-2.5 rounded-lg transition-colors">
+          class="text-white font-medium px-6 py-2.5 rounded-lg transition-all hover:brightness-110"
+          style="background: linear-gradient(135deg, #2d6a4f, #40916c);">
           Submit feedback
         </button>
       </div>

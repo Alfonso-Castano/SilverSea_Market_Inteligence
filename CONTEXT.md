@@ -163,6 +163,35 @@ company email swapped in for production.
 
 ---
 
+### [2026-06-23] Phase 3.5 — Visual design revamp direction locked
+
+**Decision:** Report page (`/`) gets a dark navy-to-black glassmorphism revamp — continuous dark zone spanning top nav, country tabs, and a new hero section with animated glass stat cards, a sticky scroll-spy nav, and a restructured Opportunities section (top 3 by score expanded equally, rest collapsible) — transitioning to a light, soft-shadowed body below. Internals page (`/internals`) gets the same shadow/hover/animation vocabulary but stays light throughout, no dark hero.
+**Reason:** An initial "Notion-style restrained polish" framing was explicitly rejected by Alfonso as underselling the ambition — he wants a genuine structural/visual revamp ("luxurious," "visually impressive"), not incremental styling. Internals stays lighter because it's dev-facing and lower priority, not because the revamp direction was scaled back generally.
+
+**Decision:** Glow/accent color stays brand green (`#2d6a4f`) only — no new accent (e.g. gold/champagne) introduced. Sector cards keep a uniform grid (no bento layout). Opportunities keep equal visual weight across the top 3 (no single spotlight card for #1).
+**Reason:** Considered and explicitly declined in discussion — these were live options Alfonso chose not to take, recorded here so a future session doesn't reintroduce them as if undecided.
+
+**Decision:** Space Grotesk (Google Fonts CDN) added for headlines/section headers/stat numbers; Inter remains the body font. AOS (Animate On Scroll, CDN) added for scroll-reveal animations.
+**Reason:** Both are zero-build-step CDN additions that fit the "no architecture change" constraint — Flask + Jinja2 server-side rendering is preserved; the dark hero and glass effects are pure CSS (`backdrop-filter`), not a new rendering layer.
+
+### [2026-06-23] Phase 3.5 — Visual design revamp executed
+
+**Decision:** All visual revamp changes implemented exactly per locked spec in `.claude/execution/phase3-visual-design.md`. New CDN dependencies: Google Fonts (Space Grotesk + Inter), AOS 2.3.1. New file: `static/animations.js` (count-up, scroll-spy, sticky nav). No Python packages added, no architecture change.
+**Reason:** Execution session; all decisions were made in the prior discussion session.
+
+---
+
+### [2026-06-24] Presentation prep — demo toggle kept, two analyst quality bugs surfaced
+
+**Decision:** `app.py`'s `?demo=clean|feedback` query-param toggle (reads `data/presentation/{mode}_*.json`, falls back to `latest_report.json`) and the small "Clean Run"/"With Feedback" badge in `report.html`/`internals.html` are kept as working state, not reverted — even though the feedback-influenced report was never generated (`data/presentation/` directory doesn't exist) and the supervisor demo already happened.
+**Reason:** Alfonso confirmed the supervisor saw this in-progress state and it's fine as historical/working state. Reverting would discard real, harmless scaffolding for no benefit.
+
+**Decision:** Two analyst-output quality issues found during this run are logged as known bugs, not fixed yet: (1) `opportunities: []` — the relevance gate in `SYNTHESIS_PROMPT` let zero signals through, which is a documented "correct" behavior per the prompt but unhelpful for a BD demo; (2) `G Element`/`DataMesh` (configured under `competitors` sector) had their signals duplicated into the "Partners" bucket in `signals_by_sector`. The LLM appears to bucket by semantic content of the sentence rather than each source's configured sector.
+**Reason:** Both require a `SYNTHESIS_PROMPT` change in `analyst.py`, which was out of scope for the presentation-prep task (constrained to not touch pipeline files) and burns Groq tokens to test. Deferred to the next planning session once supervisor feedback is incorporated.
+
+**Decision:** Groq's free-tier daily token quota (100k TPD) is now fully exhausted for 2026-06-24 (~99,481/100,000 used) after two clean-run attempts. No further `main.py` runs until the quota resets at UTC midnight — confirmed with Alfonso to hold off intentionally to conserve tokens for future runs.
+**Reason:** Two failed retry attempts showed Groq's 429 error message ("try again in Xm") understates the real wait — it's a daily quota tied to UTC midnight, not a short rolling window. Burning more tokens chasing a same-day fix wasn't viable.
+
 ## Open Questions
 *(Remove entries when resolved, note the resolution)*
 

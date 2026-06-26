@@ -1,143 +1,118 @@
 {
   "executive_summary": [
-    "BCA investigations into a sinkhole incident may increase focus on construction and maintenance best practices",
-    "URA awarded a tender for a sale site at Peck Hay Road, but no details are provided about the project's requirements",
-    "Smart Nation / GovTech initiatives could involve digital twin and smart FM technologies"
+    "BCA has partnered with various stakeholders to host the Construction Startup Competition and introduced a Kit-of-Parts design standardisation pathway",
+    "URA has launched AI tools to transform urban planning and urban systems and released private housing supply under the Government Land Sales programme",
+    "G Element has partnered with several companies including CLIXLogic, Daikin Airconditioning, and Savills Facilities Management, and launched Senfi",
+    "DataMesh has launched several products including FactVerse AI Agent, DataMesh Inspector, and Embodied AI Data Product Solution, and partnered with various companies"
   ],
   "signals_by_sector": {
     "Government & Agencies": [
       {
         "entity": "BCA",
-        "signal": "completed investigations into a sinkhole incident along Tanjong Katong Road South, may lead to increased focus on construction and maintenance best practices"
+        "signal": "Partnership between BCA, Ministry of Manpower, and Land Transport Authority to investigate the Tanjong Katong Road South sinkhole incident"
+      },
+      {
+        "entity": "BCA",
+        "signal": "Partnership between BCA and various stakeholders to host the Construction Startup Competition"
+      },
+      {
+        "entity": "BCA",
+        "signal": "Launch of the BuildSG LEAD Summit 2026"
+      },
+      {
+        "entity": "BCA",
+        "signal": "Introduction of a Kit-of-Parts design standardisation pathway"
       },
       {
         "entity": "URA",
-        "signal": "awarded a tender for a sale site at Peck Hay Road, but no details are provided about the project's requirements"
+        "signal": "Tender award for URA sale site at Peck Hay Road"
       },
       {
-        "entity": "GeBIZ",
-        "signal": "provides a platform for suppliers to find opportunities, but no specific tenders related to digital twin or smart FM are mentioned"
+        "entity": "URA",
+        "signal": "Launch of AI tools to transform urban planning and urban systems"
+      },
+      {
+        "entity": "URA",
+        "signal": "Release of private housing supply under the Government Land Sales programme"
       },
       {
         "entity": "Smart Nation / GovTech",
-        "signal": "highlights initiatives for a more connected, efficient, and sustainable city, could involve digital twin and smart FM technologies"
+        "signal": "Launch of the National AI Strategy"
+      },
+      {
+        "entity": "JTC Corporation",
+        "signal": "Launch of the NESST Tukang Dormitory project"
       }
     ],
-    "Associations": [
+    "Industry Associations": [
       {
         "entity": "SGBC",
-        "signal": "discusses recent happenings in the built environment sector, including London Climate Week & WorldGBC Leadership Summit 2026"
+        "signal": "SGBC signs Global Pledge for Healthy Indoor Air"
       },
       {
         "entity": "REDAS",
-        "signal": "updates on events, including a LEGO workshop and a golf tournament"
-      },
-      {
-        "entity": "BCI Asia",
-        "signal": "offers construction data and software solutions"
+        "signal": "Event: Navigating defects claims in construction on 30 Jun, 2026"
       }
     ],
-    "Customers": [
-      {
-        "entity": "CapitaLand",
-        "signal": "provides updates on news and perspectives on real asset trends, but no specific opportunity signal found"
-      },
-      {
-        "entity": "Mapletree",
-        "signal": "no actionable signal"
-      },
-      {
-        "entity": "Lendlease",
-        "signal": "no actionable signal"
-      }
-    ],
+    "Customers": [],
     "Partners": [
       {
         "entity": "AECOM",
-        "signal": "appointed Chris Auener as nuclear sector lead"
+        "signal": "AECOM secures nine lots on UK Government Commercial Agency CPS2 Framework"
       },
       {
-        "entity": "AECOM",
-        "signal": "appointed David Rottblatt as Senior Vice President, Director of Strategic Private sector client growth"
+        "entity": "G Element",
+        "signal": "G Element partners with CLIXLogic"
       },
       {
-        "entity": "AECOM",
-        "signal": "appointed Angela Mulgrew and Eloise John to lead environment and energy business"
+        "entity": "G Element",
+        "signal": "G Element partners with Daikin Airconditioning (Singapore) Pte Ltd"
       },
       {
-        "entity": "AECOM",
-        "signal": "secured nine lots on UK Government Commercial Agency CPS2 Framework"
+        "entity": "G Element",
+        "signal": "G Element partners with RoviSys Asia"
       },
       {
-        "entity": "AECOM",
-        "signal": "awarded nationwide U.S. Department of Homeland Security contract"
+        "entity": "G Element",
+        "signal": "G Element partners with SUTD"
       },
       {
-        "entity": "AECOM",
-        "signal": "and Urban Land Institute launched Asia Pacific Infrastructure Innovation Index"
+        "entity": "G Element",
+        "signal": "G Element partners with Savills Facilities Management"
+      },
+      {
+        "entity": "DataMesh",
+        "signal": "DataMesh launches FactVerse AI Agent"
+      },
+      {
+        "entity": "DataMesh",
+        "signal": "DataMesh launches the new DataMesh Inspector"
       }
     ],
     "Competitors": [
       {
-        "entity": "Competitor",
-        "signal": "no signal, extraction failed"
-      }
-    ],
-    "General News": [
-      {
-        "entity": "EdgeProp Singapore",
-        "signal": "no actionable signal"
+        "entity": "G Element",
+        "signal": "G Element launches Senfi"
       },
       {
-        "entity": "The Business Times",
-        "signal": "S $273 million for Orchid Hotel in Tanjong Pagar sold for a JV between a local developer and Westmont Hospitality"
+        "entity": "DataMesh",
+        "signal": "DataMesh supports Faurecia in achieving WEF Lighthouse recognition"
+      },
+      {
+        "entity": "DataMesh",
+        "signal": "DataMesh supports EVE Energy in achieving WEF Lighthouse recognition"
       }
     ]
   },
-  "opportunities": [
-    {
-      "title": "AECOM Partnership and Awards",
-      "source_quote": "AECOM appointed Chris Auener as nuclear sector lead, AECOM appointed David Rottblatt as Senior Vice President, Director of Strategic Private sector client growth, AECOM appointed Angela Mulgrew and Eloise John to lead environment and energy business, AECOM secured nine lots on UK Government Commercial Agency CPS2 Framework, AECOM awarded nationwide U.S. Department of Homeland Security contract, AECOM and Urban Land Institute launched Asia Pacific Infrastructure Innovation Index",
-      "named_entry_point": "no specific program, tender, or initiative mentioned",
-      "concrete_action": "Monitor AECOM's strategic moves and announcements for potential collaboration or partnership opportunities",
-      "deadline": "No deadline found in source",
-      "source_url": "no source URL available",
-      "product_fit": "SpatioX Ops, smart facility management, and building automation",
-      "scores": {
-        "strategic_fit": 3,
-        "revenue_potential": 2,
-        "win_probability": 3,
-        "urgency": 2,
-        "intelligence_quality": 5
-      },
-      "total_score": 15
-    },
-    {
-      "title": "The Business Times - Sunway MCL, CSC $1,730 psf ppr bid at $750.6 million for River Valley Green plot",
-      "source_quote": "Sunway MCL, CSC: $1,730 psf ppr bid at $750.6 million for River Valley Green plot",
-      "named_entry_point": "no specific program, tender, or initiative mentioned",
-      "concrete_action": "Monitor land sales and tenders for potential digital twin and smart FM opportunities",
-      "deadline": "No deadline found in source",
-      "source_url": "no source URL available",
-      "product_fit": "SpatioX Ops, smart facility management, and building automation",
-      "scores": {
-        "strategic_fit": 2,
-        "revenue_potential": 3,
-        "win_probability": 2,
-        "urgency": 4,
-        "intelligence_quality": 5
-      },
-      "total_score": 16
-    }
-  ],
+  "opportunities": [],
   "synthesis": [
-    "Monitor government agencies, industry associations, and partners for potential digital twin and smart FM opportunities",
-    "AECOM's strategic moves and announcements could lead to potential collaboration or partnership opportunities",
-    "Land sales and tenders, especially those involving AECOM, should be monitored for potential digital twin and smart FM opportunities"
+    "BCA's introduction of a Kit-of-Parts design standardisation pathway and launch of the BuildSG LEAD Summit 2026 indicates a focus on innovation and digitalization in the construction industry",
+    "URA's launch of AI tools to transform urban planning and urban systems presents an opportunity for Silversea to provide digital twin solutions",
+    "G Element's partnerships and product launches demonstrate its commitment to digital twin technology and smart spaces"
   ],
   "_metadata": {
     "country": "Singapore",
-    "date": "2026-06-23",
-    "date_display": "23 June 2026"
+    "date": "2026-06-24",
+    "date_display": "24 June 2026"
   }
 }

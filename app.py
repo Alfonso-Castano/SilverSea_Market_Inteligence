@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 FEEDBACK_DIR = os.path.join(DATA_DIR, "feedback")
+PRESENTATION_DIR = os.path.join(DATA_DIR, "presentation")
 
 
 def _load_json(filename, default=None):
@@ -22,16 +23,27 @@ def _load_json(filename, default=None):
         return default or {}
 
 
+def _demo_mode():
+    mode = request.args.get("demo", "clean")
+    return mode if mode in ("clean", "feedback") else "clean"
+
+
 @app.route("/")
 def report():
-    report_data = _load_json("latest_report.json", {})
-    return render_template("report.html", report=report_data)
+    demo_mode = _demo_mode()
+    report_data = _load_json(os.path.join("presentation", f"{demo_mode}_report.json"), {})
+    if not report_data:
+        report_data = _load_json("latest_report.json", {})
+    return render_template("report.html", report=report_data, demo_mode=demo_mode)
 
 
 @app.route("/internals")
 def internals():
+    demo_mode = _demo_mode()
     scores = _load_json("source_scores.json", {})
-    metadata = _load_json("run_metadata.json", {})
+    metadata = _load_json(os.path.join("presentation", f"{demo_mode}_metadata.json"), {})
+    if not metadata:
+        metadata = _load_json("run_metadata.json", {})
 
     collections_data = {}
     try:
@@ -52,6 +64,7 @@ def internals():
         scores=scores,
         metadata=metadata,
         collections=collections_data,
+        demo_mode=demo_mode,
     )
 
 

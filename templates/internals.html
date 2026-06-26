@@ -8,7 +8,12 @@
 
 {% block content %}
   <div class="mb-8">
-    <h1 class="text-2xl font-bold text-navy">AI System Internals</h1>
+    <div class="flex items-center gap-2">
+      <h1 class="text-2xl font-bold text-navy font-heading">AI System Internals</h1>
+      {% if demo_mode %}
+      <span class="text-xs text-gray-400 border border-border-card rounded-full px-2.5 py-1">{% if demo_mode == 'feedback' %}With Feedback{% else %}Clean Run{% endif %}</span>
+      {% endif %}
+    </div>
     <p class="text-sm text-gray-500 mt-1">Observability for the market intelligence pipeline — last run, source scoring, vector store contents, and feedback digests.</p>
   </div>
 
@@ -17,31 +22,31 @@
     <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Last Run</h2>
     {% if metadata %}
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4 col-span-2 sm:col-span-1">
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-soft p-4 col-span-2 sm:col-span-1">
         <div class="text-base font-bold text-navy leading-tight">
           {% if metadata.timestamp %}{{ metadata.timestamp[:10] }}<br><span class="text-sm font-medium text-gray-500">{{ metadata.timestamp[11:16] }} UTC</span>{% else %}&mdash;{% endif %}
         </div>
         <div class="text-xs text-gray-400 mt-1">Last run{% if metadata.country %} · {{ metadata.country }}{% endif %}</div>
       </div>
-      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4">
-        <div class="text-2xl font-bold text-navy">{{ metadata.sources_scraped if metadata.sources_scraped is not none else '—' }}</div>
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-soft card-hover p-4">
+        <div class="text-2xl font-bold text-navy" data-count-target="{{ metadata.sources_scraped }}">0</div>
         <div class="text-xs text-gray-400 mt-1">Sources scraped</div>
       </div>
-      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4">
-        <div class="text-2xl font-bold text-navy">{{ metadata.sources_passed_filter if metadata.sources_passed_filter is not none else '—' }}</div>
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-soft card-hover p-4">
+        <div class="text-2xl font-bold text-navy" data-count-target="{{ metadata.sources_passed_filter }}">0</div>
         <div class="text-xs text-gray-400 mt-1">Passed filter</div>
       </div>
-      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4">
-        <div class="text-2xl font-bold text-navy">{{ metadata.dedup_merged if metadata.dedup_merged is not none else '—' }}</div>
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-soft card-hover p-4">
+        <div class="text-2xl font-bold text-navy" data-count-target="{{ metadata.dedup_merged }}">0</div>
         <div class="text-xs text-gray-400 mt-1">Dedup merged</div>
       </div>
-      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-4">
-        <div class="text-2xl font-bold text-navy">{{ metadata.entities_extracted if metadata.entities_extracted is not none else '—' }}</div>
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-soft card-hover p-4">
+        <div class="text-2xl font-bold text-navy" data-count-target="{{ metadata.entities_extracted }}">0</div>
         <div class="text-xs text-gray-400 mt-1">Entities extracted</div>
       </div>
     </div>
     {% else %}
-    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-6 text-center text-gray-400">
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-soft p-6 text-center text-gray-400">
       No run metadata available.
     </div>
     {% endif %}
@@ -51,12 +56,12 @@
   <section class="mb-10">
     <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Source Quality Scores</h2>
     {% if scores %}
-    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-6 mb-4">
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-soft p-6 mb-4">
       <div style="height: {{ (scores | length) * 28 + 40 }}px; min-height: 200px;">
         <canvas id="scoresChart"></canvas>
       </div>
     </div>
-    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-soft overflow-hidden">
       <table class="w-full text-sm">
         <thead>
           <tr class="bg-gray-50 text-left text-xs uppercase tracking-wider text-gray-400">
@@ -78,7 +83,7 @@
       </table>
     </div>
     {% else %}
-    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-6 text-center text-gray-400">
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-soft p-6 text-center text-gray-400">
       No source scores recorded yet.
     </div>
     {% endif %}
@@ -87,7 +92,7 @@
   <!-- 3. Vector Store Browser -->
   <section class="mb-10">
     <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Vector Store Browser</h2>
-    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm">
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-soft">
       {% if collections and collections.error %}
         <div class="p-6 text-center text-score-medium">
           <span class="font-medium">Vector store unavailable:</span> {{ collections.error }}
@@ -115,7 +120,7 @@
             <div class="space-y-3 max-h-96 overflow-y-auto pr-2">
               {% for doc in col.documents %}
               {% set meta = col.metadatas[loop.index0] if col.metadatas and col.metadatas | length > loop.index0 else {} %}
-              <div class="border border-border-card rounded-lg p-4 bg-gray-50/50">
+              <div class="border border-border-card rounded-lg p-4 bg-gray-50/50" data-aos="fade-up">
                 <p class="text-sm text-gray-700 leading-relaxed">{{ doc[:200] }}{% if doc | length > 200 %}…{% endif %}</p>
                 {% if meta %}
                 <div class="flex flex-wrap gap-1.5 mt-2">
@@ -150,7 +155,7 @@
       {% set idx = count - 1 - i %}
       {% set doc = fb.documents[idx] %}
       {% set meta = fb.metadatas[idx] if fb.metadatas and fb.metadatas | length > idx else {} %}
-      <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-5 flex gap-4">
+      <div class="bg-bg-card border border-border-card rounded-xl shadow-soft card-hover p-5 flex gap-4" data-aos="fade-up">
         <div class="flex-shrink-0">
           <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-navy text-white">
             {% if meta and meta.date %}{{ meta.date }}{% elif meta and meta.timestamp %}{{ meta.timestamp[:10] }}{% else %}#{{ idx + 1 }}{% endif %}
@@ -161,7 +166,7 @@
       {% endfor %}
     </div>
     {% else %}
-    <div class="bg-bg-card border border-border-card rounded-xl shadow-sm p-6 text-center text-gray-400">
+    <div class="bg-bg-card border border-border-card rounded-xl shadow-soft p-6 text-center text-gray-400">
       No feedback digests yet.
     </div>
     {% endif %}
@@ -217,6 +222,7 @@
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
+        animation: { duration: 800, easing: 'easeOutQuart' },
         plugins: {
           legend: { display: false },
           tooltip: {

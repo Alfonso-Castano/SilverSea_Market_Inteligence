@@ -4,10 +4,10 @@
 
 ---
 
-## Status: 🟢 Phase 3 Complete — Pipeline + Dashboard Verified End-to-End
+## Status: 🟡 Presentation Prep Partial — Supervisor Demo Done, Feedback Pending Discussion
 
-**Last updated:** 2026-06-23
-**Last worked on:** Executed full Phase 3 plan (`.claude/execution/phase3-dashboard.md`), Sessions 1-6. Modified `pipeline/analyst.py` (JSON output via Groq `response_format`), rewrote `pipeline/report.py` (thin JSON writer), updated `main.py` (run metadata capture, JSON-based scoring/email). Created `app.py` (Flask, 3 routes), `templates/base.html`, `templates/report.html`, `templates/internals.html`, `static/style.css` — the last two built by parallel subagents. Fixed a feedback-form Content-Type mismatch (JS sent JSON, Flask read form data) by making `/feedback` accept both. Ran the real pipeline twice: first with `llama-3.3-70b-versatile` (hit Groq's 100k TPD free-tier limit mid-run), then temporarily swapped to `llama-3.1-8b-instant` to verify the full scrape→filter→dedup→entities→analyse→score→JSON chain works end-to-end — it does, model restored to 70B afterward.
+**Last updated:** 2026-06-24
+**Last worked on:** Ran `.claude/execution/presentation-prep-handoff.md` to prep a clean-vs-feedback demo toggle for Alfonso's supervisor presentation. Cleared `data/feedback/` + `data/feedback/processed/` and wiped ChromaDB's `report_history`/`feedback_digests` collections (kept `company_context`). Got one successful real 70B Groq run into `data/latest_report.json` (real sources, real signals — no longer 8B test data) but it has two known quality issues (see below). A second run to produce the feedback-influenced version failed twice on Groq's daily token quota (100k TPD), which is now fully exhausted (~99,481/100,000 used) — real reset is at UTC midnight, not the short window Groq's error message implied. Added a `?demo=clean|feedback` query-param toggle to `app.py` (reads `data/presentation/{mode}_*.json`, falls back to `latest_report.json`) plus a small "Clean Run"/"With Feedback" badge in `report.html`/`internals.html`. **`data/presentation/` was never created**, so both `?demo=` values currently resolve to the same fallback file — the toggle exists in code but the feedback-version content does not yet exist. Alfonso confirmed the supervisor demo already happened using this in-progress state, and supervisor feedback has been received — next step is a discussion session to turn that feedback into a plan.
 
 ---
 
@@ -23,29 +23,39 @@
 - [x] **Real Sources Finalization:** Complete — branding fix, 30 active real sources, feedback-loop demo verified
 - [x] **Report Density Fix:** Multi-pass analyst architecture (per-sector extraction → synthesis), 8,000+ chars, 17/17 key signals present
 - [x] **Phase 3:** Complete — analyst returns structured JSON, Flask dashboard (report + internals + feedback routes), both templates built and verified, full pipeline run confirmed end-to-end
+- [x] **Phase 3.5:** Complete — dark glass hero revamp on report page, sticky scroll nav, restructured opportunities (top 3 by score expanded, rest collapsible), Space Grotesk + AOS + glass stat cards + glow orbs, internals page light restyle with matching animation vocabulary
+- [x] **Presentation Prep (partial):** Real 70B clean report generated and live at `/`; `?demo=` toggle scaffolding added to `app.py` + templates; supervisor demo happened on this state
 
 ## What's In Progress
-- Nothing actively in progress — Phase 3 execution is functionally complete
+- Supervisor feedback has been received (raw, not yet structured) — next session is a discussion to turn it into a concrete plan, then a new `.claude/execution/` handoff for an execution agent.
+
+## Known Bugs (found during presentation prep, unresolved)
+- **`opportunities` array is empty** in the current `data/latest_report.json` — the strict relevance gate in `SYNTHESIS_PROMPT` (analyst.py) let zero signals through on this run. Empty is a documented "correct" output per the prompt's own rule ("Zero opportunities is a correct output when nothing passes the gate"), but it's a bad look for a BD-facing demo — the Opportunities section rendered with a "No opportunities passed the relevance gate this cycle" placeholder instead of real opportunity cards.
+- **Sector mis-categorization**: `G Element` and `DataMesh` are configured under the `competitors` sector in `config/sources.py`, but in the synthesis output their signals appear duplicated into both "Partners" and "Competitors" buckets in `signals_by_sector`. Likely cause: the LLM is bucketing by semantic content ("G Element partners with X" reads like a Partners-shaped sentence) rather than by each source's actual configured sector. Facts themselves are accurate — this is a categorization/grounding issue in the synthesis prompt, not a hallucination.
+- **`?demo=feedback` currently shows identical content to `?demo=clean`** — `data/presentation/clean_report.json` and `feedback_report.json` were never created (Groq quota ran out before the second run could complete), so both query values fall back to the same `data/latest_report.json`.
 
 ## What's Next (Ordered)
-1. **Get a real, full-quality report**: re-run `python main.py --no-email` with `llama-3.3-70b-versatile` once the Groq daily token quota resets (last hit ~10:00 UTC 2026-06-23)
-2. **New session — visual design discussion**: separate "discuss" conversation to scope a visual redesign of the report page (animations, gradients, more "impressive" but not over-engineered) — decide what's possible without architecture changes vs. what requires changes, and which tooling to use (Alfonso is evaluating the `frontend-design` Claude plugin and other tools)
-3. Delete `scripts/feedback_server.py` (superseded by `/feedback` route in `app.py`) — deferred, not yet confirmed with Alfonso
-4. Fix Construction Plus Asia SSL certificate verification error (minor, anytime)
-5. Re-evaluate inactive sources (SGTech, CPG Consultant, FacilityBot) if/when their URLs are fixed
-6. Phase 4: weekly summary + Google Drive push + MY/VN/ID source expansion
+1. Discuss supervisor feedback with Alfonso, turn it into a plan, write a new `.claude/execution/` handoff doc for the next phase.
+2. Decide whether to fix the empty-opportunities / sector-mixing issues as part of that next phase (likely a `SYNTHESIS_PROMPT` change in `analyst.py`).
+3. Once Groq's daily quota resets (UTC midnight), generate the actual feedback-influenced report into `data/presentation/feedback_report.json` + `feedback_metadata.json` if the demo toggle is still wanted going forward.
+4. Delete `scripts/feedback_server.py` (superseded by `/feedback` route in `app.py`) — deferred, not yet confirmed with Alfonso
+5. Fix Construction Plus Asia SSL certificate verification error (minor, anytime)
+6. Re-evaluate inactive sources (SGTech, CPG Consultant, FacilityBot) if/when their URLs are fixed
+7. Phase 4: weekly summary + Google Drive push + MY/VN/ID source expansion
 
 ---
 
 ## Current Blockers
-- Groq free-tier daily token limit (100k TPD) — blocks getting a real 70B-quality report right now; resolves on its own within hours
+- **Groq free-tier daily token limit (100k TPD) is fully exhausted** (~99,481/100,000 used as of 2026-06-24 ~09:30 SGT). Real reset is UTC midnight (~22+ hours from exhaustion), not the short window Groq's 429 error message implies. **No more pipeline runs until quota resets** — confirmed with Alfonso to hold off intentionally.
 
 ## Recent Decisions
-- Verified the JSON-output pipeline using a temporary swap to `llama-3.1-8b-instant` (separate rate-limit pool) purely to validate end-to-end wiring after the 70B model hit its daily quota; model reverted to `llama-3.3-70b-versatile` immediately after. That run's report data is real but low quality (8B model hallucinated an opportunity from a residential land tender, which the grounding rules are designed to block) — discard once a clean 70B run is available.
-- `/feedback` route in `app.py` accepts both JSON (`request.get_json()`) and form-encoded bodies, and maps both `relevance_rating` and `relevance` field names — needed because the report template's `fetch()` posts JSON with field name `relevance`, while the original feedback server expected form-encoded `relevance_rating`.
-- Adopting a two-chat workflow going forward: a "discuss" session to scope/decide architecture and produce a plan, and a separate "execute" session (clean context) that implements from that plan.
+- Phase 3.5 visual revamp executed exactly per locked spec: dark gradient hero (navy-deep → navy → #102a45), glassmorphism stat cards, Space Grotesk display font, AOS scroll animations, sticky scroll-spy nav, opportunities sorted by score with top 3 expanded and rest collapsible.
+- New CDN dependencies added: Google Fonts (Space Grotesk + Inter), AOS 2.3.1. No new Python packages.
+- Internals page kept light (no dark hero) — matching shadow/hover/animation vocabulary only.
+- `app.py` `?demo=clean|feedback` toggle added per `.claude/execution/presentation-prep-handoff.md`; kept in place (not reverted) per Alfonso's confirmation that the supervisor demo used this in-progress state.
 
 ## Notes for Next Session
-- If continuing pipeline work: just re-run `python main.py --no-email` once the Groq quota window has reset — no code changes needed, model is already back on 70B.
-- A new "discuss" session is starting next to scope a visual redesign of the report page — see handoff prompt. It should evaluate the `frontend-design` Claude plugin and other tooling Alfonso brings, decide what's achievable within the current Flask + Jinja2 + Tailwind CDN + Chart.js stack vs. what requires architecture changes, then produce a plan for a future execute session.
-- `data/latest_report.json` / `data/run_metadata.json` currently contain real but 8B-model-quality test data — fine for visual design discussions (data shape is correct), but should not be presented as a real report.
+- `data/latest_report.json` now holds a real 70B-quality run (not 8B test data) — but see Known Bugs above before treating it as fully clean.
+- `.claude/execution/presentation-prep-handoff.md` is now historical/superseded — the demo it was written for already happened.
+- Do not run `main.py` again until Groq's daily quota resets — confirmed with Alfonso.
+- The collapsible opportunities feature (chevron expand/collapse for items 4+) still hasn't been visually exercised with >3 real opportunities — current real run has 0.
