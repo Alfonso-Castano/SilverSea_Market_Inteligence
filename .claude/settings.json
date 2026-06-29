@@ -10,7 +10,8 @@
       "Bash(git status)",
       "Bash(git log*)",
       "Bash(git diff*)",
-      "Bash(git fetch*)"
+      "Bash(git fetch*)",
+      "Bash(taskkill /F /IM python.exe)"
     ]
   }
 }

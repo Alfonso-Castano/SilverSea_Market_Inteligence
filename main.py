@@ -8,13 +8,11 @@ load_dotenv()
 from config.sources import COUNTRIES
 from pipeline.scraper import scrape_all
 from pipeline.filter import filter_results
-from pipeline.dedup import deduplicate
-from pipeline.entities import extract_entities
 from pipeline.analyst import analyse
 from pipeline.report import save_report_json
 from pipeline.emailer import send_digest
-from pipeline.scoring import update_scores
-from pipeline.feedback import aggregate_feedback
+from pipeline.feedback import aggregate_feedback, consolidate_feedback_digests
+from pipeline.weekly import generate_weekly_summary
 
 
 def _format_email_text(report_data: dict) -> str:
@@ -43,32 +41,28 @@ def run_pipeline(send_email: bool = True) -> None:
 
     print("Processing feedback from previous run...")
     aggregate_feedback()
+    consolidate_feedback_digests()
 
     for country in active_countries:
         print(f"=== {country['name']} ({country['code']}) ===")
 
         print("Scraping sources...")
-        scraped = scrape_all(country["sources"])
+        scraped = scrape_all(country["sources"], country["priority_keywords"], country["keywords"])
 
         print("Filtering content...")
-        filtered = filter_results(scraped, country["keywords"])
+        filtered = filter_results(scraped, country["priority_keywords"], country["keywords"])
 
         if not filtered:
             print("  No relevant content found — skipping LLM analysis.\n")
             continue
 
-        print("Deduplicating signals...")
-        deduped = deduplicate(filtered)
+        print("Analysing with LLM...")
+        report_data = analyse(filtered, country)
 
-        print("Extracting entities...")
-        enriched = extract_entities(deduped)
-
-        print("Analysing with Claude...")
-        report_data = analyse(enriched, country)
-
-        print("Scoring sources...")
-        report_text_for_scoring = json.dumps(report_data, ensure_ascii=False)
-        update_scores(filtered, report_text_for_scoring)
+        report_data["data_sources"] = [
+            {"name": r["name"], "url": r["url"], "sector": r["sector"]}
+            for r in filtered
+        ]
 
         print("Saving report JSON...")
         save_report_json(report_data, country["name"])
@@ -79,10 +73,6 @@ def run_pipeline(send_email: bool = True) -> None:
             "country_code": country["code"],
             "sources_scraped": len(scraped),
             "sources_passed_filter": len(filtered),
-            "dedup_input": len(filtered),
-            "dedup_output": len(deduped),
-            "dedup_merged": len(filtered) - len(deduped),
-            "entities_extracted": sum(1 for r in enriched if r.get("entities")),
         }
         metadata_path = os.path.join("data", "run_metadata.json")
         os.makedirs("data", exist_ok=True)
@@ -91,10 +81,17 @@ def run_pipeline(send_email: bool = True) -> None:
 
         if send_email:
             print("Sending email digest...")
-            email_text = _format_email_text(report_data)
-            send_digest(email_text, "", country["name"])
+            try:
+                email_text = _format_email_text(report_data)
+                send_digest(email_text, "", country["name"])
+            except Exception as e:
+                print(f"  Email failed (non-fatal): {e}")
 
         print(f"Done: {country['name']}\n")
+
+    if datetime.date.today().weekday() == 6:  # Sunday
+        print("Running weekly summary (Sunday)...")
+        generate_weekly_summary()
 
 
 if __name__ == "__main__":

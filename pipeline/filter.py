@@ -1,22 +1,25 @@
 # pipeline/filter.py — Keyword filtering to drop irrelevant scraped content
 
 
-def score_relevance(text: str, keywords: list) -> int:
-    """Count how many distinct keywords appear in the text (case-insensitive)."""
+def score_relevance(text: str, priority_keywords: list, keywords: list) -> int:
+    """Score relevance with priority keywords weighted 3x."""
+    # weight is a placeholder constant — revisit once a live run can be scored against it
     text_lower = text.lower()
-    return sum(1 for kw in keywords if kw.lower() in text_lower)
+    priority_hits = sum(1 for kw in priority_keywords if kw.lower() in text_lower)
+    general_hits = sum(1 for kw in keywords if kw.lower() in text_lower)
+    return priority_hits * 3 + general_hits
 
 
-def filter_results(scraped: list, keywords: list, min_score: int = 1) -> list:
+def filter_results(scraped: list, priority_keywords: list, keywords: list, min_score: int = 3) -> list:
     """
-    Keep only results that contain at least min_score keyword hits.
+    Keep only results that contain at least min_score weighted keyword hits.
     Attaches a relevance_score to each result for downstream use.
     """
     filtered = []
     for result in scraped:
         if result["error"] or not result["content"]:
             continue
-        score = score_relevance(result["content"], keywords)
+        score = score_relevance(result["content"], priority_keywords, keywords)
         if score >= min_score:
             result["relevance_score"] = score
             filtered.append(result)

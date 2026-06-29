@@ -1,3 +1,4 @@
+<!-- DRAFT: expanded 2026-06-26 by execution agent, pending Alfonso review — see Phase 4 handoff Step 1 -->
 # Silversea Media — Company Context
 
 Reference material for the market intelligence AI analyst. Factual, not marketing copy.
@@ -49,6 +50,14 @@ Silversea's differentiation rests on two factors: breadth of product suite and r
 - TwinMatrix — digital twin / BIM integration
 - Axomem — spatial computing / digital twin
 - DataMesh — industrial digital twin and AR for manufacturing/FM
+- Minuscule Technologies — immersive tech / AR solutions
+- Alstern Technologies — digital solutions for built environment
+- Aperio — AI-powered spatial intelligence
+- Nuvola Media — immersive content and virtual experiences
+- SSI Corporate — systems integration / smart building solutions
+- NeuronCloud — AI/IoT platform for smart buildings
+- FacilityBot — smart FM chatbot / maintenance management
+- Cryotos — CMMS / facility maintenance platform
 
 Competitor moves to watch: new product launches, government tender wins, new partnerships with developers or government agencies, and funding announcements — any of these signal a shift in competitive positioning within Silversea's core markets.
 
@@ -68,6 +77,37 @@ Competitor moves to watch: new product launches, government tender wins, new par
 
 **Government agencies tracked for tender and policy signals:** BCA (Building and Construction Authority — Green Mark, IDD policy), MND (Ministry of National Development), URA (Urban Redevelopment Authority), HDB (Housing & Development Board), GeBIZ (government tender portal), Smart Nation/GovTech (Smart Nation initiatives), JTC Corporation (industrial estate digital twin potential).
 
+## Ecosystem Players
+
+Companies in Silversea's broader market ecosystem — not direct BD targets, but sources of partnership, channel, and competitive signals.
+
+**Main contractors** — Potential collaboration/JV partners on construction-phase digital twin and TOP-audit work:
+- MCC — Major China-based contractor active in Singapore infrastructure; digital twin collaboration potential on large construction projects
+- CSCEC (China State Construction) — One of the world's largest contractors with Singapore presence; potential JV partner for BIM/digital twin integration on mega-projects
+- CCCC (China Communications Construction) — Infrastructure-focused contractor; relevant for port/transport digital twin opportunities
+- CHEC (China Harbour Engineering) — Marine/infrastructure contractor; partner potential for coastal/port facility digital twins
+- Sembcorp — Singapore conglomerate with urban development and energy assets; potential SpatioX Twin customer for industrial estate management
+- SJ Group — Regional developer-contractor; potential partner for construction-phase SpatioX Audit integration
+
+**Consultants** — Potential channel partners; BIM/engineering firms that could recommend or co-bid SpatioX on projects:
+- AECOM — Global infrastructure consultancy with Singapore office; existing partner, co-bid potential on government BIM tenders
+- Meinhardt Group — Singapore-headquartered engineering consultancy; potential channel for SpatioX Twin on building projects
+- CPG Consultant — Multi-disciplinary consultancy (Jurong Consultants heritage); potential channel partner for government facility projects
+- BECA — Asia-Pacific engineering consultancy; potential co-bid partner for smart building/FM projects
+- Ramboll — Danish engineering consultancy with APAC presence; potential partner for sustainability/Green Mark digital twin projects
+- Azbil — Japanese building automation company; potential integration partner for SpatioX Ops with their BMS/BACS systems
+
+**M&E system integrators / BMS** — Potential integration partners; SpatioX Ops competes with and complements building management system vendors:
+- Honeywell — Global BMS leader; existing partner, SpatioX Ops integration opportunity with their building automation systems
+- Johnson Controls — BMS and smart building solutions; potential integration partner or competitor for smart FM deals
+- Schneider Electric — Building automation and energy management; SpatioX Ops complements their EcoStruxure platform
+- Quantum Automation — Singapore-based M&E/BMS integrator; potential local integration partner for SpatioX Ops deployments
+
+**Facility management firms** — Potential customers for SpatioX Ops, or channel partners reselling FM services on top of it:
+- Cushman & Wakefield — Global real estate services; existing partner, potential SpatioX Ops customer for FM portfolio management
+- ST Synthesis (ST Engineering) — Singapore defence/engineering conglomerate's smart FM arm; potential customer or competitor for government facility management contracts
+- Savills — Global property consultancy with Singapore operations; potential SpatioX Twin/Ops customer for portfolio-wide digital twin adoption
+
 ## BD Priorities
 
 The sales team's primary interest, in order of relevance:
@@ -79,3 +119,5 @@ The sales team's primary interest, in order of relevance:
 5. **Association and industry signals** (SGBC, BCI Asia) — useful for context on industry sentiment and adjacent technology trends, lower priority than direct tender or prospect signals.
 
 Signals with no plausible connection to one of Silversea's four products or to a named prospect/government agency/competitor should be treated as noise, not BD opportunity.
+
+Ecosystem players (contractors, consultants, M&E integrators, FM firms) are channel/partnership signals, not direct BD targets like tracked prospects — a contractor announcing a new project is lower priority than a tracked prospect (CapitaLand, Mapletree, etc.) announcing the same project.

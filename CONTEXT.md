@@ -192,6 +192,97 @@ company email swapped in for production.
 **Decision:** Groq's free-tier daily token quota (100k TPD) is now fully exhausted for 2026-06-24 (~99,481/100,000 used) after two clean-run attempts. No further `main.py` runs until the quota resets at UTC midnight — confirmed with Alfonso to hold off intentionally to conserve tokens for future runs.
 **Reason:** Two failed retry attempts showed Groq's 429 error message ("try again in Xm") understates the real wait — it's a daily quota tied to UTC midnight, not a short rolling window. Burning more tokens chasing a same-day fix wasn't viable.
 
+### [2026-06-26] Phase 4 scope locked: efficiency, coverage, and bug-fix pass
+
+**Decision:** The next phase (Phase 4, executed via `.claude/execution/phase4-efficiency-coverage-handoff.md`) bundles eight items into one sequential pass: (1) expand `company_context.md` with ecosystem-player detail, (2) build a no-AI rule-based keyword filter with tiered (priority vs. general) weighting in `filter.py`/`config/sources.py`, (3) replace `scraper.py`'s blind character-cut truncation with keyword-anchored "smart truncation," (4) add the supervisor's full ~50-source ecosystem list (deduplicated against existing sources) and fix already-known broken scrapers, (5) add a metrics/scores glossary to `report.html`/`internals.html`, (6) add a feedback-digest consolidation mechanism (modeled on the existing weekly-summary pattern) to stop unbounded growth of the `feedback_digests` ChromaDB collection, (7) produce a written LLM model-research comparison (Groq alternatives vs. Claude Haiku vs. others) with zero live API calls, and (8) fix the two known `SYNTHESIS_PROMPT` bugs (empty-opportunities gate, sector mis-categorization) — sequenced last and shipped marked "unverified."
+**Reason:** Alfonso's supervisor-demo feedback plus his own ideas spanned token-efficiency (both the scrape-filter side and the RAG/feedback-context side), full source coverage, model choice, and report clarity — all interrelated enough that splitting them into separate phases risked losing the shared context (e.g. the filter's keyword criteria depend on the expanded company context; the glossary's copy depends on knowing the bug-fix status). Alfonso explicitly chose "everything in the feedback, one big phase" over splitting it, since there's no fixed deadline. Two rounds of plan review (a code-grounded subagent reading the actual pipeline files, then a pure-logic subagent reviewing the plan's own sequencing) found and corrected real issues before lock-in: the original single "filter + truncation" step was actually two separate tasks touching two different files; the original "fix RAG digest growth" step was retargeted from the wrong function (`feedback.py`'s already-correct per-batch summarizer) to the actual growth point; and Step 8 was moved to run last, explicitly unverified, because editing 70B-model grounding-rule prompt logic with no live-run verification path was identified as the single highest-risk item in the plan.
+
+**Decision:** Chinese state contractors (CSCEC, CCCC, CHEC) are now included as `partners`-sector sources, superseding the 2026-06-23 decision that left them out of scope.
+**Reason:** The 2026-06-23 exclusion was scoped to a prioritized subset for a near-term demo, not a permanent architectural call. The supervisor's full ecosystem-list PDF re-listed them under "Main contractors," and Alfonso confirmed this round's source expansion should include the full list rather than re-applying the older prioritization filter.
+
+**Decision:** TwinMatrix is re-added as a `competitors`-sector source, superseding the 2026-06-23 decision that dropped it.
+**Reason:** Same as above — the 2026-06-23 drop was specific to that round's prioritized subset. The supervisor's full list re-included TwinMatrix under "Key competitors," and Alfonso confirmed re-adding it this round.
+
+**Decision:** Main contractors, consultants, M&E/BMS system integrators, and facility-management firms from the supervisor's ecosystem list all map onto the existing `partners` sector — no new sector introduced.
+**Reason:** Consistent with the existing convention already established for AECOM, CPG Consultant, Honeywell, and Cushman & Wakefield (all currently classified as `partners`), and consistent with the 2026-06-23 decision that the five-sector taxonomy (gov_agencies, associations, customers, partners, competitors) plus `general_news` stays fixed. The PDF's own "Owner" vs. everything-else distinction supports this: owners are buyers (→ `customers`), every other ecosystem role is a potential service/channel partner (→ `partners`).
+
+### [2026-06-26] Phase 4 execution — SYNTHESIS_PROMPT bug fixes applied (unverified)
+
+**Decision:** Widened the RELEVANCE GATE in `SYNTHESIS_PROMPT` (`pipeline/analyst.py`) to accept a second path for opportunities: a tracked ecosystem entity (customer, partner, competitor, or government agency from the company context) taking a built-environment-relevant action (tender, partnership, project announcement, facility initiative). The anti-fabrication rule ("if inferred, NOT an opportunity") is preserved — only the gate's scope was widened, not its strictness.
+**Before:** `"Does the signal explicitly mention digital twin, BIM, 3D scanning, XR/spatial computing, smart FM, smart building, building automation, or proptech? If the connection to Silversea's products is inferred, it is NOT an opportunity."`
+**After:** `"Does the signal explicitly mention digital twin, BIM, 3D scanning, XR/spatial computing, smart FM, smart building, building automation, proptech, OR involve a named entity from Silversea's tracked ecosystem (a customer, partner, competitor, or government agency listed in the company context) taking an action relevant to the built environment sector (a tender, partnership, project announcement, or facility initiative)? If the connection to Silversea's products is inferred rather than stated or reasonably implied by a tracked entity's documented action, it is NOT an opportunity."`
+**Reason:** The strict keyword-only gate produced zero opportunities on the last real run — technically correct per the prompt's own design, but a BD-facing report with zero opportunities every run is not useful. The wider gate still enforces anti-fabrication (no inferred connections) but adds a second, narrower path: a tracked entity doing something built-environment-relevant.
+**Status:** Fix applied 2026-06-26 — **unverified**, requires a live Groq run to confirm. See Phase 4 handoff Step 8.
+
+**Decision:** Added a sector mis-categorization prevention instruction to `SYNTHESIS_PROMPT` (`pipeline/analyst.py`), in the SIGNALS BY SECTOR section: `"CRITICAL: Each signal belongs ONLY to the sector section its source content was extracted under (the === SECTOR NAME === headers in the intelligence below) — never duplicate a signal into a different sector bucket because its content sounds like it belongs elsewhere."`
+**Reason:** Sources configured under `competitors` (e.g. G Element, DataMesh) had their signals duplicated into the `Partners` bucket. The LLM was bucketing by semantic content ("partnership" → Partners) rather than by the source's configured sector. The new instruction forces sector-faithful categorization.
+**Status:** Fix applied 2026-06-26 — **unverified**, requires a live Groq run to confirm. See Phase 4 handoff Step 8.
+
+**Decision:** Model research (Step 7) revealed that `llama-3.3-70b-versatile` was deprecated by Groq on 2026-06-17. Recommended replacement: `openai/gpt-oss-120b` (drop-in, same limits) or `meta-llama/llama-4-scout-17b-16e-instruct` (30k TPM, eliminates inter-call delays). See `data/model_research.md` for full comparison.
+**Reason:** The pipeline will fail or behave unpredictably on the next run if the model string isn't updated. This was not a planned change — it surfaced during Step 7 research.
+
+### [2026-06-26] Split-model architecture for extraction vs synthesis
+
+**Decision:** The multi-pass analyst pipeline (`analyst.py`) will use two different Groq models: `meta-llama/llama-4-scout-17b-16e-instruct` (17B, 30k TPM) for per-sector extraction calls, and `openai/gpt-oss-120b` (120B, 8k TPM) for the single synthesis call.
+**Reason:** Functional verification proved that no single free-tier Groq model works for both stages. `gpt-oss-120b` has strong instruction-following but only 8k TPM — too small for extraction calls where raw scraped content from 9-11 sources per sector can reach 9-10k tokens in a single request. `llama-4-scout` has 30k TPM (extraction never hits it) but only 17B parameters — too weak to follow the dense SYNTHESIS_PROMPT, causing it to aggressively summarize instead of preserving every extracted signal (report went from ~25 signals to ~10). The synthesis call's input is only ~5.7k tokens (extraction summaries, not raw content), so it fits under `gpt-oss-120b`'s 8k TPM. This gives extraction the TPM headroom it needs and synthesis the instruction-following quality it needs.
+
+**Decision:** Both SYNTHESIS_PROMPT bug fixes (widened relevance gate, sector categorization) confirmed working on `llama-4-scout` run — opportunities gate correctly identified BCA Construction Startup Competition (score 18/25), correctly excluded URA residential tenders; no cross-sector signal duplication observed.
+**Reason:** Verification run 2026-06-26 with all 6 sectors extracting. Status upgraded from "unverified" to "verified."
+
+**Decision:** `CALL_DELAY` reduced from 25s to 2s in `analyst.py`.
+**Reason:** `llama-4-scout` has 30k TPM — the 25s inter-call delays were designed for the old 6-12k TPM models. Even the synthesis call using `gpt-oss-120b` (8k TPM) fits in a single request, so long delays between calls are unnecessary. Pipeline run time dropped from ~3 min to ~30s.
+
+### [2026-06-29] Split-model approach failed — simplified prompt instead
+
+**Decision:** `gpt-oss-120b` rejected entirely for synthesis. The model returns empty output (empty string, not truncation) on the SYNTHESIS_PROMPT — tested both with `response_format={"type": "json_object"}` (Groq JSON validation error, `failed_generation: ''`) and without (raw empty string). This supersedes the 2026-06-26 split-model decision above.
+**Reason:** Three failure modes discovered: (1) Groq counts `max_tokens` against TPM, so input 5.4k + max_tokens 6k = 11.4k >> 8k limit; (2) reducing max_tokens to 2.5k (total 7.9k < 8k) still produced empty output with response_format; (3) without response_format, still empty. The model simply cannot handle this task.
+
+**Decision:** SYNTHESIS_PROMPT simplified from ~117 lines to ~30 lines, keeping `llama-4-scout` for both extraction and synthesis.
+**Reason:** The dense multi-rule prompt was designed for when the LLM saw raw content directly. In the multi-pass architecture, extraction already handles grounding — the synthesis prompt was carrying unnecessary instructional weight the 17B model couldn't process. Simplified prompt preserves core rules (signal preservation, sector fidelity, opportunity relevance gate, no fabrication) but removes redundant grounding instructions, negative examples, and verbose formatting requirements.
+**Result:** Opportunities improved from 0 to 3 identified (BCA Construction Startup Competition, G Element Digital Twin, DataMesh AI Agent). Signal count still ~9 vs ~30+ in extraction — ~60-70% loss, improved from ~80% with the old dense prompt but still unacceptable. Known issues: scoring ignores 0-5 scale, G Element duplicated across sectors.
+
+**Decision:** RAG context (`_build_rag_context()`) removed from synthesis call.
+**Reason:** Token budget constraint — RAG context added ~1-2k tokens of redundant company context (already hardcoded in SYNTHESIS_PROMPT) plus feedback priorities and past report themes. Must be restored when switching to Claude Haiku (200k context window removes the constraint). The function is currently dead code.
+
+**Decision:** Claude Haiku upgrade deferred until pipeline optimization is complete.
+**Reason:** Alfonso wants scraper, filter, RAG, and feedback systems hardened and verified before switching the synthesis model. No point feeding a better model through a leaky pipeline. Optimization pass covers: scraper quality (evaluating Scrapling library), filter tuning, feedback loop efficiency, dead code removal.
+
+### [2026-06-29] Pipeline optimization pass — Scrapling integration and dead code removal
+
+**Decision:** Scrapling library integrated into `pipeline/scraper.py` with tiered fetcher strategy: `_fetch_default()` (plain requests), `_fetch_stealth()` (Scrapling StealthyFetcher — Cloudflare/bot bypass), `_fetch_dynamic()` (Scrapling DynamicFetcher — full browser rendering for JS SPAs). Per-source `"fetcher"` config field dispatches. Imports are lazy so the pipeline still works without Scrapling installed (default sources use requests only).
+**Reason:** 5+ sources were INACTIVE due to 403 errors or JS-only rendering that requests+BeautifulSoup can't handle. Scrapling's StealthyFetcher and DynamicFetcher can unblock them. API verified against official docs: class methods (`StealthyFetcher.fetch(url)`), response HTML via `page.body` (bytes), imported from `scrapling.fetchers`.
+
+**Decision:** `pipeline/dedup.py`, `pipeline/entities.py`, `pipeline/scoring.py` deleted; `sentence-transformers` dependency dropped.
+**Reason:** All three modules produced no useful output in practice. Dedup loaded a 90MB model and consistently merged 0 results. Entities attached data nothing downstream read. Scoring tracked unreliable citation-based scores that decayed to 0. Removing them simplifies the pipeline and drops ~500MB of dependencies.
+
+**Decision:** Filter keyword rebalancing — entity names (competitors, customers, ecosystem players) moved from `priority_keywords` (3x weight) to `keywords` (1x weight).
+**Reason:** Sources were auto-passing the relevance filter just by mentioning their own name (e.g. CapitaLand's newsroom scored 3+ because "CapitaLand" was a priority keyword). Now a source must mention a technology/domain term (digital twin, BIM, smart FM, etc.) to score high enough to pass.
+
+### [2026-06-29] Pipeline verification — bugs found and fixed
+
+**Decision:** Fixed `analyst.py:185` which used `MODEL` instead of `GROQ_MODEL`, causing a `NameError` at synthesis time. This was a leftover from the split-model refactor that renamed the variable.
+**Reason:** Stage-by-stage verification caught it before a full pipeline run. Without this fix, `main.py` would crash after completing all extraction calls but before producing the final report.
+
+**Decision:** IMDA URL corrected from `/resources/press-releases` to `/resources/press-releases-factsheets-and-speeches`, fetcher set to `"dynamic"`.
+**Reason:** The old URL returned a 404 redirect ("Page Not Found"). The correct path was found via the IMDA homepage. The page is JS-rendered, so it also needs the dynamic fetcher. Content went from 25 chars (useless) to 5,545 chars (real press releases).
+
+**Decision:** CCCC set to `active: False`.
+**Reason:** Consistently times out (15s timeout exceeded) — Chinese state contractor site is unreachable from Singapore. CSCEC (same category) still works and is kept active.
+
+**Decision:** Scrapling installed and all stealth/dynamic fetchers verified working. Active source count: 57 (was 58 before CCCC disabled, but 5 stealth/dynamic sources that were previously failing due to missing Scrapling are now functional).
+**Reason:** Verification run confirmed: SJ Group (3,589 chars), Schneider Electric (2,860), Alstern Technologies (2,982), Aperio (3,364), MCC (1,815), IMDA (5,545) — all returning real content.
+
+### [2026-06-29] Dashboard density overhaul — schema expansion backfired
+
+**Decision:** Expanded SYNTHESIS_PROMPT signal schema from `{entity, signal}` to `{entity, signal, source_name, implication}` and added a Python-based competition risks post-processor that classifies competitor signals by threat level.
+**Reason:** Alfonso reviewed the dashboard against a reference site (oss.silversea-media.net) and found per-signal information far too sparse. The expanded schema was intended to produce richer per-signal output. Competition risks were derived in pure Python (zero token cost) to avoid overloading the LLM.
+
+**Decision:** The schema expansion caused a signal count regression from 11 to 7. The approach of adding fields to the synthesis prompt is confirmed as counterproductive with the 17B model — it trades count for (marginal) depth, and Alfonso wants BOTH.
+**Reason:** The 17B `llama-4-scout` model has limited instruction-following capacity. Adding more output fields per signal means it produces fewer signals total. The fundamental bottleneck is the single monolithic synthesis call that tries to compress all sector extractions into one JSON response. This architectural issue cannot be solved by prompt engineering alone on a 17B model.
+
+**Decision:** Template restructured from bullet lists to individual cards per signal, with "For Silversea Media" implication callouts (LLM-generated with sector-based fallback heuristics). Competition risks section added with threat-level badges. Data sources collapsible table added. Layout uses full-width stacked cards.
+**Reason:** Alfonso confirmed the card-per-finding approach is correct but wants a 3-column grid layout (like the reference site) instead of full-width stacked rectangles. Template change is correct in direction but needs layout adjustment.
+
 ## Open Questions
 *(Remove entries when resolved, note the resolution)*
 
@@ -200,4 +291,4 @@ company email swapped in for production.
 - Any sources behind login/paywall that need special handling? → Assume no for MVP
 - Hosting: Vercel for prototype → company servers for production (confirmed)
 - Feedback form exact field types → resolved: relevance rating (1-5), most useful signal, missed topics, priority changes, optional submitter name
-- Full customer/partner/association source lists → resolved: supervisor provided full ecosystem list 2026-06-23; prioritized ~24-source subset locked for the prototype, remaining sources deferred to Phase 4 full rollout
+- Full customer/partner/association source lists → resolved 2026-06-26: full ~50-source ecosystem PDF received, mapped onto the existing sector taxonomy, and executed in Phase 4 Step 4 — 62 total sources (54 active, 8 inactive with documented reasons)

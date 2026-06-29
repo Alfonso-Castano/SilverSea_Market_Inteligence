@@ -55,6 +55,22 @@
   <!-- 2. Source Quality Scores -->
   <section class="mb-10">
     <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Source Quality Scores</h2>
+
+    <details class="bg-bg-card border border-border-card rounded-xl shadow-soft p-5 mb-4">
+      <summary class="text-sm font-semibold text-navy cursor-pointer select-none list-none flex items-center justify-between gap-2">
+        How source quality scores work
+        <svg class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 details-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="mt-4 space-y-1.5 text-sm text-gray-700">
+        <ul class="space-y-1.5">
+          <li><span class="font-semibold text-navy">Starting score:</span> Every new source begins at 5.0.</li>
+          <li><span class="font-semibold text-score-high">+2.0</span> each time a report cites content from that source.</li>
+          <li><span class="font-semibold text-score-low">−0.5</span> each run the source is scraped but not cited.</li>
+        </ul>
+        <p class="text-xs text-gray-500 pt-1">Higher scores indicate sources that consistently produce report-worthy signal.</p>
+      </div>
+    </details>
+
     {% if scores %}
     <div class="bg-bg-card border border-border-card rounded-xl shadow-soft p-6 mb-4">
       <div style="height: {{ (scores | length) * 28 + 40 }}px; min-height: 200px;">
@@ -175,6 +191,14 @@
 
 {% block scripts %}
 <script>
+  // Rotate chevron icons inside <details> panels when opened/closed
+  document.querySelectorAll('details').forEach(function (el) {
+    el.addEventListener('toggle', function () {
+      var chevron = el.querySelector('.details-chevron');
+      if (chevron) chevron.style.transform = el.open ? 'rotate(180deg)' : '';
+    });
+  });
+
   // Tab switching
   document.querySelectorAll('.tab-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {

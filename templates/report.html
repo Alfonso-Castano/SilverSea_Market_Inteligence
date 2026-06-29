@@ -31,17 +31,14 @@
   </div>
 
   <!-- Stat cards -->
-  {% set ns = namespace(total_signals=0, top_score=0, sectors_covered=0) %}
+  {% set ns = namespace(total_signals=0, sectors_covered=0) %}
   {% for sector, signals in report.signals_by_sector.items() %}
     {% set ns.total_signals = ns.total_signals + signals | length %}
     {% if signals | length > 0 %}{% set ns.sectors_covered = ns.sectors_covered + 1 %}{% endif %}
   {% endfor %}
-  {% for opp in report.opportunities %}
-    {% if (opp.total_score | default(0)) > ns.top_score %}{% set ns.top_score = opp.total_score | default(0) %}{% endif %}
-  {% endfor %}
   {% set total_signals = ns.total_signals %}
   {% set opp_count = report.opportunities | length %}
-  {% set top_score = ns.top_score %}
+  {% set risk_count = report.competition_risks | default([]) | length %}
   {% set sectors_covered = ns.sectors_covered %}
 
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -54,8 +51,8 @@
       <div class="text-xs uppercase tracking-wider text-gray-400 mt-1">Opportunities Found</div>
     </div>
     <div class="glass-card p-5 text-center">
-      <div class="text-3xl font-bold font-heading text-white" data-count-target="{{ top_score }}">0</div>
-      <div class="text-xs uppercase tracking-wider text-gray-400 mt-1">Top Score</div>
+      <div class="text-3xl font-bold font-heading text-white" data-count-target="{{ risk_count }}">0</div>
+      <div class="text-xs uppercase tracking-wider text-gray-400 mt-1">Competition Risks</div>
     </div>
     <div class="glass-card p-5 text-center">
       <div class="text-3xl font-bold font-heading text-white" data-count-target="{{ sectors_covered }}">0</div>
@@ -80,8 +77,10 @@
     <div class="glass-card flex gap-1 px-2 py-1.5 pointer-events-auto" style="background: rgba(10,37,64,0.85); border-color: rgba(255,255,255,0.15);">
       <a href="#summary" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Summary</a>
       <a href="#sectors" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Sectors</a>
+      <a href="#competition-risks" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Risks</a>
       <a href="#opportunities" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Opportunities</a>
       <a href="#synthesis" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Synthesis</a>
+      <a href="#data-sources" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Sources</a>
       <a href="#feedback" class="scroll-nav-link px-3 py-1.5 rounded-md text-xs font-medium text-gray-300 hover:text-white transition-colors">Feedback</a>
     </div>
   </div>
@@ -110,24 +109,72 @@
 {% if report.signals_by_sector %}
 <section id="sectors" class="mb-10" data-aos="fade-up">
   <h2 class="text-xl font-bold font-heading text-navy mb-4">Signals by Sector</h2>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-    {% for sector, signals in report.signals_by_sector.items() %}
-    {% if signals %}
-    <div class="bg-white rounded-xl shadow-soft border border-border-card p-5 card-hover">
-      <h3 class="text-base font-bold text-navy mb-3 pb-2 border-b border-border-card">
-        {{ sector }}
-        <span class="text-xs font-normal text-gray-400">({{ signals | length }})</span>
-      </h3>
-      <ul class="space-y-3">
-        {% for signal in signals %}
-        <li class="text-sm leading-relaxed">
-          <span class="font-semibold text-gray-900">{{ signal.entity }}</span>
-          <span class="text-gray-600"> — {{ signal.signal }}</span>
-        </li>
-        {% endfor %}
-      </ul>
+  {% for sector, signals in report.signals_by_sector.items() %}
+  {% if signals %}
+  <div class="mb-10">
+    <h3 class="text-lg font-bold font-heading text-navy mb-4 flex items-center gap-2">
+      {{ sector }}
+      <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background: rgba(45,106,79,0.1); color: #2d6a4f;">{{ signals | length }} signal{{ 's' if signals | length != 1 }}</span>
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      {% for signal in signals %}
+      <div class="bg-white rounded-xl shadow-soft border border-border-card p-5 card-hover flex flex-col">
+        <div class="mb-2">
+          <h4 class="text-base font-bold text-navy">{{ signal.entity }}</h4>
+          {% if signal.source_name | default('') %}
+          <span class="text-xs text-gray-400">{{ signal.source_name }}</span>
+          {% endif %}
+        </div>
+        <p class="text-sm text-gray-700 leading-relaxed flex-1">{{ signal.signal }}</p>
+        {% set impl = signal.implication | default('') %}
+        {% if not impl %}
+          {% if 'competitor' in sector | lower %}
+            {% set impl = "Monitor " ~ signal.entity ~ "'s moves and assess competitive positioning against SpatioX products." %}
+          {% elif 'partner' in sector | lower %}
+            {% set impl = "Explore potential collaboration or channel partnership opportunity with " ~ signal.entity ~ "." %}
+          {% elif 'gov' in sector | lower %}
+            {% set impl = "Track this government initiative for upcoming tender or pilot project opportunities." %}
+          {% elif 'customer' in sector | lower %}
+            {% set impl = "Engage " ~ signal.entity ~ " to assess fit for SpatioX digital twin or smart FM solutions." %}
+          {% else %}
+            {% set impl = "Assess relevance to Silversea's market positioning and product roadmap." %}
+          {% endif %}
+        {% endif %}
+        <div class="mt-3 bg-emerald-50 border-l-2 border-green-accent rounded-r px-3 py-2">
+          <span class="text-xs font-semibold uppercase tracking-wider" style="color: #2d6a4f;">For Silversea Media</span>
+          <p class="text-sm text-gray-700 mt-1">{{ impl }}</p>
+        </div>
+      </div>
+      {% endfor %}
     </div>
-    {% endif %}
+  </div>
+  {% endif %}
+  {% endfor %}
+</section>
+{% endif %}
+
+<!-- Competition Risks -->
+{% if report.competition_risks is defined and report.competition_risks %}
+<section id="competition-risks" class="mb-10" data-aos="fade-up">
+  <h2 class="text-xl font-bold font-heading text-navy mb-4">Competition Risks</h2>
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+    {% for risk in report.competition_risks %}
+    <div class="bg-white rounded-xl shadow-soft border border-border-card p-5 card-hover flex flex-col">
+      {# Threat level badge #}
+      {% if risk.threat_level == 'HIGH' %}
+      <span class="inline-block self-start text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3" style="background: rgba(220,38,38,0.1); color: #dc2626; border: 1px solid rgba(220,38,38,0.2);">High Threat</span>
+      {% elif risk.threat_level == 'MEDIUM' %}
+      <span class="inline-block self-start text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3" style="background: rgba(217,119,6,0.1); color: #d97706; border: 1px solid rgba(217,119,6,0.2);">Medium Threat</span>
+      {% else %}
+      <span class="inline-block self-start text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3" style="background: rgba(107,114,128,0.1); color: #6b7280; border: 1px solid rgba(107,114,128,0.2);">Low Threat</span>
+      {% endif %}
+      <h3 class="text-base font-bold text-navy mb-2">{{ risk.entity }}</h3>
+      <p class="text-sm text-gray-700 leading-relaxed mb-3 flex-1">{{ risk.signal }}</p>
+      <div class="bg-amber-50 border-l-2 rounded-r px-3 py-2" style="border-color: #d97706;">
+        <span class="text-xs font-semibold uppercase tracking-wider" style="color: #d97706;">Mitigation</span>
+        <p class="text-sm text-gray-700 mt-1">{{ risk.mitigation }}</p>
+      </div>
+    </div>
     {% endfor %}
   </div>
 </section>
@@ -136,6 +183,24 @@
 <!-- Opportunities -->
 <section id="opportunities" class="mb-10" data-aos="fade-up">
   <h2 class="text-xl font-bold font-heading text-navy mb-4">Opportunities</h2>
+
+  <details class="bg-white rounded-xl shadow-soft border border-border-card p-5 mb-6">
+    <summary class="text-sm font-semibold text-navy cursor-pointer select-none list-none flex items-center justify-between gap-2">
+      What do these scores mean?
+      <svg class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 details-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="mt-4 space-y-2 text-sm text-gray-700">
+      <ul class="space-y-1.5">
+        <li><span class="font-semibold text-navy">Strategic Fit (0–5):</span> How directly the opportunity matches a SpatioX product capability.</li>
+        <li><span class="font-semibold text-navy">Revenue Potential (0–5):</span> Estimated deal size / business value if pursued.</li>
+        <li><span class="font-semibold text-navy">Win Probability (0–5):</span> How likely Silversea is to win given known relationships and competition.</li>
+        <li><span class="font-semibold text-navy">Urgency (0–5):</span> How time-sensitive the opportunity is (deadline proximity, competitive pressure).</li>
+        <li><span class="font-semibold text-navy">Intelligence Quality (0–5):</span> How well-grounded the signal is (named entities, dates, amounts vs. vague mentions).</li>
+        <li><span class="font-semibold text-navy">Total Score (0–25):</span> Sum of the five sub-scores. <span class="text-score-high font-medium">20–25 = High</span> &nbsp;|&nbsp; <span class="text-score-medium font-medium">13–19 = Medium</span> &nbsp;|&nbsp; <span class="text-score-low font-medium">0–12 = Low</span>.</li>
+      </ul>
+      <p class="mt-3 text-xs italic text-gray-500 border-t border-border-card pt-3">Note: the relevance gate and sector-categorization logic that produces these scores had two known issues as of 2026-06-24 (see STATE.md) — a fix has been applied but not yet verified with a live run. Scores reflect the analyst's intended scoring rubric; treat current live output as provisional until the next verified run.</p>
+    </div>
+  </details>
 
   {% if report.opportunities %}
   {% set sorted_opps = report.opportunities | sort(attribute='total_score', reverse=true) %}
@@ -275,6 +340,42 @@
 </section>
 {% endif %}
 
+<!-- Data Sources -->
+{% if report.data_sources is defined and report.data_sources %}
+<section id="data-sources" class="mb-10" data-aos="fade-up">
+  <details class="bg-white rounded-xl shadow-soft border border-border-card p-5">
+    <summary class="text-sm font-semibold text-navy cursor-pointer select-none list-none flex items-center justify-between gap-2">
+      Data Sources ({{ report.data_sources | length }} sources)
+      <svg class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 details-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-border-card text-left">
+            <th class="py-2 pr-4 font-semibold text-navy">#</th>
+            <th class="py-2 pr-4 font-semibold text-navy">Source</th>
+            <th class="py-2 pr-4 font-semibold text-navy">Sector</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for src in report.data_sources %}
+          <tr class="border-b border-gray-100">
+            <td class="py-2 pr-4 text-gray-400">{{ "%02d" | format(loop.index) }}</td>
+            <td class="py-2 pr-4">
+              <a href="{{ src.url }}" target="_blank" class="text-navy hover:underline">{{ src.name }}</a>
+            </td>
+            <td class="py-2 pr-4">
+              <span class="text-xs font-medium px-2 py-0.5 rounded-full" style="background: rgba(45,106,79,0.1); color: #2d6a4f;">{{ src.sector | replace('_', ' ') | title }}</span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </details>
+</section>
+{% endif %}
+
 <!-- Feedback form -->
 <section id="feedback" class="mb-6" data-aos="fade-up">
   <div id="feedback-card" class="bg-white rounded-xl shadow-soft border border-border-card p-6">
@@ -352,6 +453,14 @@
 
 {% block scripts %}
 <script>
+  // Rotate chevron icons inside <details> panels when opened/closed
+  document.querySelectorAll('details').forEach(function (el) {
+    el.addEventListener('toggle', function () {
+      var chevron = el.querySelector('.details-chevron');
+      if (chevron) chevron.style.transform = el.open ? 'rotate(180deg)' : '';
+    });
+  });
+
   (function () {
     const form = document.getElementById('feedback-form');
     if (!form) return;

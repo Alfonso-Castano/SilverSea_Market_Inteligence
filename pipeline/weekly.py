@@ -4,6 +4,7 @@ import datetime
 
 from groq import Groq
 
+from config.models import GROQ_MODEL
 from pipeline.vectorstore import query, add_documents, delete_documents, get_collection, REPORT_HISTORY
 
 WEEKLY_PROMPT = """You are summarizing a week of daily market intelligence reports for Silversea Media
@@ -66,7 +67,7 @@ def generate_weekly_summary() -> str:
         return ""
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model=GROQ_MODEL,
         messages=[{"role": "user", "content": WEEKLY_PROMPT.format(count=len(weekly_docs), reports=reports_text)}],
         max_tokens=2048,
     )

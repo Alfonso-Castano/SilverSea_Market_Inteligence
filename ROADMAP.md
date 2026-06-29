@@ -117,5 +117,6 @@ Scope
 ## Open Questions
 - Web framework for Phase 3 — resolved 2026-06-23: Flask + Jinja2, Tailwind CSS via CDN, Chart.js via CDN. No SPA/React/FastAPI.
 - Feedback form exact field types — resolved: relevance rating (1-5), most useful signal, missed topics, priority changes, optional submitter name
-- Real source lists (SG) — resolved 2026-06-23: 30 active sources across 6 sectors wired in and verified; remaining ~20 Singapore sources + MY/VN/ID deferred to Phase 4
+- Real source lists (SG) — further resolved 2026-06-26: full ~50-source ecosystem PDF received; execution plan for the remaining sources locked in `.claude/execution/phase4-efficiency-coverage-handoff.md` (not yet run). MY/VN/ID country expansion remains deferred separately.
 - Production email recipients — confirm with Ms. Mok before Phase 4
+- **Naming collision flagged 2026-06-26:** a new, separately-scoped phase ("Phase 4 — Efficiency, Coverage & Bug-Fix Pass" — token-efficient filtering, source coverage, metrics glossary, feedback-digest bloat fix, model research, two analyst bug fixes) is now active in `STATE.md`/`PLAN.md` under the name "Phase 4," but this roadmap's existing `Phase 4 — Summary + Scale` entry below (weekly Google Drive push + MY/VN/ID expansion) is a different, still-pending phase. Not yet renumbered/resolved — flag to Alfonso before assuming which one "Phase 4" refers to in future sessions.
