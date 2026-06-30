@@ -6,11 +6,28 @@
   --color-score-medium: #d97706;
   --color-score-low: #6b7280;
   --color-bg-card: #ffffff;
-  --color-bg-page: #f8fafc;
+  --color-bg-page: #f0f4f1;
   --color-border: #e2e8f0;
+
+  /* Sector colors */
+  --sector-gov: #3b82f6;
+  --sector-assoc: #0d9488;
+  --sector-customer: #f59e0b;
+  --sector-partner: #8b5cf6;
+  --sector-competitor: #e11d48;
+  --sector-news: #64748b;
 }
 
-/* Score badge */
+.dark {
+  --color-bg-card: #1e293b;
+  --color-bg-page: #0f172a;
+  --color-border: #334155;
+  --color-navy: #e2e8f0;
+}
+
+/* ========================================
+   Score badges
+   ======================================== */
 .score-badge {
   display: inline-flex;
   align-items: center;
@@ -23,7 +40,6 @@
   color: white;
   flex-shrink: 0;
 }
-
 .score-badge.score-high { background-color: var(--color-score-high); }
 .score-badge.score-medium { background-color: var(--color-score-medium); }
 .score-badge.score-low { background-color: var(--color-score-low); }
@@ -35,14 +51,16 @@
   border-radius: 3px;
   overflow: hidden;
 }
-
+.dark .score-bar-track { background: #475569; }
 .score-bar-fill {
   height: 100%;
   border-radius: 3px;
-  transition: width 0.3s ease;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Tab switching for internals page */
+/* ========================================
+   Tab switching (internals page)
+   ======================================== */
 .tab-btn {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
@@ -52,7 +70,6 @@
   cursor: pointer;
   transition: all 0.15s;
 }
-
 .tab-btn:hover { color: #374151; }
 .tab-btn.active {
   color: var(--color-navy);
@@ -62,7 +79,9 @@
 .tab-content { display: none; opacity: 0; transition: opacity 0.15s ease; }
 .tab-content.active { display: block; opacity: 1; }
 
-/* Glassmorphism card (dark zone only) */
+/* ========================================
+   Glassmorphism card (dark zone only)
+   ======================================== */
 .glass-card {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -71,19 +90,327 @@
   border-radius: 1rem;
 }
 
-/* Light body shadows */
+/* ========================================
+   Shadows
+   ======================================== */
 .shadow-soft {
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 .shadow-soft-lg {
   box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06), 0 16px 40px rgba(15, 23, 42, 0.10);
 }
+.dark .shadow-soft {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.3);
+}
+.dark .shadow-soft-lg {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 16px 40px rgba(0,0,0,0.4);
+}
 
-/* Hover lift transition */
+/* ========================================
+   Card hover — enhanced
+   ======================================== */
 .card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.25s ease;
+  cursor: pointer;
 }
 .card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06), 0 16px 40px rgba(15, 23, 42, 0.10);
+  transform: translateY(-4px) scale(1.005);
+  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.08), 0 20px 48px rgba(15, 23, 42, 0.14);
+}
+.dark .card-hover:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3), 0 20px 48px rgba(0,0,0,0.5);
+}
+
+/* ========================================
+   Sector color coding
+   ======================================== */
+.sector-section[data-sector*="government"]  { --sector-color: var(--sector-gov); }
+.sector-section[data-sector*="association"] { --sector-color: var(--sector-assoc); }
+.sector-section[data-sector*="customer"]    { --sector-color: var(--sector-customer); }
+.sector-section[data-sector*="partner"]     { --sector-color: var(--sector-partner); }
+.sector-section[data-sector*="competitor"]  { --sector-color: var(--sector-competitor); }
+.sector-section[data-sector*="news"]        { --sector-color: var(--sector-news); }
+.sector-section[data-sector*="general"]     { --sector-color: var(--sector-news); }
+
+/* Sector header bar */
+.sector-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--sector-color), color-mix(in srgb, var(--sector-color) 70%, transparent));
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+.dark .sector-header {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--sector-color) 30%, #1e293b), color-mix(in srgb, var(--sector-color) 15%, #1e293b));
+  border: 1px solid color-mix(in srgb, var(--sector-color) 40%, transparent);
+}
+.sector-header .sector-count {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+}
+.dark .sector-header .sector-count {
+  background: rgba(255,255,255,0.1);
+}
+.sector-header .sector-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.2);
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Sector-colored card accent */
+.sector-section .signal-card {
+  border-left: 3px solid var(--sector-color);
+}
+.sector-section .signal-card:hover {
+  border-left-color: var(--sector-color);
+  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.08), 0 20px 48px color-mix(in srgb, var(--sector-color) 15%, transparent);
+}
+
+/* ========================================
+   Entity group — collapsible
+   ======================================== */
+.entity-group {
+  margin-bottom: 0.75rem;
+}
+.entity-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.625rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+.dark .entity-group-toggle {
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
+}
+.entity-group-toggle:hover {
+  background: #f8fafc;
+  border-color: var(--sector-color);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--sector-color) 10%, transparent);
+}
+.dark .entity-group-toggle:hover {
+  background: #334155;
+  border-color: var(--sector-color);
+}
+.entity-group-toggle .entity-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--sector-color);
+  flex-shrink: 0;
+}
+.entity-group-toggle .entity-name {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  flex: 1;
+}
+.dark .entity-group-toggle .entity-name { color: #e2e8f0; }
+.entity-group-toggle .entity-signal-count {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sector-color) 12%, transparent);
+  color: var(--sector-color);
+}
+.entity-group-toggle .entity-chevron {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+.entity-group.open .entity-chevron {
+  transform: rotate(180deg);
+}
+.entity-group-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+  opacity: 0;
+}
+.entity-group.open .entity-group-content {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.entity-group-content > div {
+  overflow: hidden;
+}
+.entity-group-content .signal-grid {
+  padding-top: 0.75rem;
+}
+
+/* ========================================
+   Signal card
+   ======================================== */
+.signal-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  position: relative;
+}
+.dark .signal-card {
+  background: var(--color-bg-card);
+  border-color: var(--color-border);
+}
+.signal-card:hover {
+  transform: translateY(-3px) scale(1.005);
+}
+.signal-card .source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--sector-color);
+  text-decoration: none;
+  margin-top: 0.5rem;
+  transition: opacity 0.15s;
+}
+.signal-card .source-link:hover {
+  opacity: 0.7;
+}
+.signal-card .implication-box {
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0 0.375rem 0.375rem 0;
+  border-left: 2px solid var(--sector-color);
+  background: color-mix(in srgb, var(--sector-color) 6%, var(--color-bg-card));
+  font-size: 0.8125rem;
+}
+.dark .signal-card .implication-box {
+  background: color-mix(in srgb, var(--sector-color) 10%, #1e293b);
+}
+
+/* ========================================
+   Signal spotlight — inline expansion
+   ======================================== */
+.signal-card.spotlight-active {
+  position: relative;
+  z-index: 50;
+  transform: scale(1.04);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15), 0 0 0 2px var(--sector-color);
+  border-color: var(--sector-color);
+}
+.dark .signal-card.spotlight-active {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 2px var(--sector-color);
+}
+.signal-card.spotlight-active .signal-text {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+.signal-card.spotlight-active .implication-box {
+  padding: 0.875rem 1rem;
+}
+body.spotlight-mode .signal-card:not(.spotlight-active) {
+  opacity: 0.25;
+  filter: blur(1px);
+  pointer-events: none;
+  transform: scale(0.98);
+}
+body.spotlight-mode .entity-group-toggle {
+  opacity: 0.25;
+  pointer-events: none;
+}
+body.spotlight-mode .sector-header {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* ========================================
+   Section backgrounds — subtle color zones
+   ======================================== */
+.section-zone {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  padding: 2rem 1rem;
+  border-radius: 1rem;
+}
+.section-zone-risks {
+  background: linear-gradient(135deg, rgba(225, 29, 72, 0.03), rgba(225, 29, 72, 0.06));
+}
+.dark .section-zone-risks {
+  background: linear-gradient(135deg, rgba(225, 29, 72, 0.05), rgba(225, 29, 72, 0.1));
+}
+.section-zone-opps {
+  background: linear-gradient(135deg, rgba(45, 106, 79, 0.03), rgba(45, 106, 79, 0.06));
+}
+.dark .section-zone-opps {
+  background: linear-gradient(135deg, rgba(45, 106, 79, 0.05), rgba(45, 106, 79, 0.1));
+}
+
+/* ========================================
+   Dark mode card overrides
+   ======================================== */
+.dark .bg-white { background: #1e293b !important; }
+.dark .bg-bg-page { background: #0f172a !important; }
+.dark .text-navy { color: #e2e8f0 !important; }
+.dark .text-gray-700 { color: #cbd5e1 !important; }
+.dark .text-gray-600 { color: #94a3b8 !important; }
+.dark .text-gray-500 { color: #94a3b8 !important; }
+.dark .text-gray-400 { color: #64748b !important; }
+.dark .text-gray-800 { color: #e2e8f0 !important; }
+.dark .border-border-card { border-color: #334155 !important; }
+.dark .border-gray-100 { border-color: #1e293b !important; }
+.dark .border-gray-200 { border-color: #334155 !important; }
+.dark .border-l-green-accent { border-left-color: #40916c !important; }
+.dark .bg-emerald-50 { background: rgba(45, 106, 79, 0.15) !important; }
+.dark .bg-amber-50 { background: rgba(217, 119, 6, 0.15) !important; }
+.dark .hover\:bg-gray-50\/50:hover { background: rgba(51, 65, 85, 0.5) !important; }
+
+/* Dark mode form inputs */
+.dark input, .dark textarea, .dark select {
+  background: #1e293b;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+.dark input::placeholder, .dark textarea::placeholder {
+  color: #64748b;
+}
+
+/* ========================================
+   Reduced motion
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  .card-hover,
+  .signal-card,
+  .entity-group-content,
+  .entity-chevron,
+  .score-bar-fill,
+  #theme-toggle-dot {
+    transition: none !important;
+  }
+  .signal-card.spotlight-active {
+    transform: none;
+  }
+  body.spotlight-mode .signal-card:not(.spotlight-active) {
+    filter: none;
+    transform: none;
+  }
 }

@@ -5,41 +5,31 @@
 
 ---
 
-## Information Density Fix — Pipeline Diagnosis & Architectural Change
+## Frontend Redesign — Dashboard Visual & Interaction Overhaul
 
-**Goal:** Dramatically increase the quantity and depth of signals in the report.
-Currently producing 7 shallow signals from 33 filtered sources — unacceptable.
-Target: 20+ detailed signals with multi-sentence descriptions, statistics, and specifics.
+**Goal:** Transform the report page from a flat card grid into an interactive, color-coded, visually rich dashboard with collapsible entity grouping, signal spotlight, dark mode, and sector-specific styling.
 
 ---
 
 ## Tasks
 
-### 1. Dashboard template + schema changes `[x]`
-Signal schema expanded to 4 fields, competition risks section added, data sources table added,
-template restructured to card-per-finding layout. **But signal count regressed from 11→7.**
+### 1. Color system + dark mode foundation `[x]`
+Tailwind config updated with 6 sector colors (gov=blue, assoc=teal, customer=amber, partner=purple, competitor=rose, news=slate) + dark mode palette. Dark mode class-based toggle with localStorage persistence. `base.html` updated.
 
-### 2. Diagnose information loss per pipeline stage `[ ]`
-Test each stage individually: scraper output volume → filter pass-through → extraction output
-→ synthesis output. Find exactly where information is being dropped and how much.
+### 2. CSS overhaul `[x]`
+Complete rewrite of `style.css`: sector color coding via CSS custom properties and `data-sector` attribute selectors, entity group collapse/expand with `grid-template-rows` animation, signal spotlight with backdrop blur, section zone backgrounds (rose tint for risks, green for opportunities), enhanced card hover states, full dark mode overrides, `prefers-reduced-motion` support.
 
-### 3. Fix synthesis architecture `[ ]`
-The single monolithic synthesis call is the bottleneck. Likely solution: per-sector JSON
-synthesis calls instead of one big call, or skip synthesis for signals entirely and parse
-extraction output in Python.
+### 3. JavaScript interactions `[x]`
+`animations.js` rewritten: dark mode toggle with icon swap, scroll progress bar, entity group collapse/expand, signal spotlight (click card → expand + dim siblings + overlay, dismiss via click/Escape), staggered AOS delays on card grids. All original functionality (count-up, scroll nav, scroll spy) preserved.
 
-### 4. Fix template layout `[ ]`
-Change signal cards from full-width stacked rectangles to a 3-column grid of boxes
-(matching reference site's Discovery card layout).
+### 4. Report template restructure `[x]`
+`report.html` restructured: signals grouped by entity within each sector (Jinja2 dict grouping), collapsible entity bars with dot + name + count + chevron, sector header bars with gradient color + icon + count badge, source URL links on every signal card (mapped from `data_sources`), dark mode classes throughout, section zone wrappers for Risks and Opportunities.
 
-### 5. Verify end-to-end `[ ]`
-Run full pipeline, confirm 20+ signals with rich descriptions render correctly.
+### 5. Verify in browser `[x]`
+Flask app running at localhost:5000. All elements verified: 5 sector headers, 27 entity groups, 82 signal cards, 65 source links, dark mode toggle, scroll progress bar, spotlight overlay.
 
 ---
 
-## Dependencies
-
-```
-2 (diagnose) → 3 (fix architecture) → 5 (verify)
-4 (layout fix) is independent, can run in parallel with 2-3
-```
+## Phase Complete
+**Completed:** 2026-06-30
+**Summary:** Full frontend redesign executed — collapsible entity grouping, signal spotlight, 5-color sector coding, dark/light mode, scroll progress bar, source links, enhanced hovers. Ready for supervisor demo.

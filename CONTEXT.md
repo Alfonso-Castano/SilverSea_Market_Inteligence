@@ -283,6 +283,33 @@ company email swapped in for production.
 **Decision:** Template restructured from bullet lists to individual cards per signal, with "For Silversea Media" implication callouts (LLM-generated with sector-based fallback heuristics). Competition risks section added with threat-level badges. Data sources collapsible table added. Layout uses full-width stacked cards.
 **Reason:** Alfonso confirmed the card-per-finding approach is correct but wants a 3-column grid layout (like the reference site) instead of full-width stacked rectangles. Template change is correct in direction but needs layout adjustment.
 
+### [2026-06-29] Per-sector synthesis architecture — information density fix
+
+**Decision:** Replaced the single monolithic synthesis LLM call with a three-phase approach: (1) 6x per-sector extraction calls (unchanged), (2) 6x per-sector JSON synthesis calls via new `SECTOR_SYNTHESIS_PROMPT` — each converts one sector's extraction text into structured `[{entity, signal, source_name}]` JSON, (3) 1x summary-only call via new `SUMMARY_PROMPT` — produces only `executive_summary`, `opportunities`, and `synthesis` from the already-structured signals. The old `SYNTHESIS_PROMPT` is deleted. Implications (`implication` field) are generated in Python post-processing (`_generate_implications()`) with keyword-specific overrides — zero LLM cost.
+**Reason:** The single synthesis call was the proven bottleneck — it dropped ~90% of extracted signals (60-80 → 7). The 17B `llama-4-scout` model handles small, focused tasks well but cannot compress all sectors into one large JSON response. Splitting synthesis into per-sector calls gives each sector dedicated attention. Signal count: 7 → 65. Total LLM calls per run: 7 → 13. Token budget: ~15-20k per run (well within 100k TPD and 30k TPM limits).
+
+**Decision:** Signal grid layout in `templates/report.html` changed from stacked full-width cards (`space-y-4`) to responsive 3-column grid (`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4`).
+**Reason:** Alfonso requested a grid layout matching the reference site's Discovery card layout instead of full-width stacked rectangles.
+
+### [2026-06-30] Frontend redesign — interaction and visual architecture
+
+**Decision:** Collapsible entity-based grouping within each sector. Signals are grouped by entity (e.g. BCA, URA) in the Jinja2 template using dict aggregation. Each entity gets a collapse/expand bar; signals are hidden by default. This also applies to Competition Risks.
+**Reason:** With 65 signals, a flat grid is overwhelming. Grouping by entity lets users scan entity names and only expand what's relevant. Collapse animation uses CSS `grid-template-rows: 0fr → 1fr` for smooth height transitions.
+
+**Decision:** Signal spotlight interaction — inline expansion with backdrop dim/blur, not a modal.
+**Reason:** Alfonso chose inline over modal to preserve spatial context. Clicking a signal card adds a `spotlight-active` class (scale + border glow + larger text), applies `spotlight-mode` to body (dims/blurs all other cards), and shows a backdrop overlay. Dismissed via click, Escape, or overlay click.
+
+**Decision:** Sector color coding — 5 distinct accent colors mapped via CSS custom properties and `data-sector` attribute selectors: Government=#3b82f6 (blue), Associations=#0d9488 (teal), Partners=#8b5cf6 (purple), Competitors=#e11d48 (rose), General News=#64748b (slate).
+**Reason:** Alfonso wanted "heavier color scheming." Per-sector colors make the page instantly scannable by sector without reading text. Colors carry through sector header bars, card left borders, implication boxes, and entity group badges.
+
+**Decision:** Dark mode via Tailwind `darkMode: 'class'` with a toggle switch in the nav bar. State persisted in `localStorage`. Falls back to system preference if no saved state.
+**Reason:** Alfonso wanted a user-controlled toggle (not just system preference). `localStorage` persistence (option C) is minimal added complexity over option B and prevents the toggle resetting on page reload.
+
+**Decision:** Source URLs mapped from `data_sources` array in the report JSON to signal cards via a Jinja2 dict lookup (`source_urls[signal.source_name]`). No pipeline code changes needed.
+**Reason:** Signal objects have `source_name` but empty `source_url`. The URLs already exist in the `data_sources` array in the same JSON. Template-level mapping avoids touching pipeline code.
+
+---
+
 ## Open Questions
 *(Remove entries when resolved, note the resolution)*
 

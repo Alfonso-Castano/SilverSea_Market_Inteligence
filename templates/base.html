@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Silversea Market Intelligence{% endblock %}</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -20,9 +21,19 @@
             'score-high': '#16a34a',
             'score-medium': '#d97706',
             'score-low': '#6b7280',
-            'bg-page': '#f8fafc',
+            'bg-page': '#f0f4f1',
             'bg-card': '#ffffff',
             'border-card': '#e2e8f0',
+            'sector-gov': '#3b82f6',
+            'sector-assoc': '#0d9488',
+            'sector-customer': '#f59e0b',
+            'sector-partner': '#8b5cf6',
+            'sector-competitor': '#e11d48',
+            'sector-news': '#64748b',
+            'dark-bg': '#0f172a',
+            'dark-card': '#1e293b',
+            'dark-card-hover': '#334155',
+            'dark-border': '#334155',
           },
           fontFamily: {
             display: ['Inter', 'system-ui', 'sans-serif'],
@@ -41,10 +52,21 @@
       }
     }
   </script>
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   {% block head %}{% endblock %}
 </head>
-<body class="bg-bg-page font-display text-gray-800 min-h-screen">
+<body class="bg-bg-page dark:bg-dark-bg font-display text-gray-800 dark:text-gray-200 min-h-screen transition-colors duration-300">
+  <!-- Scroll progress bar -->
+  <div id="scroll-progress" class="fixed top-0 left-0 h-0.5 bg-green-accent z-[100] transition-all" style="width: 0%;"></div>
+
   <!-- Dark zone: nav + country tabs (+ hero on report page via block) -->
   <div class="{% block dark_zone_class %}bg-navy{% endblock %}" style="{% block dark_zone_style %}{% endblock %}">
     <!-- Navigation -->
@@ -55,15 +77,24 @@
             <span class="text-xl font-bold tracking-tight">Silversea Media</span>
             <span class="text-sm text-gray-300 hidden sm:inline">Market Intelligence</span>
           </div>
-          <div class="flex gap-1">
-            <a href="/" class="px-4 py-2 rounded-md text-sm font-medium transition-colors
-              {% if request.path == '/' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
-              Report
-            </a>
-            <a href="/internals" class="px-4 py-2 rounded-md text-sm font-medium transition-colors
-              {% if request.path == '/internals' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
-              Internals
-            </a>
+          <div class="flex items-center gap-3">
+            <div class="flex gap-1">
+              <a href="/" class="px-4 py-2 rounded-md text-sm font-medium transition-colors
+                {% if request.path == '/' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
+                Report
+              </a>
+              <a href="/internals" class="px-4 py-2 rounded-md text-sm font-medium transition-colors
+                {% if request.path == '/internals' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
+                Internals
+              </a>
+            </div>
+            <!-- Dark mode toggle -->
+            <button id="theme-toggle" class="relative w-12 h-6 rounded-full bg-white/15 hover:bg-white/25 transition-colors flex items-center px-0.5 cursor-pointer" aria-label="Toggle dark mode">
+              <span id="theme-toggle-dot" class="w-5 h-5 rounded-full bg-white flex items-center justify-center text-xs transition-transform duration-300 shadow-sm">
+                <svg id="theme-icon-light" class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
+                <svg id="theme-icon-dark" class="w-3 h-3 text-blue-300 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+              </span>
+            </button>
           </div>
         </div>
       </div>
@@ -99,9 +130,12 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-border-card mt-12 py-6 text-center text-sm text-gray-400">
+  <footer class="border-t border-border-card dark:border-dark-border mt-12 py-6 text-center text-sm text-gray-400">
     Auto-generated by Silversea Market Intelligence System
   </footer>
+
+  <!-- Signal spotlight overlay -->
+  <div id="spotlight-overlay" class="fixed inset-0 z-40 hidden" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);"></div>
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="{{ url_for('static', filename='animations.js') }}"></script>
