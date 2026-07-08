@@ -87,6 +87,12 @@
                 {% if request.path == '/internals' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
                 Internals
               </a>
+              {% if session.get('role') == 'admin' %}
+              <a href="/admin" class="px-4 py-2 rounded-md text-sm font-medium transition-colors
+                {% if request.path == '/admin' %}bg-white/15 text-white{% else %}text-gray-300 hover:text-white hover:bg-white/10{% endif %}">
+                Admin
+              </a>
+              {% endif %}
             </div>
             <!-- Dark mode toggle -->
             <button id="theme-toggle" class="relative w-12 h-6 rounded-full bg-white/15 hover:bg-white/25 transition-colors flex items-center px-0.5 cursor-pointer" aria-label="Toggle dark mode">
@@ -152,7 +158,11 @@
   </div>
 
   <!-- Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- position/z-index here are load-bearing: without an explicit stacking context, main's
+       content (including a spotlighted signal card at z-index:50) can never render above
+       #spotlight-overlay's z-index:40, since nested z-index only competes within the nearest
+       positioned ancestor's stacking context, not against a positioned sibling of that ancestor. -->
+  <main class="relative z-[41] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     {% block content %}{% endblock %}
   </main>
 

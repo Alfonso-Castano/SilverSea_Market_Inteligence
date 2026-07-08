@@ -62,6 +62,14 @@
             </div>
           </div>
 
+          <div class="flex-1 min-w-[120px]">
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Country</label>
+            <select name="country" required
+              class="w-full rounded-lg border border-border-card dark:border-dark-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent dark:bg-dark-bg dark:text-gray-200">
+              <option value="SG" selected>Singapore (SG)</option>
+            </select>
+          </div>
+
           <button type="submit"
             class="text-white font-medium px-5 py-2.5 rounded-lg transition-all hover:brightness-110 cursor-pointer whitespace-nowrap"
             style="background: linear-gradient(135deg, #2d6a4f, #40916c);">
@@ -82,6 +90,25 @@
   {% else %}
   <div class="bg-white dark:bg-dark-card rounded-xl shadow-soft border border-border-card dark:border-dark-border p-8 text-center">
     <p class="text-sm text-gray-500 dark:text-gray-400">No pending source suggestions.</p>
+  </div>
+  {% endif %}
+
+  {% if interest_signals %}
+  <div>
+    <h2 class="text-xl font-bold text-navy dark:text-gray-100 font-heading mb-1">Source Interest Signals</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Suggestions for sources that already exist in <code class="text-xs">config/sources.json</code> — nothing to approve here, but repeated flags suggest the team wants this entity weighted higher. These aren't yet fed back into live analysis (RAG context injection is disabled until the planned model switch); this is a visibility log only.</p>
+    <div class="space-y-3">
+      {% for existing_name, group in interest_signals | groupby('matched_existing_source') %}
+      {% set group_list = group | list %}
+      <div class="bg-white dark:bg-dark-card rounded-xl shadow-soft border border-border-card dark:border-dark-border p-4 flex items-start justify-between gap-4">
+        <div>
+          <h3 class="text-sm font-bold text-navy dark:text-gray-100">{{ existing_name }}</h3>
+          <p class="text-xs text-gray-400 mt-1">Most recently flagged {{ group_list[-1].submitted_at }} by {{ group_list[-1].submitted_by or "anonymous" }}</p>
+        </div>
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 whitespace-nowrap">{{ group_list | length }}x flagged</span>
+      </div>
+      {% endfor %}
+    </div>
   </div>
   {% endif %}
 

@@ -3,6 +3,8 @@ import json
 import os
 import datetime
 import secrets
+import hmac
+import re
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -84,11 +86,22 @@ def _domain_mode():
 def report():
     demo_mode = _demo_mode()
     domain = _domain_mode()
+    domain_filename = f"latest_report_SG_{domain}.json"
     report_data = _load_json(os.path.join("presentation", f"{demo_mode}_report.json"), {})
     if not report_data:
-        report_data = _load_json(f"latest_report_SG_{domain}.json", {})
-    if not report_data:
-        report_data = _load_json("latest_report.json", {})
+        if os.path.exists(os.path.join(DATA_DIR, domain_filename)):
+            report_data = _load_json(domain_filename, {})
+        else:
+            # Only fall back to the pre-domain-scoping legacy report if NO domain-scoped
+            # file exists yet anywhere — never substitute a different domain's content
+            # for one that simply has no report yet, which would silently mislabel
+            # stale cross-domain data as belonging to this domain.
+            any_domain_file_exists = any(
+                os.path.exists(os.path.join(DATA_DIR, f"latest_report_SG_{d}.json"))
+                for d in ("BER", "EDU", "GENERAL")
+            )
+            if not any_domain_file_exists:
+                report_data = _load_json("latest_report.json", {})
     return render_template("report.html", report=report_data, demo_mode=demo_mode, current_domain=domain)
 
 
@@ -134,14 +147,35 @@ def receive_feedback():
         data = request.form
 
     now = datetime.datetime.now(datetime.timezone.utc)
-    submitter = (data.get("submitter") or "anonymous").strip().replace(" ", "_")
+    raw_submitter = (data.get("submitter") or "anonymous").strip()
+    submitter = re.sub(r"[^A-Za-z0-9_-]", "_", raw_submitter) or "anonymous"
+
+    raw_rating = data.get("relevance_rating") or data.get("relevance") or 0
+    try:
+        relevance_rating = int(raw_rating)
+    except (TypeError, ValueError):
+        return {"error": "relevance_rating must be a number"}, 400
+
+    source_name = (data.get("source_name") or "").strip()
+    source_url = (data.get("source_url") or "").strip()
+    duplicate_match = source_suggestions.find_duplicate_source(source_name, source_url) if source_name else None
+
+    priority_changes = data.get("priority_changes", "")
+    if source_name and duplicate_match:
+        boost_note = (
+            f"[Duplicate source suggestion] Team flagged '{source_name}' as important — "
+            f"already tracked as existing source '{duplicate_match['name']}'. Treat as a "
+            f"signal to weight this entity/source higher in upcoming reports."
+        )
+        priority_changes = f"{priority_changes}\n{boost_note}".strip() if priority_changes else boost_note
+        source_suggestions.record_interest_signal(source_name, source_url, duplicate_match["name"], submitter)
 
     feedback = {
         "report_date": data.get("report_date", ""),
-        "relevance_rating": int(data.get("relevance_rating") or data.get("relevance") or 0),
+        "relevance_rating": relevance_rating,
         "most_useful": data.get("most_useful", ""),
         "missed_topics": data.get("missed_topics", ""),
-        "priority_changes": data.get("priority_changes", ""),
+        "priority_changes": priority_changes,
         "submitter": submitter,
         "submitted_at": now.isoformat(),
     }
@@ -151,13 +185,12 @@ def receive_feedback():
     with open(os.path.join(FEEDBACK_DIR, filename), "w", encoding="utf-8") as f:
         json.dump(feedback, f, indent=2, ensure_ascii=False)
 
-    source_name = (data.get("source_name") or "").strip()
-    if source_name:
+    if source_name and not duplicate_match:
         pending_dir = os.path.join(DATA_DIR, "pending_sources")
         os.makedirs(pending_dir, exist_ok=True)
         suggestion = {
             "source_name": source_name,
-            "source_url": (data.get("source_url") or "").strip(),
+            "source_url": source_url,
             "description": (data.get("source_description") or "").strip(),
             "submitted_by": submitter,
             "submitted_at": now.isoformat(),
@@ -173,11 +206,12 @@ def receive_feedback():
 def login():
     if request.method == "POST":
         submitted = request.form.get("password", "")
-        if submitted == os.environ.get("ADMIN_PASSWORD", ""):
+        admin_password = os.environ.get("ADMIN_PASSWORD", "")
+        if admin_password and hmac.compare_digest(submitted, admin_password):
             session["authenticated"] = True
             session["role"] = "admin"
             return redirect(url_for("report"))
-        if submitted == _get_viewer_password():
+        if hmac.compare_digest(submitted, _get_viewer_password()):
             session["authenticated"] = True
             session["role"] = "viewer"
             return redirect(url_for("report"))
@@ -190,7 +224,8 @@ def admin():
     if session.get("role") != "admin":
         return redirect(url_for("login"))
     pending = source_suggestions.list_pending()
-    return render_template("admin.html", pending=pending)
+    interest_signals = source_suggestions.list_interest_signals()
+    return render_template("admin.html", pending=pending, interest_signals=interest_signals)
 
 
 @app.route("/admin/change-viewer-password", methods=["POST"])
@@ -209,7 +244,8 @@ def approve_source(filename):
         return redirect(url_for("login"))
     sector = request.form.get("sector")
     domain = request.form.getlist("domain") or ["GENERAL"]
-    source_suggestions.approve(filename, sector, domain)
+    country = request.form.get("country", "SG")
+    source_suggestions.approve(filename, sector, domain, country_code=country)
     return redirect(url_for("admin"))
 
 
@@ -223,9 +259,10 @@ def reject_source(filename):
 
 @app.after_request
 def add_cors(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    if request.path == "/feedback":
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return response
 
 

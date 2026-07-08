@@ -259,12 +259,14 @@
         },
         {
           "name": "NUS",
-          "url": "https://news.nus.edu.sg/press-room/",
+          "url": "https://news.nus.edu.sg/press-releases",
           "sector": "customers",
           "type": "website",
+          "fetcher": "dynamic",
           "active": true,
           "domain": [
-            "BER"
+            "BER",
+            "EDU"
           ]
         },
         {
@@ -272,9 +274,11 @@
           "url": "https://www.ntu.edu.sg/news",
           "sector": "customers",
           "type": "website",
+          "fetcher": "dynamic",
           "active": true,
           "domain": [
-            "BER"
+            "BER",
+            "EDU"
           ]
         },
         {
@@ -747,7 +751,17 @@
         "Schneider",
         "Quantum Automation",
         "ST Synthesis",
-        "Savills"
+        "Savills",
+        "edtech",
+        "e-learning",
+        "LMS",
+        "learning management system",
+        "campus digital",
+        "STEM lab",
+        "virtual lab",
+        "virtual campus",
+        "online learning",
+        "blended learning"
       ]
     }
   ],

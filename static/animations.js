@@ -203,18 +203,20 @@
         expandedByUs.push(group);
       });
 
+      var excludedByUs = [];
       document.querySelectorAll('.pdf-section-checkbox').forEach(function (cb) {
         var section = document.getElementById(cb.dataset.section);
-        if (section) section.classList.toggle('print-exclude', !cb.checked);
+        if (section && !cb.checked && !section.classList.contains('print-exclude')) {
+          section.classList.add('print-exclude');
+          excludedByUs.push(section);
+        }
       });
 
       window.print();
 
       window.addEventListener('afterprint', function restoreState() {
         expandedByUs.forEach(function (group) { group.classList.remove('open'); });
-        document.querySelectorAll('.print-exclude').forEach(function (el) {
-          el.classList.remove('print-exclude');
-        });
+        excludedByUs.forEach(function (el) { el.classList.remove('print-exclude'); });
         window.removeEventListener('afterprint', restoreState);
       });
     });

@@ -48,19 +48,19 @@ Solutions, Customized AR/VR Content.
 
 ## Target Sectors & Use Cases
 
-**Real estate** — Digital twins of buildings and developments for asset management, leasing/marketing, and lifecycle documentation. Property developers and REITs are core customers (SpatioX Twin, Walk).
+**Real estate** — Digital twins of buildings and developments for asset management, leasing/marketing, and lifecycle documentation. Property developers and REITs are core customers (Digital Twin, 3D/VR Virtual Tour).
 
-**Smart facilities management (Smart FM)** — Digital twins integrated with building management systems to support predictive maintenance, space utilization tracking, and operational dashboards. A strategic priority sector given Singapore's smart building policy push (SpatioX Twin, Ops).
+**Smart facilities management (Smart FM)** — Digital twins integrated with building management systems to support predictive maintenance, space utilization tracking, and operational dashboards. A strategic priority sector given Singapore's smart building policy push (Digital Twin, Smart Facility Management System).
 
-**Government / smart-city projects** — Public sector tenders for digital twin pilots, smart estate modeling, and built-environment digitalization initiatives, typically driven by national digitalization or green-building programmes (see Regulatory & Certification Note below for how this varies by market) (SpatioX Twin).
+**Government / smart-city projects** — Public sector tenders for digital twin pilots, smart estate modeling, and built-environment digitalization initiatives, typically driven by national digitalization or green-building programmes (see Regulatory & Certification Note below for how this varies by market) (Digital Twin).
 
-**Education** — Campus digital twins for facilities planning, virtual orientation, and remote learning environments at universities and institutions (SpatioX Twin, Walk).
+**Education** — Campus digital twins for facilities planning (Digital Twin), and virtual orientation, remote learning, and STEM lab environments at universities and institutions (Virtual Campus, STEM 3D Virtual Lab, 3D/VR Virtual Tour).
 
-**Retail** — In-store AR experiences and virtual showrooms for product visualization and customer engagement (SpatioX Walk, Ops).
+**Retail** — In-store AR experiences and virtual showrooms for product visualization and customer engagement (3D/VR Virtual Tour, Smart Facility Management System).
 
-**Tourism** — Virtual tours of attractions, heritage sites, and destinations for marketing and accessibility (SpatioX Twin, Walk).
+**Tourism** — Virtual tours of attractions, heritage sites, and destinations for marketing and accessibility (Digital Twin, 3D/VR Virtual Tour).
 
-**MICE (meetings, incentives, conferences, exhibitions)** — Digital twins of event venues for virtual site visits, hybrid event experiences, and venue marketing to event planners (SpatioX Twin, Walk).
+**MICE (meetings, incentives, conferences, exhibitions)** — Digital twins of event venues for virtual site visits, hybrid event experiences, and venue marketing to event planners (Digital Twin, 3D/VR Virtual Tour).
 
 ## Competitive Positioning
 
@@ -90,15 +90,15 @@ Competitor moves to watch: new product launches, government tender wins, new par
 
 ## Key Prospects & Relationships
 
-**CapitaLand** — Major real estate developer/REIT manager. Prospective buyer of SpatioX Twin for portfolio-wide digital twin adoption across commercial and residential assets.
+**CapitaLand** — Major real estate developer/REIT manager. Prospective buyer of Digital Twin for portfolio-wide digital twin adoption across commercial and residential assets.
 
-**Mapletree** — Real estate developer/REIT manager with industrial, logistics, and commercial assets. Prospective buyer of SpatioX Twin for smart FM and asset management use cases.
+**Mapletree** — Real estate developer/REIT manager with industrial, logistics, and commercial assets. Prospective buyer of Digital Twin for smart FM and asset management use cases.
 
-**Lendlease** — International developer with Singapore operations. Prospective buyer of SpatioX Twin, particularly for new development projects requiring BIM-integrated digital twins from construction through operation.
+**Lendlease** — International developer with Singapore operations. Prospective buyer of Digital Twin, particularly for new development projects requiring BIM-integrated digital twins from construction through operation.
 
-**SGH (Singapore General Hospital)** — Healthcare institution. Prospective buyer of SpatioX Twin for campus/facility digital twins supporting hospital facilities management and wayfinding.
+**SGH (Singapore General Hospital)** — Healthcare institution. Prospective buyer of Digital Twin for campus/facility digital twins supporting hospital facilities management and wayfinding.
 
-**NUS (National University of Singapore)** — Education prospect for campus digital twin (SpatioX Twin) and immersive orientation/training experiences (SpatioX Walk).
+**NUS (National University of Singapore)** — Education prospect for campus digital twin (Digital Twin) and immersive orientation/training experiences (3D/VR Virtual Tour).
 
 **NTU (Nanyang Technological University)** — Same profile as NUS: campus digital twin and immersive learning/orientation use cases.
 
@@ -113,27 +113,27 @@ Companies in Silversea's broader market ecosystem — not direct BD targets, but
 - CSCEC (China State Construction) — One of the world's largest contractors with Singapore presence; potential JV partner for BIM/digital twin integration on mega-projects
 - CCCC (China Communications Construction) — Infrastructure-focused contractor; relevant for port/transport digital twin opportunities
 - CHEC (China Harbour Engineering) — Marine/infrastructure contractor; partner potential for coastal/port facility digital twins
-- Sembcorp — Singapore conglomerate with urban development and energy assets; potential SpatioX Twin customer for industrial estate management
-- SJ Group — Regional developer-contractor; potential partner for construction-phase SpatioX Audit integration
+- Sembcorp — Singapore conglomerate with urban development and energy assets; potential Digital Twin customer for industrial estate management
+- SJ Group — Regional developer-contractor; potential partner for construction-phase Smart Virtual Inspection integration
 
-**Consultants** — Potential channel partners; BIM/engineering firms that could recommend or co-bid SpatioX on projects:
+**Consultants** — Potential channel partners; BIM/engineering firms that could recommend or co-bid Silversea's solutions on projects:
 - AECOM — Global infrastructure consultancy with Singapore office; existing partner, co-bid potential on government BIM tenders
-- Meinhardt Group — Singapore-headquartered engineering consultancy; potential channel for SpatioX Twin on building projects
+- Meinhardt Group — Singapore-headquartered engineering consultancy; potential channel for Digital Twin on building projects
 - CPG Consultant — Multi-disciplinary consultancy (Jurong Consultants heritage); potential channel partner for government facility projects
 - BECA — Asia-Pacific engineering consultancy; potential co-bid partner for smart building/FM projects
 - Ramboll — Danish engineering consultancy with APAC presence; potential partner for sustainability/Green Mark digital twin projects
-- Azbil — Japanese building automation company; potential integration partner for SpatioX Ops with their BMS/BACS systems
+- Azbil — Japanese building automation company; potential integration partner for Smart Facility Management System with their BMS/BACS systems
 
-**M&E system integrators / BMS** — Potential integration partners; SpatioX Ops competes with and complements building management system vendors:
-- Honeywell — Global BMS leader; existing partner, SpatioX Ops integration opportunity with their building automation systems
+**M&E system integrators / BMS** — Potential integration partners; Smart Facility Management System competes with and complements building management system vendors:
+- Honeywell — Global BMS leader; existing partner, Smart Facility Management System integration opportunity with their building automation systems
 - Johnson Controls — BMS and smart building solutions; potential integration partner or competitor for smart FM deals
-- Schneider Electric — Building automation and energy management; SpatioX Ops complements their EcoStruxure platform
-- Quantum Automation — Singapore-based M&E/BMS integrator; potential local integration partner for SpatioX Ops deployments
+- Schneider Electric — Building automation and energy management; Smart Facility Management System complements their EcoStruxure platform
+- Quantum Automation — Singapore-based M&E/BMS integrator; potential local integration partner for Smart Facility Management System deployments
 
-**Facility management firms** — Potential customers for SpatioX Ops, or channel partners reselling FM services on top of it:
-- Cushman & Wakefield — Global real estate services; existing partner, potential SpatioX Ops customer for FM portfolio management
+**Facility management firms** — Potential customers for Smart Facility Management System, or channel partners reselling FM services on top of it:
+- Cushman & Wakefield — Global real estate services; existing partner, potential Smart Facility Management System customer for FM portfolio management
 - ST Synthesis (ST Engineering) — Singapore defence/engineering conglomerate's smart FM arm; potential customer or competitor for government facility management contracts
-- Savills — Global property consultancy with Singapore operations; potential SpatioX Twin/Ops customer for portfolio-wide digital twin adoption
+- Savills — Global property consultancy with Singapore operations; potential Digital Twin / Smart Facility Management System customer for portfolio-wide digital twin adoption
 
 ## BD Priorities
 

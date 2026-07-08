@@ -9,6 +9,12 @@ def _load():
         return json.load(f)["countries"]
 
 
+def load_sources():
+    """Fresh read of sources.json from disk — use this instead of the cached COUNTRIES
+    singleton anywhere a read-modify-write needs to see the current on-disk state."""
+    return _load()
+
+
 def save_sources(countries):
     """Atomic write-back — used by the admin source-approval flow (Phase D).
     Preserves sibling root-level keys (e.g. _domain_tagging_status)."""
