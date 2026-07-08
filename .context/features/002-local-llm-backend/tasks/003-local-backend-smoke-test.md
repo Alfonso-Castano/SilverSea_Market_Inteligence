@@ -1,6 +1,6 @@
 # Task 003: Local-backend smoke test — real Ollama call, schema-compliant JSON verified
 
-**Status:** pending
+**Status:** done
 **Depends on:** 002
 **Model tier:** mid — judgment needed to write a meaningful real-call test and interpret its output, but no new architecture.
 
@@ -44,3 +44,19 @@ Run `py -m pytest tests/test_local_backend_smoke.py -v`. Two acceptable passing 
 Either outcome is acceptable for this task's own completion (the test correctly reports its own state); do not fabricate a pass if the model genuinely isn't available.
 
 ## Evidence
+
+```
+$ py -m pytest tests/test_local_backend_smoke.py -v -rs
+collected 2 items
+
+tests/test_local_backend_smoke.py::test_local_backend_free_text_call_returns_nonempty_string SKIPPED [ 50%]
+tests/test_local_backend_smoke.py::test_local_backend_schema_call_returns_valid_synthesis_json SKIPPED [100%]
+
+=========================== short test summary info ===========================
+SKIPPED [1] tests\test_local_backend_smoke.py:93: local Ollama server is not reachable (Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download)
+SKIPPED [1] tests\test_local_backend_smoke.py:109: local Ollama server is not reachable (Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download)
+============================= 2 skipped in 16.74s =============================
+```
+Exit code 0. **Clean skip, as expected** — on this dev machine `ollama` is importable but no server is running. The test's other skip branch (model-not-registered, with the full bartowski/Q6_K/Modelfile/`ollama create` setup instructions) exists but wasn't exercised this run.
+
+**Real local-backend verification (both calls actually passing against a live Qwen3-32B model) remains an open, Alfonso-owned manual checkpoint** until Ollama is installed, running, and the Q6_K model registered — see README.md's "Local LLM Setup" runbook (task 004). This is the primary-risk verification the feature set out to prove; it's provably correct in both possible states (clean skip now, real pass once infra exists) but not yet exercised for real.
