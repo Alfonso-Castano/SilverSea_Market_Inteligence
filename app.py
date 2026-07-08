@@ -145,12 +145,26 @@ def receive_feedback():
     except (TypeError, ValueError):
         return {"error": "relevance_rating must be a number"}, 400
 
+    source_name = (data.get("source_name") or "").strip()
+    source_url = (data.get("source_url") or "").strip()
+    duplicate_match = source_suggestions.find_duplicate_source(source_name, source_url) if source_name else None
+
+    priority_changes = data.get("priority_changes", "")
+    if source_name and duplicate_match:
+        boost_note = (
+            f"[Duplicate source suggestion] Team flagged '{source_name}' as important — "
+            f"already tracked as existing source '{duplicate_match['name']}'. Treat as a "
+            f"signal to weight this entity/source higher in upcoming reports."
+        )
+        priority_changes = f"{priority_changes}\n{boost_note}".strip() if priority_changes else boost_note
+        source_suggestions.record_interest_signal(source_name, source_url, duplicate_match["name"], submitter)
+
     feedback = {
         "report_date": data.get("report_date", ""),
         "relevance_rating": relevance_rating,
         "most_useful": data.get("most_useful", ""),
         "missed_topics": data.get("missed_topics", ""),
-        "priority_changes": data.get("priority_changes", ""),
+        "priority_changes": priority_changes,
         "submitter": submitter,
         "submitted_at": now.isoformat(),
     }
@@ -160,13 +174,12 @@ def receive_feedback():
     with open(os.path.join(FEEDBACK_DIR, filename), "w", encoding="utf-8") as f:
         json.dump(feedback, f, indent=2, ensure_ascii=False)
 
-    source_name = (data.get("source_name") or "").strip()
-    if source_name:
+    if source_name and not duplicate_match:
         pending_dir = os.path.join(DATA_DIR, "pending_sources")
         os.makedirs(pending_dir, exist_ok=True)
         suggestion = {
             "source_name": source_name,
-            "source_url": (data.get("source_url") or "").strip(),
+            "source_url": source_url,
             "description": (data.get("source_description") or "").strip(),
             "submitted_by": submitter,
             "submitted_at": now.isoformat(),
@@ -200,7 +213,8 @@ def admin():
     if session.get("role") != "admin":
         return redirect(url_for("login"))
     pending = source_suggestions.list_pending()
-    return render_template("admin.html", pending=pending)
+    interest_signals = source_suggestions.list_interest_signals()
+    return render_template("admin.html", pending=pending, interest_signals=interest_signals)
 
 
 @app.route("/admin/change-viewer-password", methods=["POST"])
