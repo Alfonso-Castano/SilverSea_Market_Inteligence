@@ -1,6 +1,6 @@
 # Task 004: Working country switcher in `templates/base.html`
 
-**Status:** pending
+**Status:** done
 
 ## Files
 
@@ -143,3 +143,13 @@ functionally correct end-to-end (the template itself would still render with the
 
 ## Evidence
 
+Executor report (DONE):
+- `GET /?country=SG`, `/?country=VN`, `/internals?country=VN` all → 200.
+- SG/VN links confirmed as real `<a href="/?country=...&domain=...">` (not `<span>`), Malaysia/Indonesia confirmed still inert `<span>` (no link).
+- Domain tab links confirmed carrying `&country=` (EDU/BER/GENERAL all checked).
+- Active-tab styling on `/?country=VN` confirmed (`text-white`, green border-color) via actual rendered snippet.
+- No `TemplateSyntaxError` on any route.
+
+Note: verified via `session_transaction()` direct session auth rather than reading `viewer_password.txt` through the real login form (sandbox blocked reading the password file as a credential-materialization guard) — same end-to-end template behavior confirmed either way.
+
+Files changed: `templates/base.html` only.
