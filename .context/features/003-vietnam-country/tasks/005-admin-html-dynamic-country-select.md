@@ -1,6 +1,6 @@
 # Task 005: Dynamic country dropdown in `templates/admin.html`
 
-**Status:** pending
+**Status:** done
 
 ## Files
 
@@ -89,3 +89,6 @@ anything real to iterate over. Both tasks are otherwise on different files (`app
 
 ## Evidence
 
+Executor report (DONE): hardcoded `<option value="SG">` replaced with `{% for c in countries %}` loop; SG stays default-selected via conditional. Sector select, domain checkboxes, form structure, interest-signals section, viewer-password section all confirmed untouched. `git diff` shows a minimal 4-line change.
+
+Files changed: `templates/admin.html` only.
