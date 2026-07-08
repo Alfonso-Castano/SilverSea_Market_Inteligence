@@ -11,7 +11,7 @@ The journey from a placeholder weekly scraper to a daily, multi-domain, feedback
 - [x] **Phase 1: Foundation** — Sector-based scraper, grounded analyst prompt, daily-cadence pipeline for Singapore
 - [x] **Phase 2: AI Brain** — ChromaDB RAG, feedback loop, weekly summarizer
 - [x] **Phase 3: Web Dashboard** — Flask + Jinja2 two-surface dashboard (report + internals), though production deployment was never completed
-- [ ] **Phase 4: Summary + Scale** — Weekly Google Drive push, real MY/VN/ID sources — genuinely pending, not yet started with real data
+- [ ] **Phase 4: Summary + Scale** — Weekly Google Drive push, real MY/VN/ID sources — VN now real and wired end-to-end (Feature 003, 2026-07-08); Google Drive push and MY/ID sources still pending
 
 ## Phase Details
 
@@ -40,13 +40,13 @@ The journey from a placeholder weekly scraper to a daily, multi-domain, feedback
 2. Developer can view AI-system internals (vector store, source scores, feedback digests, run metadata) on a separate page ✓
 3. Deploy to company servers, no authentication — **not done**, app still runs locally. (Authentication was later added anyway in Supervisor Feedback Round 2, ahead of and independent from the deploy step.)
 
-### Phase 4: Summary + Scale `[PENDING — not started with real data]`
+### Phase 4: Summary + Scale `[PARTIALLY DONE — 2/4 countries have real sources as of 2026-07-08]`
 **Goal:** Weekly synthesis pushed externally + multi-country expansion with real sources.
 **Depends on:** Phase 3
 **Success Criteria:**
-1. Four-country daily pipeline running (scaffolding exists via `--country`; no real MY/VN/ID sources populated)
+1. Four-country daily pipeline running — **SG and VN now both real and wired end-to-end** (Feature 003, 2026-07-08: 60 VN sources, 43 active, country-aware routing/UI/feedback/weekly-summary/run-metadata scoping); MY/ID scaffolding exists via `--country` but no real sources populated for either
 2. Weekly summaries landing in Google Drive (never built — summary generation exists, external push does not)
-3. All placeholder sources replaced with real company/agency lists (done for SG only — 62 total sources, 57 active; corrected 2026-07-08 from a previously recorded 54)
+3. All placeholder sources replaced with real company/agency lists — **SG: 62 total sources, 57 active. VN: 60 total sources, 43 active (Feature 003).** MY/ID: still placeholder/unbuilt.
 
 ---
 
@@ -64,10 +64,12 @@ These rounds were driven by live supervisor/Alfonso feedback rather than pre-pla
 - **Supervisor Feedback Round 2 (2026-07-02)** — 8-topic bundle across Phases A-F: scoring rubric fix, opportunity source links, PDF export, `sources.py`→`sources.json` migration, viewer/admin auth, source-suggestion admin-approval queue, multi-domain (BER/EDU/GENERAL) restructure with 7-sector product catalog rebuild, `--country` scaffolding + ChromaDB metadata scoping.
 - **Workflow Migration to `.context/` (2026-07-08)** — This session: replaced the ad hoc `CONTEXT.md`/`STATE.md`/`ROADMAP.md`/`PLAN.md` file set and the foundational CLAUDE.md with the structured `.context/` + `/feature-*` workflow.
 - **Feature 001 — Round 2 Remediation (2026-07-08, `feature/001-round2-remediation`, PASSED)** — Fixed the admin/viewer auth bypass and `/feedback` route hardening (path-traversal sanitization, crash guard, CORS scoping); finished the SpatioX→real-catalog rebuild consistently across `company_context.md` and `pipeline/analyst.py`; added EDU filter keywords + NUS/NTU dual-tagging; re-seeded the `COMPANY_CONTEXT` vectorstore; added an admin country selector and fixed a stale-singleton bug in `source_suggestions.approve()`; added the repo's first unit test. See `.context/DECISIONS.md` for full rationale. Branch not yet merged to `main`.
+- **Feature 003 — Vietnam Country Expansion (2026-07-08, `feature/003-vietnam-country`, PASSED)** — Added VN as a second, fully independent country: 60 real sources (43 active) sector-mapped and dry-run verified; country-aware Flask routing (`_country_mode()`), dashboard country switcher, dynamic admin country dropdown; `SUMMARY_PROMPT` country-name interpolation fix; VN subsection added to `company_context.md` + vectorstore reseed (41 chunks); `pipeline/feedback.py`/`pipeline/weekly.py` country-scoped (closing the previously-recorded global/unscoped gap, not deferred again this time); `run_metadata.json` country-scoped. First real exercise of the `--country` scaffolding against genuine second-country data. Branch not yet merged to `main`. See `.context/DECISIONS.md` for full rationale.
 
 ## Open Questions Carried Forward
 
-- **Feedback-digest and weekly-summary country-scoping** — both currently global/unscoped. `REPORT_HISTORY` now accumulates a mix of country-tagged (analyst.py) and untagged (weekly.py, feedback.py) documents; a future `where={"country":"SG"}` query would silently exclude weekly-summary docs. Explicitly re-deferred in Feature 001. Alfonso to decide whether these should be country-scoped.
+- **Feedback-digest and weekly-summary country-scoping — resolved by Feature 003** (2026-07-08). `pipeline/feedback.py` and `pipeline/weekly.py` now accept a `country_code` parameter and filter/tag ChromaDB reads/writes with `where={"country": ...}`, matching the pattern `analyst.py` already used for `REPORT_HISTORY`. Superseded the prior "explicitly re-deferred in Feature 001" framing below.
+- **`pipeline/weekly.py`'s `WEEKLY_PROMPT` still hardcodes "Singapore"** (new, from Feature 003) — same bug class as the `SUMMARY_PROMPT` fix Feature 003 made in `analyst.py`, but deliberately out of that feature's declared scope (Task 008 preserved `WEEKLY_PROMPT`/`SUMMARIZE_PROMPT`/`CONSOLIDATION_PROMPT` verbatim; CONTEXT.md's Scope section named only `SUMMARY_PROMPT`). Data-layer scoping is already correct; only the LLM's self-description text is wrong. Small follow-up, not yet scheduled as a feature.
 - **`config/sources.json`'s `_domain_tagging_status` draft flag** — mechanical BER/EDU/GENERAL domain assignments from Supervisor Feedback Round 2 (B2) remain unreviewed. Feature 001 added a stopgap (EDU keywords + NUS/NTU dual-tagged `["BER","EDU"]`) but did not resolve the underlying draft-flag review; the admin country-selector change touched the same file so watch for drift.
 - **`ADMIN_PASSWORD` env var** — Feature 001 closed the security hole (unset/empty now refuses login rather than matching), but the var still must be set by Alfonso for admin login to actually work.
 - **A3 PDF export browser polish** — the afterprint class-strip bug itself was fixed in Feature 001 (`static/animations.js` now tracks only elements it toggled); real-browser print-preview visual QA across signal cards and entity groups is still an open Alfonso-owned manual checkpoint.

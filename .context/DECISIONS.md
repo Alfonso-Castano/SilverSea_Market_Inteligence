@@ -4,6 +4,31 @@ Running record of decisions that constrain future work. Newest first. Check here
 
 ---
 
+## [2026-07-08] — Feature 003 (Vietnam Country Expansion): scope, sector mapping, and country-scoping fixes locked
+
+**Decision:** Vietnam (`VN`) added as a second, fully independent country, using the real ~60-source list Alfonso received (`Silversea_Vietnam_Market_07072026.pdf`), branching this feature from `main` (`168810e`) rather than from the concurrently-in-flight `feature/002-local-llm-backend` branch.
+**Rationale:** This is the first real exercise of the `--country` scaffolding built in Supervisor Feedback Round 2 against genuine second-country data. `feature/002-local-llm-backend` was a separate, unrelated, not-yet-executed feature being worked in a sibling git worktree this session — branching from `main` instead keeps the two features fully independent, avoiding any dependency between them. This is the first time this project has used sibling git worktrees to let two Claude Code sessions work the repo concurrently without colliding on branch checkouts.
+
+**Decision:** The VN source list's categories (which don't map 1:1 onto the pipeline's existing 6-sector taxonomy — notably no "associations" category) were mapped as: `Government Authority`→`gov_agencies`; `Target/Existing/Potential/generic Customer`→`customers`; `Competitor`/`Competitor-partner`→`competitors`; `Dealer/Supplier` and `Facility Management`→`partners`; `News/Research`→`general_news`.
+**Rationale:** User-confirmed mapping. Kept the taxonomy unchanged (per the standing "sector = relationship to Silversea, not industry" decision) rather than inventing a new category for the one non-matching case.
+
+**Decision:** VN's `priority_keywords`/`keywords` lists reuse SG's as a starting point, stripped of SG-specific terms (`GeBIZ`, `BCA Green Mark`, and SG-only competitor names `Hiverlab`/`Gelement`/`TwinLogic`/`TwinMatrix`) — English-only, no Vietnamese-language equivalents this round.
+**Rationale:** Keeps effort proportional; empirically tune keyword-hit rate during a future live run rather than upfront translation work, matching how SG's list was iteratively tuned. Accepted risk: Vietnamese-only sources may score consistently low under this filter — logged as a known limitation, not a blocker.
+
+**Decision:** `pipeline/feedback.py` and `pipeline/weekly.py` country-scoped now, not deferred again — both gained a `country_code` parameter and `where={"country": ...}` ChromaDB filtering, mirroring the pattern `pipeline/analyst.py` already used for `REPORT_HISTORY` writes. `run_metadata.json` also country-scoped to `run_metadata_{code}.json`, mirroring `report.py`'s existing domain-scoping filename pattern.
+**Rationale:** User decision, explicitly reversing the "declined for this round" deferral recorded in Feature 001's 2026-07-08 entry above ("No second country has real data yet to make the country-scoping gap observable"). With VN now real data, leaving feedback/weekly global would blend VN and SG feedback digests into one collection, directly undermining the requirement that each country run independently.
+
+**Decision:** A parallel Vietnam subsection was added to `data/company_context.md`'s "Key Prospects & Relationships" and "Ecosystem Players" sections (Vingroup, Sun Group, VSIP, FPT, Viettel, Becamex, etc.); the "Products by Business Sector," "BD Priorities," and "Regulatory" sections were left untouched as already country-agnostic. `COMPANY_CONTEXT` vectorstore re-seeded (41 chunks, up from 34).
+**Rationale:** `COMPANY_CONTEXT` RAG retrieval is not country-filtered by design (correct for the shared product catalog), so leaving prospects/ecosystem sections SG-only would surface irrelevant SG framing into every VN report.
+
+**Decision:** `pipeline/analyst.py`'s `SUMMARY_PROMPT` fixed to interpolate the actual country name (`country["name"]`) via `str.replace()`, not `.format()`.
+**Rationale:** The prompt string contains a JSON schema block with literal curly braces later in the same string; `.format()` would collide with those braces. `str.replace()` on a single named placeholder avoids the collision entirely. This closes the "Singapore" hardcoding that Feature 001's recon pass had flagged as a known gap outside its own scope.
+
+**Decision explicitly out of scope this round (recorded so it isn't re-raised as undecided):** `pipeline/weekly.py`'s `WEEKLY_PROMPT`, `SUMMARIZE_PROMPT`, and `CONSOLIDATION_PROMPT` constants were deliberately left untouched — still hardcode "Singapore" in their framing — because Task 008's declared scope was ChromaDB metadata/filtering plumbing only, not prompt content, and CONTEXT.md's Scope section named only `SUMMARY_PROMPT` for the country-hardcoding fix. Data-layer country-scoping (which documents get retrieved/compressed) is correct regardless; only the LLM's self-description text is wrong. Logged as a small follow-up feature/task, not a defect in this feature.
+**Rationale:** Reviewed and confirmed not-FAIL-worthy in `/feature-verify` — re-litigating a scope boundary CONTEXT.md set deliberately and narrowly would have meant scope creep in the review step itself.
+
+---
+
 ## [2026-07-08] — Feature 001 (Round 2 Remediation): remediation scope and fixes locked
 
 **Decision:** A full remediation feature (`.context/features/001-round2-remediation/`) was scoped against the "Supervisor Feedback Round 2" WIP commit (`3dc471a`) after an independent Fable-model review found the admin/viewer auth gate had a bypass, the SpatioX→real-catalog rebuild was only partially applied (accurate transcription in `company_context.md`'s catalog section, but prompts/gate keywords/post-processing/filter keywords downstream still ran on the old 4-product SpatioX worldview), and a broader recon pass surfaced three additional `/feedback`-route hardening gaps.
