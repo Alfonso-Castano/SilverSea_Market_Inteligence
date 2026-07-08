@@ -3,6 +3,11 @@ import json
 import os
 import sys
 import datetime
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 from dotenv import load_dotenv
 load_dotenv()
 from config.sources import COUNTRIES
