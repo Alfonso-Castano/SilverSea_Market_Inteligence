@@ -1,6 +1,6 @@
 # Task 004: Document the local-backend env vars and a full setup runbook in README.md
 
-**Status:** pending
+**Status:** done
 **Depends on:** 001
 **Model tier:** cheap — the exact wording/steps are specified below; transcription plus verification.
 
@@ -44,3 +44,9 @@ This task's audience is Alfonso following these steps by hand on a different phy
 Run `py -c "import re; content = open('README.md').read(); assert all(s in content for s in ['LLM_BACKEND', 'LOCAL_LLM_MODEL', 'LOCAL_LLM_NUM_CTX', 'Local LLM Setup', 'bartowski/Qwen3-32B-GGUF', 'ollama create', 'test_local_backend_smoke']); print('OK')"` — must exit 0 and print `OK`.
 
 ## Evidence
+
+```
+$ py -c "import re; content = open('README.md').read(); assert all(s in content for s in ['LLM_BACKEND', 'LOCAL_LLM_MODEL', 'LOCAL_LLM_NUM_CTX', 'Local LLM Setup', 'bartowski/Qwen3-32B-GGUF', 'ollama create', 'test_local_backend_smoke']); print('OK')"
+OK
+```
+All 7 required strings confirmed present. Env var table + full 7-step runbook added, reviewed via `git diff README.md` by the dispatching session — matches spec exactly.
