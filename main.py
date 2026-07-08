@@ -35,8 +35,10 @@ def _format_email_text(report_data: dict) -> str:
     return "\n".join(lines)
 
 
-def run_pipeline(send_email: bool = True) -> None:
+def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: str = None) -> None:
     active_countries = [c for c in COUNTRIES if c["active"]]
+    if country_arg:
+        active_countries = [c for c in active_countries if c["code"] == country_arg]
     print(f"Running pipeline for {len(active_countries)} active country/countries...\n")
 
     print("Processing feedback from previous run...")
@@ -46,8 +48,12 @@ def run_pipeline(send_email: bool = True) -> None:
     for country in active_countries:
         print(f"=== {country['name']} ({country['code']}) ===")
 
+        sources = country["sources"]
+        if domain_arg:
+            sources = [s for s in sources if domain_arg in s.get("domain", ["GENERAL"])]
+
         print("Scraping sources...")
-        scraped = scrape_all(country["sources"], country["priority_keywords"], country["keywords"])
+        scraped = scrape_all(sources, country["priority_keywords"], country["keywords"])
 
         print("Filtering content...")
         filtered = filter_results(scraped, country["priority_keywords"], country["keywords"])
@@ -65,7 +71,7 @@ def run_pipeline(send_email: bool = True) -> None:
         ]
 
         print("Saving report JSON...")
-        save_report_json(report_data, country["name"])
+        save_report_json(report_data, country["name"], country_code=country["code"], domain=domain_arg)
 
         run_metadata = {
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -96,4 +102,15 @@ def run_pipeline(send_email: bool = True) -> None:
 
 if __name__ == "__main__":
     send_email = "--no-email" not in sys.argv
-    run_pipeline(send_email=send_email)
+
+    domain_arg = None
+    for arg in sys.argv:
+        if arg.startswith("--domain="):
+            domain_arg = arg.split("=", 1)[1]
+
+    country_arg = None
+    for arg in sys.argv:
+        if arg.startswith("--country="):
+            country_arg = arg.split("=", 1)[1]
+
+    run_pipeline(send_email=send_email, domain_arg=domain_arg, country_arg=country_arg)

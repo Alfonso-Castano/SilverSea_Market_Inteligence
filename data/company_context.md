@@ -1,4 +1,4 @@
-<!-- DRAFT: expanded 2026-06-26 by execution agent, pending Alfonso review — see Phase 4 handoff Step 1 -->
+<!-- DRAFT: rebuilt 2026-07-02 for multi-domain/product-catalog overhaul, pending Alfonso review — see supervisor-feedback-v2-implementation.md Phase E1 -->
 # Silversea Media — Company Context
 
 Reference material for the market intelligence AI analyst. Factual, not marketing copy.
@@ -9,15 +9,42 @@ Silversea Media is a Singapore-headquartered digital twin and immersive technolo
 
 Customer relationship management runs on Bitrix24. Sales and BD activity should be cross-referenced against Bitrix24 pipeline data when evaluating whether a market signal represents a new or existing relationship.
 
-## Products
+## Products by Business Sector
 
-**SpatioX Twin** — Digital Twin platform with live dashboard and high-fidelity 3D visualization. Combines 3D scanning, BIM data integration, and spatial modeling to produce a navigable digital replica of buildings, campuses, and large physical environments. This is Silversea's flagship offering and the primary fit for smart building, smart FM, and built-environment government tenders.
+Silversea's product catalog spans roughly 14 distinct solutions, deployed differently depending on
+the business sector being served. The table below is transcribed from Silversea's official business
+sector reference (`docs/Copy of Business Sector _ed01.pdf`, pages 1-3). Only EDU and BER are active
+scraping/analysis domains this round — the other five sectors are preserved here for reference so a
+future expansion round doesn't need to re-transcribe the catalog.
 
-**SpatioX Ops** — Smart Facility Management platform: workflow/asset management, IoT/CCTV/access control integration. Digital twins integrated with building management systems to support predictive maintenance, space utilization tracking, and operational dashboards.
+### Education & EdTech (EDU) — active this round
+STEM 3D Virtual Lab, Virtual Campus, Virtual Event Platform, 3D/VR Virtual Tour,
+Metaverse Platform, Customized AR/VR Content.
 
-**SpatioX Audit** — Smart virtual inspection for property TOP (Temporary Occupation Permit) inspection. Digitizes the inspection process for quality assurance in construction handover.
+### Built Environment & Real Estate (BER) — active this round
+Smart Facility Management System, Digital Twin, Smart Virtual Mockup, Smart Virtual
+Inspection, 3D/VR Virtual Tour, 3D Scanning to 3D Model, IoT & AI Solutions, CCTV Video
+Analytics Solution.
 
-**SpatioX Walk** — 3D/VR virtual tour and WebGL virtual walkthrough. Enables remote walkthroughs, immersive presentations, and virtual site visits for real estate marketing, training, and tourism/MICE applications.
+### Manufacturing & Industry 4.0 (MFG) — reference only, not active this round
+Digital Twin, Smart Virtual Inspection, IoT & AI Solutions, Smart Facility Management
+System, Customized AR/VR Content, 3D Scanning to 3D Model.
+
+### Healthcare & Life Sciences (HLS) — reference only, not active this round
+Smart Facility Management System, 3D/VR Virtual Tour, Customized AR/VR Content, Digital
+Twin, IoT Solution, CCTV Video Analytics Solution.
+
+### Retail, Commerce & Consumer Goods (RCC) — reference only, not active this round
+Virtual Showroom, Smart Virtual Mockup, Interactive Digital Content, Metaverse Platform,
+3D Scanning to 3D Model, Customized AR/VR Content.
+
+### Culture, Tourism & Events (CTE) — reference only, not active this round
+Virtual Event Platform, 3D/VR Virtual Tour, Interactive Digital Content, Metaverse
+Platform, 3D Scanning to 3D Model.
+
+### Public Sector & Smart Cities (PSS) — reference only, not active this round
+Digital Twin, Smart Facility Management System, Smart Virtual Inspection, IoT & AI
+Solutions, Customized AR/VR Content.
 
 ## Target Sectors & Use Cases
 
@@ -25,7 +52,7 @@ Customer relationship management runs on Bitrix24. Sales and BD activity should 
 
 **Smart facilities management (Smart FM)** — Digital twins integrated with building management systems to support predictive maintenance, space utilization tracking, and operational dashboards. A strategic priority sector given Singapore's smart building policy push (SpatioX Twin, Ops).
 
-**Government / Smart Nation projects** — Public sector tenders for digital twin pilots, smart estate modeling, and built-environment digitalization initiatives under Singapore's Smart Nation and BCA Green Mark / IDD (Integrated Digital Delivery) programmes. High strategic value given policy tailwinds (SpatioX Twin).
+**Government / smart-city projects** — Public sector tenders for digital twin pilots, smart estate modeling, and built-environment digitalization initiatives, typically driven by national digitalization or green-building programmes (see Regulatory & Certification Note below for how this varies by market) (SpatioX Twin).
 
 **Education** — Campus digital twins for facilities planning, virtual orientation, and remote learning environments at universities and institutions (SpatioX Twin, Walk).
 
@@ -39,7 +66,7 @@ Customer relationship management runs on Bitrix24. Sales and BD activity should 
 
 Silversea's differentiation rests on two factors: breadth of product suite and regional presence.
 
-**Full suite vs. point solutions** — Most competitors offer a single capability (e.g., 3D scanning only, or VR content only). Silversea's four-product suite (SpatioX Twin, Ops, Audit, Walk) lets it bid for multi-phase projects that combine scanning, digital twin modeling, and immersive delivery without subcontracting, which is a meaningful advantage in government and large enterprise tenders that prefer a single accountable vendor.
+**Full suite vs. point solutions** — Most competitors offer a single capability (e.g., 3D scanning only, or VR content only). Silversea's product catalog spans multiple solutions across seven business sectors — see Products by Business Sector above — letting it bid for multi-phase projects that combine scanning, digital twin modeling, and immersive delivery without subcontracting, which is a meaningful advantage in government and large enterprise tenders that prefer a single accountable vendor.
 
 **Regional presence** — With offices across Singapore, Malaysia, Indonesia, and Vietnam, Silversea can service multi-country clients and bid on cross-border projects that single-country competitors cannot service directly.
 
@@ -114,10 +141,14 @@ The sales team's primary interest, in order of relevance:
 
 1. **New tenders and RFPs** explicitly calling for digital twin, BIM integration, smart building, or smart FM capabilities — especially from GeBIZ, BCA, JTC, URA, or HDB.
 2. **Competitor moves** — a competitor winning a tender, launching a comparable product, or announcing a partnership with one of Silversea's tracked prospects signals lost or contested ground.
-3. **Policy and regulatory changes** that favor proptech/digital twin adoption — for example, expansions of BCA Green Mark requirements, IDD mandates, or Smart Nation funding programmes that lower the cost of adoption for prospects.
+3. **Policy and regulatory changes** that favor proptech/digital twin adoption — for example, expansions of green-building certification requirements, digital-delivery mandates, or government digitalization funding programmes that lower the cost of adoption for prospects (see Regulatory & Certification Note below — specific scheme names vary by market).
 4. **Prospect-specific signals** — a tracked customer (CapitaLand, Mapletree, Lendlease, SGH, NUS, NTU) announcing a new development, facility upgrade, or digitalization initiative is a direct BD entry point, even without an explicit tender.
 5. **Association and industry signals** (SGBC, BCI Asia) — useful for context on industry sentiment and adjacent technology trends, lower priority than direct tender or prospect signals.
 
-Signals with no plausible connection to one of Silversea's four products or to a named prospect/government agency/competitor should be treated as noise, not BD opportunity.
+Signals with no plausible connection to Silversea's product catalog (see Products by Business Sector above) or to a named prospect/government agency/competitor should be treated as noise, not BD opportunity.
 
 Ecosystem players (contractors, consultants, M&E integrators, FM firms) are channel/partnership signals, not direct BD targets like tracked prospects — a contractor announcing a new project is lower priority than a tracked prospect (CapitaLand, Mapletree, etc.) announcing the same project.
+
+## Regulatory & Certification Note
+
+Certification and procurement schemes vary by market (e.g. green-building certifications, government e-procurement portals). Assessing local regulatory fit is the responsibility of each local team — this document intentionally does not maintain country-specific regulatory detail. For Singapore specifically (illustrative only, not authoritative elsewhere): green-building certification is administered via BCA Green Mark, digital-delivery mandates fall under IDD (Integrated Digital Delivery), and government e-procurement runs through GeBIZ under the Smart Nation/GovTech initiative.

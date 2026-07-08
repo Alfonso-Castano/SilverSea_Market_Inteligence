@@ -107,6 +107,31 @@
   </div>
 </nav>
 
+<!-- PDF export panel -->
+<div id="pdf-export-panel" class="print-exclude fixed top-3 right-4 z-50">
+  <button id="pdf-export-toggle" type="button" class="glass-card flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white pointer-events-auto" style="background: rgba(10,37,64,0.85); border-color: rgba(255,255,255,0.15);">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H8a2 2 0 01-2-2V5a2 2 0 012-2h6l6 6v9a2 2 0 01-2 2z"/></svg>
+    Export PDF
+  </button>
+  <div id="pdf-export-options" hidden class="glass-card mt-2 p-3 text-xs text-white space-y-1.5 pointer-events-auto" style="background: rgba(10,37,64,0.95); border-color: rgba(255,255,255,0.15); min-width: 200px;">
+    {% for sector, signals in report.signals_by_sector.items() %}
+    {% if signals %}
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" class="pdf-section-checkbox" data-section="sector-{{ sector_key(sector) | trim }}" checked>
+      {{ sector }}
+    </label>
+    {% endif %}
+    {% endfor %}
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" class="pdf-section-checkbox" data-section="opportunities" checked>
+      Opportunities
+    </label>
+    <button id="pdf-export-confirm" type="button" class="w-full mt-2 text-white font-medium px-3 py-1.5 rounded-lg transition-all hover:brightness-110 cursor-pointer" style="background: linear-gradient(135deg, #2d6a4f, #40916c);">
+      Generate PDF
+    </button>
+  </div>
+</div>
+
 <!-- Executive Summary -->
 {% if report.executive_summary %}
 <section id="summary" class="mb-10" data-aos="fade-up">
@@ -133,7 +158,7 @@
   {% for sector, signals in report.signals_by_sector.items() %}
   {% if signals %}
   {% set skey = sector_key(sector) | trim %}
-  <div class="mb-8 sector-section" data-sector="{{ sector | lower }}">
+  <div id="sector-{{ skey }}" class="mb-8 sector-section" data-sector="{{ sector | lower }}">
     <!-- Sector header bar -->
     <div class="sector-header">
       <div class="sector-icon">{{ sector_icons[skey] | safe }}</div>
@@ -329,8 +354,9 @@
               <div class="sm:col-span-2"><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Product Fit</dt><dd class="text-gray-800 dark:text-gray-200">{{ opp.product_fit }}</dd></div>
               {% endif %}
             </dl>
-            {% if opp.source_url %}
-            <a href="{{ opp.source_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-sm text-green-accent hover:opacity-70 font-medium mb-5 break-all transition-opacity">
+            {% set opp_src_url = source_urls.get(opp.source_name | default(''), '') %}
+            {% if opp_src_url %}
+            <a href="{{ opp_src_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-sm text-green-accent hover:opacity-70 font-medium mb-5 break-all transition-opacity">
               View source
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </a>
@@ -385,8 +411,9 @@
                 <div class="sm:col-span-2"><dt class="text-xs uppercase tracking-wide text-gray-400 mb-0.5">Product Fit</dt><dd class="text-gray-800 dark:text-gray-200">{{ opp.product_fit }}</dd></div>
                 {% endif %}
               </dl>
-              {% if opp.source_url %}
-              <a href="{{ opp.source_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-sm text-green-accent hover:opacity-70 font-medium mb-5 break-all transition-opacity">
+              {% set opp_src_url = source_urls.get(opp.source_name | default(''), '') %}
+              {% if opp_src_url %}
+              <a href="{{ opp_src_url }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-sm text-green-accent hover:opacity-70 font-medium mb-5 break-all transition-opacity">
                 View source
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
               </a>
@@ -527,6 +554,34 @@
         <input type="text" name="submitter"
           class="w-full max-w-xs rounded-lg border border-border-card dark:border-dark-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent"
           placeholder="Name" />
+      </div>
+
+      <div class="pt-2 border-t border-border-card dark:border-dark-border">
+        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Suggest a new source <span class="text-gray-400 font-normal">(optional)</span></h3>
+        <p class="text-xs text-gray-400 mb-3">Know a site or agency we should be tracking? Suggest it here — an admin will review before it's added.</p>
+
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Source name</label>
+            <input type="text" name="source_name"
+              class="w-full rounded-lg border border-border-card dark:border-dark-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent"
+              placeholder="e.g. Building and Construction Authority" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Source URL</label>
+            <input type="url" name="source_url"
+              class="w-full rounded-lg border border-border-card dark:border-dark-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent"
+              placeholder="https://example.com/news" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Why is this source relevant?</label>
+            <textarea name="source_description" rows="2"
+              class="w-full rounded-lg border border-border-card dark:border-dark-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent"
+              placeholder="What kind of signals would this source add?"></textarea>
+          </div>
+        </div>
       </div>
 
       <div>

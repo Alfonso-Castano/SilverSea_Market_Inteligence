@@ -414,3 +414,46 @@ body.spotlight-mode .sector-header {
     transform: none;
   }
 }
+
+/* ========================================
+   Print / PDF export
+   ======================================== */
+@media print {
+  #scroll-nav,
+  #scroll-progress,
+  #spotlight-overlay,
+  #theme-toggle,
+  section#feedback,
+  nav {
+    display: none !important;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  .dark, [class*="dark:"] {
+    background: transparent !important;
+    color: inherit !important;
+  }
+
+  .print-exclude {
+    display: none !important;
+  }
+
+  .glass-card, .shadow-soft, .shadow-soft-lg {
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border: 1px solid #e5e7eb !important;
+  }
+
+  .entity-group-content {
+    display: block !important;
+    grid-template-rows: 1fr !important;
+  }
+
+  .signal-card, .entity-group {
+    page-break-inside: avoid;
+  }
+}

@@ -184,6 +184,43 @@
   }
 
   /* ========================================
+     PDF export
+     ======================================== */
+  function initPdfExport() {
+    var toggleBtn = document.getElementById('pdf-export-toggle');
+    var optionsPanel = document.getElementById('pdf-export-options');
+    var confirmBtn = document.getElementById('pdf-export-confirm');
+    if (!toggleBtn || !confirmBtn) return;
+
+    toggleBtn.addEventListener('click', function () {
+      optionsPanel.hidden = !optionsPanel.hidden;
+    });
+
+    confirmBtn.addEventListener('click', function () {
+      var expandedByUs = [];
+      document.querySelectorAll('.entity-group:not(.open)').forEach(function (group) {
+        group.classList.add('open');
+        expandedByUs.push(group);
+      });
+
+      document.querySelectorAll('.pdf-section-checkbox').forEach(function (cb) {
+        var section = document.getElementById(cb.dataset.section);
+        if (section) section.classList.toggle('print-exclude', !cb.checked);
+      });
+
+      window.print();
+
+      window.addEventListener('afterprint', function restoreState() {
+        expandedByUs.forEach(function (group) { group.classList.remove('open'); });
+        document.querySelectorAll('.print-exclude').forEach(function (el) {
+          el.classList.remove('print-exclude');
+        });
+        window.removeEventListener('afterprint', restoreState);
+      });
+    });
+  }
+
+  /* ========================================
      Init all on DOMContentLoaded
      ======================================== */
   document.addEventListener('DOMContentLoaded', function () {
@@ -199,6 +236,7 @@
     initEntityGroups();
     initSpotlight();
     initStaggeredEntrance();
+    initPdfExport();
   });
 
   window.animateCount = animateCount;

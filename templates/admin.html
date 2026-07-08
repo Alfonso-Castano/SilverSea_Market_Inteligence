@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Admin — Silversea Market Intelligence{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-8">
+  <div>
+    <h1 class="text-2xl font-bold text-navy dark:text-white font-heading mb-1">Admin — Pending Source Suggestions</h1>
+    <p class="text-sm text-gray-500 dark:text-gray-400">Review sources suggested via the feedback form. Approving appends an active source to <code class="text-xs">config/sources.json</code>; rejecting discards it. Nothing is added automatically.</p>
+  </div>
+
+  {% if pending %}
+  <div class="space-y-4">
+    {% for entry in pending %}
+    <div class="bg-white dark:bg-dark-card rounded-xl shadow-soft border border-border-card dark:border-dark-border p-6">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div>
+          <h2 class="text-base font-bold text-navy dark:text-gray-100">{{ entry.source_name }}</h2>
+          {% if entry.source_url %}
+          <a href="{{ entry.source_url }}" target="_blank" rel="noopener" class="text-sm text-green-accent hover:underline break-all">{{ entry.source_url }}</a>
+          {% endif %}
+        </div>
+        <span class="text-xs text-gray-400 whitespace-nowrap">{{ entry.submitted_at }}</span>
+      </div>
+
+      {% if entry.description %}
+      <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">{{ entry.description }}</p>
+      {% endif %}
+
+      <p class="text-xs text-gray-400 mb-4">Submitted by {{ entry.submitted_by or "anonymous" }}</p>
+
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-end">
+        <form method="POST" action="{{ url_for('approve_source', filename=entry._filename) }}" class="flex flex-col sm:flex-row gap-3 sm:items-end flex-1">
+          <div class="flex-1 min-w-[160px]">
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Sector</label>
+            <select name="sector" required
+              class="w-full rounded-lg border border-border-card dark:border-dark-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent dark:bg-dark-bg dark:text-gray-200">
+              <option value="gov_agencies">Government Agencies</option>
+              <option value="associations">Associations</option>
+              <option value="customers">Customers</option>
+              <option value="partners">Partners</option>
+              <option value="competitors">Competitors</option>
+              <option value="general_news">General News</option>
+            </select>
+          </div>
+
+          <div class="flex-1 min-w-[200px]">
+            <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Domain</label>
+            <div class="flex gap-3 pt-1.5">
+              <label class="inline-flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 cursor-pointer">
+                <input type="checkbox" name="domain" value="BER" class="rounded border-border-card text-green-accent focus:ring-green-accent/40" />
+                BER
+              </label>
+              <label class="inline-flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 cursor-pointer">
+                <input type="checkbox" name="domain" value="EDU" class="rounded border-border-card text-green-accent focus:ring-green-accent/40" />
+                EDU
+              </label>
+              <label class="inline-flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 cursor-pointer">
+                <input type="checkbox" name="domain" value="GENERAL" checked class="rounded border-border-card text-green-accent focus:ring-green-accent/40" />
+                GENERAL
+              </label>
+            </div>
+          </div>
+
+          <button type="submit"
+            class="text-white font-medium px-5 py-2.5 rounded-lg transition-all hover:brightness-110 cursor-pointer whitespace-nowrap"
+            style="background: linear-gradient(135deg, #2d6a4f, #40916c);">
+            Approve
+          </button>
+        </form>
+
+        <form method="POST" action="{{ url_for('reject_source', filename=entry._filename) }}">
+          <button type="submit"
+            class="text-gray-500 dark:text-gray-400 font-medium px-5 py-2.5 rounded-lg border border-border-card dark:border-dark-border transition-colors hover:bg-gray-50 dark:hover:bg-dark-card-hover cursor-pointer whitespace-nowrap">
+            Reject
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="bg-white dark:bg-dark-card rounded-xl shadow-soft border border-border-card dark:border-dark-border p-8 text-center">
+    <p class="text-sm text-gray-500 dark:text-gray-400">No pending source suggestions.</p>
+  </div>
+  {% endif %}
+
+  <div class="bg-white dark:bg-dark-card rounded-xl shadow-soft border border-border-card dark:border-dark-border p-6">
+    <h2 class="text-base font-bold text-navy dark:text-gray-100 mb-1">Change viewer password</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Updates the shared password used by the whole company to view reports. This does not change the admin password.</p>
+    <form method="POST" action="{{ url_for('change_viewer_password') }}" class="flex flex-col sm:flex-row gap-3 sm:items-end">
+      <div class="flex-1 max-w-xs">
+        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">New viewer password</label>
+        <input type="text" name="new_password" required
+          class="w-full rounded-lg border border-border-card dark:border-dark-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-accent/40 focus:border-green-accent dark:bg-dark-bg dark:text-gray-200"
+          placeholder="New password" />
+      </div>
+      <button type="submit"
+        class="text-white font-medium px-5 py-2.5 rounded-lg transition-all hover:brightness-110 cursor-pointer whitespace-nowrap"
+        style="background: linear-gradient(135deg, #2d6a4f, #40916c);">
+        Update password
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

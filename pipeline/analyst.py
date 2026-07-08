@@ -66,7 +66,17 @@ Silversea products (for opportunity identification):
 - SpatioX Twin (digital twin platform), SpatioX Ops (smart FM), SpatioX Audit (virtual inspection), SpatioX Walk (3D/VR tour)
 - Core tech: digital twin, BIM, 3D scanning, XR/AR/VR, smart FM
 
-OPPORTUNITIES: Only include signals that explicitly mention digital twin, BIM, 3D scanning, XR, smart FM, smart building, building automation, or proptech. Zero opportunities is correct when nothing qualifies.
+OPPORTUNITIES: Only include signals that explicitly mention digital twin, BIM, 3D scanning, XR, smart FM, smart building, building automation, or proptech. Zero opportunities is correct when nothing qualifies. Every opportunity must carry the source_name of the specific signal it was extracted from — copy it verbatim from the structured signals input, do not invent a new value.
+
+SCORING RUBRIC — each dimension is an integer from 1 to 5. total_score is the sum of all five (max 25).
+
+- Strategic Fit: 1 = barely touches Silversea's product categories, 3 = plausible fit with one product line, 5 = direct fit explicitly matching a named solution.
+- Revenue Potential: 1 = no budget/scale indication, 3 = mid-size project with no figure stated, 5 = named budget/tender value or large-scale (nationwide/multi-site).
+- Win Probability: 1 = no visible relationship or a competitor is already engaged, 3 = neutral/open opportunity with no known blockers, 5 = existing Silversea relationship or the entity is actively seeking vendors.
+- Urgency: 1 = no deadline / long-term exploratory, 3 = deadline stated but more than 3 months out, 5 = deadline imminent (under 1 month) or "now accepting proposals".
+- Intelligence Quality: 1 = vague/secondhand/inferred, 3 = direct quote with some detail, 5 = direct quote plus named entity plus specific numbers/dates.
+
+Every dimension must be an integer 1-5, never 0 and never above 5.
 
 Respond with ONLY valid JSON:
 {
@@ -78,8 +88,8 @@ Respond with ONLY valid JSON:
       "named_entry_point": "programme/tender name",
       "concrete_action": "what Silversea should do",
       "deadline": "as stated or 'No deadline found in source'",
-      "source_url": "",
-      "product_fit": "which SpatioX product and why",
+      "source_name": "must exactly match a source_name value from the structured signals above",
+      "product_fit": "which Silversea solution (see the full product catalog in the company context, organized by business sector) best fits this opportunity, and why — reason from the domain the signal's sector belongs to, not just built-environment framing",
       "scores": {"strategic_fit": 0, "revenue_potential": 0, "win_probability": 0, "urgency": 0, "intelligence_quality": 0},
       "total_score": 0
     }
@@ -178,13 +188,32 @@ def _synthesize_sector(client, sector_name: str, extraction_text: str) -> list:
         return []
 
 
+_SCORE_DIMENSIONS = ["strategic_fit", "revenue_potential", "win_probability", "urgency", "intelligence_quality"]
+
+
+def _clamp_opportunity_scores(opportunities: list) -> list:
+    """Server-side safety net: never trust the LLM's own total_score or dimension range."""
+    for opp in opportunities:
+        raw_scores = opp.get("scores", {}) or {}
+        clamped = {}
+        for dim in _SCORE_DIMENSIONS:
+            try:
+                value = int(raw_scores.get(dim, 1))
+            except (TypeError, ValueError):
+                value = 1
+            clamped[dim] = max(1, min(5, value))
+        opp["scores"] = clamped
+        opp["total_score"] = sum(clamped.values())
+    return opportunities
+
+
 def _synthesize_summary(client, signals_by_sector: dict) -> dict:
     """Produce executive_summary, opportunities, and synthesis from structured signals."""
     sections = []
     for sector_name, signals in signals_by_sector.items():
         lines = []
         for s in signals:
-            lines.append(f"- {s.get('entity', '?')}: {s.get('signal', '')}")
+            lines.append(f"- {s.get('entity', '?')} [source: {s.get('source_name', '')}]: {s.get('signal', '')}")
         sections.append(f"=== {sector_name} ===\n" + "\n".join(lines))
 
     user_message = "Structured signals by sector:\n\n" + "\n\n".join(sections)
@@ -199,7 +228,9 @@ def _synthesize_summary(client, signals_by_sector: dict) -> dict:
             max_tokens=2000,
             response_format={"type": "json_object"},
         )
-        return json.loads(response.choices[0].message.content)
+        result = json.loads(response.choices[0].message.content)
+        result["opportunities"] = _clamp_opportunity_scores(result.get("opportunities", []))
+        return result
     except Exception as e:
         print(f"    Error in summary synthesis: {e}")
         return {"executive_summary": [], "opportunities": [], "synthesis": []}

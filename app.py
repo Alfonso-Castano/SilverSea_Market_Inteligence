@@ -2,14 +2,61 @@
 import json
 import os
 import datetime
+import secrets
 
-from flask import Flask, render_template, request
+from dotenv import load_dotenv
+load_dotenv()
+
+from flask import Flask, render_template, request, session, redirect, url_for
+
+from pipeline import source_suggestions
 
 app = Flask(__name__)
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 FEEDBACK_DIR = os.path.join(DATA_DIR, "feedback")
 PRESENTATION_DIR = os.path.join(DATA_DIR, "presentation")
+
+_SECRET_KEY_PATH = os.path.join(DATA_DIR, ".flask_secret_key")
+
+
+def _load_or_create_secret_key():
+    if os.path.exists(_SECRET_KEY_PATH):
+        with open(_SECRET_KEY_PATH, "r", encoding="utf-8") as f:
+            return f.read().strip()
+    key = secrets.token_hex(32)
+    with open(_SECRET_KEY_PATH, "w", encoding="utf-8") as f:
+        f.write(key)
+    return key
+
+
+app.secret_key = _load_or_create_secret_key()
+
+_VIEWER_PASSWORD_PATH = os.path.join(DATA_DIR, "viewer_password.txt")
+
+
+def _get_viewer_password():
+    if not os.path.exists(_VIEWER_PASSWORD_PATH):
+        seed = os.environ.get("VIEWER_PASSWORD", "changeme")
+        with open(_VIEWER_PASSWORD_PATH, "w", encoding="utf-8") as f:
+            f.write(seed)
+        return seed
+    with open(_VIEWER_PASSWORD_PATH, "r", encoding="utf-8") as f:
+        return f.read().strip()
+
+
+def _set_viewer_password(new_password):
+    with open(_VIEWER_PASSWORD_PATH, "w", encoding="utf-8") as f:
+        f.write(new_password)
+
+
+@app.before_request
+def require_login():
+    if request.endpoint in ("login", "static") or request.path == "/feedback":
+        return None
+    if not session.get("authenticated"):
+        return redirect(url_for("login"))
+    return None
 
 
 def _load_json(filename, default=None):
@@ -28,13 +75,21 @@ def _demo_mode():
     return mode if mode in ("clean", "feedback") else "clean"
 
 
+def _domain_mode():
+    domain = request.args.get("domain", "BER")
+    return domain if domain in ("EDU", "BER", "GENERAL") else "BER"
+
+
 @app.route("/")
 def report():
     demo_mode = _demo_mode()
+    domain = _domain_mode()
     report_data = _load_json(os.path.join("presentation", f"{demo_mode}_report.json"), {})
     if not report_data:
+        report_data = _load_json(f"latest_report_SG_{domain}.json", {})
+    if not report_data:
         report_data = _load_json("latest_report.json", {})
-    return render_template("report.html", report=report_data, demo_mode=demo_mode)
+    return render_template("report.html", report=report_data, demo_mode=demo_mode, current_domain=domain)
 
 
 @app.route("/internals")
@@ -96,7 +151,74 @@ def receive_feedback():
     with open(os.path.join(FEEDBACK_DIR, filename), "w", encoding="utf-8") as f:
         json.dump(feedback, f, indent=2, ensure_ascii=False)
 
+    source_name = (data.get("source_name") or "").strip()
+    if source_name:
+        pending_dir = os.path.join(DATA_DIR, "pending_sources")
+        os.makedirs(pending_dir, exist_ok=True)
+        suggestion = {
+            "source_name": source_name,
+            "source_url": (data.get("source_url") or "").strip(),
+            "description": (data.get("source_description") or "").strip(),
+            "submitted_by": submitter,
+            "submitted_at": now.isoformat(),
+        }
+        pending_filename = f"{now.strftime('%Y%m%d_%H%M%S')}_{submitter}.json"
+        with open(os.path.join(pending_dir, pending_filename), "w", encoding="utf-8") as f:
+            json.dump(suggestion, f, indent=2, ensure_ascii=False)
+
     return "OK", 200
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        submitted = request.form.get("password", "")
+        if submitted == os.environ.get("ADMIN_PASSWORD", ""):
+            session["authenticated"] = True
+            session["role"] = "admin"
+            return redirect(url_for("report"))
+        if submitted == _get_viewer_password():
+            session["authenticated"] = True
+            session["role"] = "viewer"
+            return redirect(url_for("report"))
+        return render_template("login.html", error="Incorrect password")
+    return render_template("login.html", error=None)
+
+
+@app.route("/admin")
+def admin():
+    if session.get("role") != "admin":
+        return redirect(url_for("login"))
+    pending = source_suggestions.list_pending()
+    return render_template("admin.html", pending=pending)
+
+
+@app.route("/admin/change-viewer-password", methods=["POST"])
+def change_viewer_password():
+    if session.get("role") != "admin":
+        return redirect(url_for("login"))
+    new_password = request.form.get("new_password", "").strip()
+    if new_password:
+        _set_viewer_password(new_password)
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/sources/<filename>/approve", methods=["POST"])
+def approve_source(filename):
+    if session.get("role") != "admin":
+        return redirect(url_for("login"))
+    sector = request.form.get("sector")
+    domain = request.form.getlist("domain") or ["GENERAL"]
+    source_suggestions.approve(filename, sector, domain)
+    return redirect(url_for("admin"))
+
+
+@app.route("/admin/sources/<filename>/reject", methods=["POST"])
+def reject_source(filename):
+    if session.get("role") != "admin":
+        return redirect(url_for("login"))
+    source_suggestions.reject(filename)
+    return redirect(url_for("admin"))
 
 
 @app.after_request

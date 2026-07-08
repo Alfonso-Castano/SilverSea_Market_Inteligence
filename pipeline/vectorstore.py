@@ -39,9 +39,12 @@ def add_documents(collection_name, documents, metadatas=None, ids=None):
     return ids
 
 
-def query(collection_name, query_text, n_results=5):
+def query(collection_name, query_text, n_results=5, where=None):
     collection = get_collection(collection_name)
-    return collection.query(query_texts=[query_text], n_results=n_results)
+    kwargs = {"query_texts": [query_text], "n_results": n_results}
+    if where:
+        kwargs["where"] = where
+    return collection.query(**kwargs)
 
 
 def delete_documents(collection_name, ids):
