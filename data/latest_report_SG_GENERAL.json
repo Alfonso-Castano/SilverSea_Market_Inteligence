@@ -1,0 +1,263 @@
+{
+  "executive_summary": [
+    "BCA to host BuildSG LEAD Summit 2026, potentially creating opportunities for smart FM and digital twin solutions",
+    "URA awards tenders for sale sites, indicating ongoing development and potential for smart building technologies",
+    "SGBC participates in London Climate Action Week 2026, highlighting green building initiatives and potential for Silversea's smart FM solutions"
+  ],
+  "signals_by_sector": {
+    "Government & Agencies": [
+      {
+        "entity": "Building and Construction Authority (BCA)",
+        "signal": "The Building and Construction Authority (BCA) will have a new Chief Executive Officer starting 6 March 2026. Additionally, BCA will cease overseas testing for new Construction Work Permit holders progressively from January 2027. The authority will also introduce a Kit-of-Parts design standardisation pathway.",
+        "source_name": "BCA",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Building and Construction Authority (BCA)",
+        "signal": "BCA announced the inaugural APAC Pitch Day for the Construction Startup Competition (CSC). The event aims to support construction startups. The exact date of the event was not specified.",
+        "source_name": "BCA",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Building and Construction Authority (BCA)",
+        "signal": "BCA will be hosting the BuildSG LEAD Summit 2026. The summit aims to bring together leaders in the construction industry. The exact date of the event was not specified.",
+        "source_name": "BCA",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Building and Construction Authority (BCA)",
+        "signal": "BCA launched a two-way feedback survey between consultancy firms and public agencies in May 2026. This survey aims to improve communication and collaboration between these parties.",
+        "source_name": "BCA",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Urban Redevelopment Authority (URA)",
+        "signal": "URA awarded a tender for the sale site at River Valley Green (Parcel C) on 23 June 2026. The tender closing date was 18 June 2026. This sale site is expected to contribute to the development of the area.",
+        "source_name": "URA",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Urban Redevelopment Authority (URA)",
+        "signal": "URA awarded a tender for the sale site at Peck Hay Road on 16 June 2026. The tender closing date was 11 June 2026. This sale site is expected to contribute to the development of the area.",
+        "source_name": "URA",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Urban Redevelopment Authority (URA)",
+        "signal": "URA launched a White site to advance the development of Jurong Lake District on 3 July 2026. This move aims to support the growth of the district.",
+        "source_name": "URA",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Urban Redevelopment Authority (URA)",
+        "signal": "URA will commence preparatory works for the ‘Long Island’ project from end-2026. This project is expected to contribute to the development of the area.",
+        "source_name": "URA",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Housing and Development Board (HDB)",
+        "signal": "HDB launched a tender for the sale site at Admiralty Walk on 29 June 2026. This sale site is expected to contribute to the development of the area.",
+        "source_name": "HDB",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Housing and Development Board (HDB)",
+        "signal": "HDB released the Flash Estimate of 2nd Quarter 2026 Resale Price Index and announced upcoming flat supply on 30 June 2026. This provides insights into the current state of the resale market.",
+        "source_name": "HDB",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "Housing and Development Board (HDB)",
+        "signal": "HDB launched 6,952 flats across 7 projects in the June 2026 BTO sales exercise on 16 June 2026. This aims to provide more housing options for residents.",
+        "source_name": "HDB",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      }
+    ],
+    "Industry Associations": [
+      {
+        "entity": "SGBC",
+        "signal": "SGBC is participating in London Climate Action Week 2026 (LCAW) from 21–24 June 2026. They are also hosting a World Green Building Council Leadership Summit 2026 during the same dates. Additionally, SGBC has several learning events scheduled, including a Lunch and Learn on sustainability reporting and a green edge for tenders on 2 July 2026.",
+        "source_name": "SGBC",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      },
+      {
+        "entity": "SGBC",
+        "signal": "SGBC is organizing a Learning Journey focused on integrated solar façades on 26 June 2026. They are also providing an in-depth exploration of the Leadership in Energy and Environmental Design (LEED) green building rating system, updated to cover the latest LEED v5 standard, on 26 June 2026. This showcases SGBC's commitment to green building education.",
+        "source_name": "SGBC",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      },
+      {
+        "entity": "SGBC",
+        "signal": "SGBC has representation on the World Green Building Council Board of Directors. This strategic move highlights SGBC's influence and involvement in global green building initiatives. The details of the representation and the implications of this role are not specified.",
+        "source_name": "SGBC",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      },
+      {
+        "entity": "BCI Asia",
+        "signal": "BCI Central has announced legal entity name changes across the Asia Pacific. This change aims to reflect the company's evolving structure and operations in the region. The specific details of the name changes are not provided.",
+        "source_name": "BCI Asia",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      },
+      {
+        "entity": "BCI Asia",
+        "signal": "BCI Central is shifting its focus by closing FuturArc & Construction Plus publications to prioritize software solutions. This strategic move indicates a significant change in BCI Central's business strategy, aiming to concentrate on software solutions. The impact of this shift on their operations and offerings is yet to be seen.",
+        "source_name": "BCI Asia",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      },
+      {
+        "entity": "BCI Asia",
+        "signal": "LeadManager is now powered by Hubexo. This integration is expected to enhance the capabilities and performance of LeadManager. Further details on the benefits and changes resulting from this power shift are not specified.",
+        "source_name": "BCI Asia",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      },
+      {
+        "entity": "BCI Asia",
+        "signal": "BCI Asia is introducing the Hubexo Asia Awards to celebrate excellence in architecture and construction. This initiative aims to recognize and honor outstanding achievements in the industry. The criteria for the awards and the planned date for the event are not mentioned.",
+        "source_name": "BCI Asia",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      },
+      {
+        "entity": "SIFMA Singapore",
+        "signal": "SIFMA has amended its constitution to accept corporate memberships. This strategic move is expected to open up new opportunities for collaboration and engagement with corporate entities. The implications of this change on SIFMA's operations and membership benefits are not detailed.",
+        "source_name": "SIFMA Singapore",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      },
+      {
+        "entity": "NTUC",
+        "signal": "The government has introduced a new driver transition package to support Singapore's autonomous vehicle future. This initiative aims to facilitate the transition for drivers in the evolving automotive landscape. NTUC's role and specific details about the package are not elaborated.",
+        "source_name": "NTUC",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      },
+      {
+        "entity": "NTUC",
+        "signal": "NTUC LearningHub has identified top AI skills to boost employability in Singapore. This effort is geared towards enhancing the workforce's capabilities in artificial intelligence. The specific skills recommended and the planned training programs are not specified.",
+        "source_name": "NTUC",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      }
+    ],
+    "General News": [
+      {
+        "entity": "Frasers Property",
+        "signal": "Frasers Property, CSC Land and Sekisui House will preview Dunearn House on July 10, with prices starting from $2,799 psf. This is a new condo launch. The preview date is set for July 10.",
+        "source_name": "EdgeProp Singapore",
+        "implication": "Market development relevant to Silversea's positioning across the built environment and education sectors."
+      }
+    ]
+  },
+  "opportunities": [
+    {
+      "title": "BCA BuildSG LEAD Summit 2026",
+      "source_quote": "BCA will be hosting the BuildSG LEAD Summit 2026. The summit aims to bring together leaders in the construction industry.",
+      "named_entry_point": "BuildSG LEAD Summit 2026",
+      "concrete_action": "Explore potential partnership or showcase opportunities for Silversea's smart FM and digital twin solutions",
+      "deadline": "No deadline found in source",
+      "source_name": "BCA",
+      "product_fit": "Smart Facility Management System, Digital Twin",
+      "scores": {
+        "strategic_fit": 5,
+        "revenue_potential": 3,
+        "win_probability": 3,
+        "urgency": 1,
+        "intelligence_quality": 3
+      },
+      "total_score": 15
+    },
+    {
+      "title": "URA Sale Site at River Valley Green",
+      "source_quote": "URA awarded a tender for the sale site at River Valley Green (Parcel C) on 23 June 2026.",
+      "named_entry_point": "River Valley Green (Parcel C) sale site",
+      "concrete_action": "Consider providing smart building solutions for the development of the sale site",
+      "deadline": "Tender closing date was 18 June 2026",
+      "source_name": "URA",
+      "product_fit": "Smart Building Solutions, IoT & AI Solutions",
+      "scores": {
+        "strategic_fit": 3,
+        "revenue_potential": 5,
+        "win_probability": 3,
+        "urgency": 1,
+        "intelligence_quality": 3
+      },
+      "total_score": 15
+    },
+    {
+      "title": "SGBC London Climate Action Week 2026",
+      "source_quote": "SGBC is participating in London Climate Action Week 2026 (LCAW) from 21–24 June 2026.",
+      "named_entry_point": "London Climate Action Week 2026",
+      "concrete_action": "Explore potential collaboration opportunities with SGBC on green building initiatives and smart FM solutions",
+      "deadline": "No deadline found in source",
+      "source_name": "SGBC",
+      "product_fit": "Smart Facility Management System, Sustainability Solutions",
+      "scores": {
+        "strategic_fit": 5,
+        "revenue_potential": 3,
+        "win_probability": 3,
+        "urgency": 1,
+        "intelligence_quality": 3
+      },
+      "total_score": 15
+    }
+  ],
+  "synthesis": [
+    "Government agencies and industry associations are actively promoting sustainability and innovation in the built environment, creating potential opportunities for Silversea's smart FM and digital twin solutions",
+    "Upcoming events and tenders indicate a growing focus on smart building technologies and green initiatives",
+    "Silversea should explore potential partnerships and showcase opportunities with key players in the industry"
+  ],
+  "competition_risks": [],
+  "data_sources": [
+    {
+      "name": "BCA",
+      "url": "https://www1.bca.gov.sg/resources/newsroom/",
+      "sector": "gov_agencies"
+    },
+    {
+      "name": "URA",
+      "url": "https://www.ura.gov.sg/Corporate/Media-Room/Media-Releases",
+      "sector": "gov_agencies"
+    },
+    {
+      "name": "HDB",
+      "url": "https://www.hdb.gov.sg",
+      "sector": "gov_agencies"
+    },
+    {
+      "name": "GeBIZ",
+      "url": "https://www.gebiz.gov.sg/ptn/ppplisting/search.xhtml",
+      "sector": "gov_agencies"
+    },
+    {
+      "name": "SGBC",
+      "url": "https://www.sgbc.sg/news-insights/",
+      "sector": "associations"
+    },
+    {
+      "name": "BCI Asia",
+      "url": "https://www.bciasia.com/blog/",
+      "sector": "associations"
+    },
+    {
+      "name": "SIFMA Singapore",
+      "url": "https://sifma.org.sg/",
+      "sector": "associations"
+    },
+    {
+      "name": "NTUC",
+      "url": "https://www.ntuc.org.sg/",
+      "sector": "associations"
+    },
+    {
+      "name": "EdgeProp Singapore",
+      "url": "https://www.edgeprop.sg/property-news",
+      "sector": "general_news"
+    },
+    {
+      "name": "The Business Times",
+      "url": "https://www.businesstimes.com.sg/property",
+      "sector": "general_news"
+    }
+  ],
+  "_metadata": {
+    "country": "Singapore",
+    "date": "2026-07-08",
+    "date_display": "08 July 2026"
+  }
+}
