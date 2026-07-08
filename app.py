@@ -3,6 +3,8 @@ import json
 import os
 import datetime
 import secrets
+import hmac
+import re
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -134,11 +136,18 @@ def receive_feedback():
         data = request.form
 
     now = datetime.datetime.now(datetime.timezone.utc)
-    submitter = (data.get("submitter") or "anonymous").strip().replace(" ", "_")
+    raw_submitter = (data.get("submitter") or "anonymous").strip()
+    submitter = re.sub(r"[^A-Za-z0-9_-]", "_", raw_submitter) or "anonymous"
+
+    raw_rating = data.get("relevance_rating") or data.get("relevance") or 0
+    try:
+        relevance_rating = int(raw_rating)
+    except (TypeError, ValueError):
+        return {"error": "relevance_rating must be a number"}, 400
 
     feedback = {
         "report_date": data.get("report_date", ""),
-        "relevance_rating": int(data.get("relevance_rating") or data.get("relevance") or 0),
+        "relevance_rating": relevance_rating,
         "most_useful": data.get("most_useful", ""),
         "missed_topics": data.get("missed_topics", ""),
         "priority_changes": data.get("priority_changes", ""),
@@ -173,11 +182,12 @@ def receive_feedback():
 def login():
     if request.method == "POST":
         submitted = request.form.get("password", "")
-        if submitted == os.environ.get("ADMIN_PASSWORD", ""):
+        admin_password = os.environ.get("ADMIN_PASSWORD", "")
+        if admin_password and hmac.compare_digest(submitted, admin_password):
             session["authenticated"] = True
             session["role"] = "admin"
             return redirect(url_for("report"))
-        if submitted == _get_viewer_password():
+        if hmac.compare_digest(submitted, _get_viewer_password()):
             session["authenticated"] = True
             session["role"] = "viewer"
             return redirect(url_for("report"))
@@ -223,9 +233,10 @@ def reject_source(filename):
 
 @app.after_request
 def add_cors(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    if request.path == "/feedback":
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return response
 
 
