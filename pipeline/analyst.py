@@ -63,10 +63,11 @@ SUMMARY_PROMPT = """You are writing an executive summary for a market intelligen
 You will receive structured signals already organized by sector. Your job is to produce ONLY the summary fields — the signals themselves are already finalized.
 
 Silversea products (for opportunity identification):
-- SpatioX Twin (digital twin platform), SpatioX Ops (smart FM), SpatioX Audit (virtual inspection), SpatioX Walk (3D/VR tour)
-- Core tech: digital twin, BIM, 3D scanning, XR/AR/VR, smart FM
+- Built Environment & Real Estate (BER): Smart Facility Management System, Digital Twin, Smart Virtual Mockup, Smart Virtual Inspection, 3D/VR Virtual Tour, 3D Scanning to 3D Model, IoT & AI Solutions, CCTV Video Analytics Solution.
+- Education & EdTech (EDU): STEM 3D Virtual Lab, Virtual Campus, Virtual Event Platform, 3D/VR Virtual Tour, Metaverse Platform, Customized AR/VR Content.
+- Core tech: digital twin, BIM, 3D scanning, XR/AR/VR, smart FM, IoT, virtual/immersive content.
 
-OPPORTUNITIES: Only include signals that explicitly mention digital twin, BIM, 3D scanning, XR, smart FM, smart building, building automation, or proptech. Zero opportunities is correct when nothing qualifies. Every opportunity must carry the source_name of the specific signal it was extracted from — copy it verbatim from the structured signals input, do not invent a new value.
+OPPORTUNITIES: Only include signals that explicitly mention digital twin, BIM, 3D scanning, XR, smart FM, smart building, building automation, proptech, edtech, virtual campus, STEM lab, e-learning, or virtual/immersive learning. Zero opportunities is correct when nothing qualifies. Every opportunity must carry the source_name of the specific signal it was extracted from — copy it verbatim from the structured signals input, do not invent a new value.
 
 SCORING RUBRIC — each dimension is an integer from 1 to 5. total_score is the sum of all five (max 25).
 
@@ -89,7 +90,7 @@ Respond with ONLY valid JSON:
       "concrete_action": "what Silversea should do",
       "deadline": "as stated or 'No deadline found in source'",
       "source_name": "must exactly match a source_name value from the structured signals above",
-      "product_fit": "which Silversea solution (see the full product catalog in the company context, organized by business sector) best fits this opportunity, and why — reason from the domain the signal's sector belongs to, not just built-environment framing",
+      "product_fit": "which Silversea solution (see the product catalog listed above, organized by business sector) best fits this opportunity, and why — reason from the domain the signal's sector belongs to, not just built-environment framing",
       "scores": {"strategic_fit": 0, "revenue_potential": 0, "win_probability": 0, "urgency": 0, "intelligence_quality": 0},
       "total_score": 0
     }
@@ -239,25 +240,29 @@ def _synthesize_summary(client, signals_by_sector: dict) -> dict:
 def _generate_implications(signals_by_sector: dict) -> None:
     """Add implication field to each signal based on sector and keyword matching. Zero LLM cost."""
     SECTOR_IMPLICATIONS = {
-        "Government & Agencies": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin and smart FM solutions.",
+        "Government & Agencies": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions.",
         "Industry Associations": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media.",
-        "Customers": "Activity from a potential or existing customer that may signal demand for digital twin, BIM, or smart FM solutions.",
+        "Customers": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions.",
         "Partners": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities.",
         "Competitors": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate.",
-        "General News": "Market development in Singapore's built environment sector relevant to Silversea's positioning.",
+        "General News": "Market development relevant to Silversea's positioning across the built environment and education sectors.",
     }
 
     SPECIFIC_KEYWORDS = {
-        "digital twin": "Directly relevant to Silversea's core SpatioX Twin platform.",
-        "smart fm": "Aligns with Silversea's SpatioX Ops smart facility management solution.",
-        "smart building": "Aligns with Silversea's SpatioX Ops smart building management capabilities.",
-        "bim": "Relevant to Silversea's BIM-to-digital-twin workflow in SpatioX Twin.",
-        "3d scan": "Relevant to Silversea's 3D scanning and point cloud capabilities.",
-        "virtual tour": "Directly relevant to Silversea's SpatioX Walk 3D/VR tour product.",
+        "digital twin": "Directly relevant to Silversea's Digital Twin solution.",
+        "smart fm": "Aligns with Silversea's Smart Facility Management System solution.",
+        "smart building": "Aligns with Silversea's Smart Facility Management System building management capabilities.",
+        "bim": "Relevant to Silversea's BIM-to-digital-twin workflow.",
+        "3d scan": "Relevant to Silversea's 3D Scanning to 3D Model capabilities.",
+        "virtual tour": "Directly relevant to Silversea's 3D/VR Virtual Tour product.",
         "xr": "Relevant to Silversea's XR/spatial computing capabilities.",
-        "inspection": "Relevant to Silversea's SpatioX Audit virtual inspection solution.",
-        "facility management": "Core market for Silversea's SpatioX Ops platform.",
-        "iot": "Complementary technology to Silversea's smart building sensor integration.",
+        "inspection": "Relevant to Silversea's Smart Virtual Inspection solution.",
+        "facility management": "Core market for Silversea's Smart Facility Management System.",
+        "iot": "Complementary technology to Silversea's IoT & AI Solutions.",
+        "stem lab": "Directly relevant to Silversea's STEM 3D Virtual Lab solution.",
+        "virtual campus": "Directly relevant to Silversea's Virtual Campus solution.",
+        "edtech": "Relevant to Silversea's education-sector product line (Virtual Campus, STEM 3D Virtual Lab).",
+        "e-learning": "Relevant to Silversea's education-sector immersive/virtual learning solutions.",
     }
 
     for sector_name, signals in signals_by_sector.items():
@@ -286,7 +291,7 @@ def _derive_competition_risks(report_data: dict) -> None:
         report_data["competition_risks"] = []
         return
 
-    HIGH_KEYWORDS = ["digital twin", "smart fm", "bim", "3d scan", "iot", "smart building", "facility management"]
+    HIGH_KEYWORDS = ["digital twin", "smart fm", "bim", "3d scan", "iot", "smart building", "facility management", "virtual campus", "stem lab", "edtech"]
     MEDIUM_KEYWORDS = ["partnership", "expansion", "funding", "launch", "acquisition"]
     THREAT_ORDER = {"HIGH": 0, "MEDIUM": 1, "LOW": 2}
 
@@ -300,7 +305,7 @@ def _derive_competition_risks(report_data: dict) -> None:
             threat_level = "HIGH"
             mitigation = (
                 f"Direct competitor in Silversea's core domain. Monitor {entity}'s "
-                f"product development closely and differentiate on SpatioX platform integration."
+                f"product development closely and differentiate on Silversea's product suite integration."
             )
         elif any(kw in signal_lower for kw in MEDIUM_KEYWORDS):
             threat_level = "MEDIUM"
