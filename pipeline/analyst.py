@@ -183,7 +183,7 @@ def _synthesize_sector(client, sector_name: str, extraction_text: str) -> list:
             result = result.get("signals", list(result.values())[0] if result else [])
         if not isinstance(result, list):
             result = []
-        return result
+        return [item for item in result if isinstance(item, dict)]
     except Exception as e:
         print(f"    Error synthesizing {sector_name}: {e}")
         return []

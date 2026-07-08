@@ -86,11 +86,22 @@ def _domain_mode():
 def report():
     demo_mode = _demo_mode()
     domain = _domain_mode()
+    domain_filename = f"latest_report_SG_{domain}.json"
     report_data = _load_json(os.path.join("presentation", f"{demo_mode}_report.json"), {})
     if not report_data:
-        report_data = _load_json(f"latest_report_SG_{domain}.json", {})
-    if not report_data:
-        report_data = _load_json("latest_report.json", {})
+        if os.path.exists(os.path.join(DATA_DIR, domain_filename)):
+            report_data = _load_json(domain_filename, {})
+        else:
+            # Only fall back to the pre-domain-scoping legacy report if NO domain-scoped
+            # file exists yet anywhere — never substitute a different domain's content
+            # for one that simply has no report yet, which would silently mislabel
+            # stale cross-domain data as belonging to this domain.
+            any_domain_file_exists = any(
+                os.path.exists(os.path.join(DATA_DIR, f"latest_report_SG_{d}.json"))
+                for d in ("BER", "EDU", "GENERAL")
+            )
+            if not any_domain_file_exists:
+                report_data = _load_json("latest_report.json", {})
     return render_template("report.html", report=report_data, demo_mode=demo_mode, current_domain=domain)
 
 
