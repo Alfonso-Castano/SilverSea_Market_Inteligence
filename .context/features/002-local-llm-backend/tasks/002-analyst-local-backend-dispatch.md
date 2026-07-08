@@ -1,6 +1,6 @@
 # Task 002: Wire a local (Ollama) backend into `pipeline/analyst.py`'s three LLM call sites
 
-**Status:** pending
+**Status:** done
 **Depends on:** 001
 **Model tier:** quality — first local-model integration in this repo; the primary risk being tested (genuine schema-constrained JSON on a real local model) lives here, and the Groq path must stay byte-for-byte unchanged.
 
@@ -96,3 +96,18 @@ Stage-by-stage per CLAUDE.md — no Groq quota spent here:
 3. With `LLM_BACKEND` still unset/`groq`, confirm `analyst._chat_completion`'s non-local branch is unchanged by inspection — diff the constructed `client.chat.completions.create(...)` call against the original 3 call sites' arguments (same `model=GROQ_MODEL`, same `max_tokens`, same `response_format` conditions). Note in Evidence that this was checked, since there's no live Groq call to run without spending quota.
 
 ## Evidence
+
+**Check 1+2:**
+```
+$ py -c "import ast; ast.parse(open('pipeline/analyst.py').read()); print('SYNTAX OK')"
+SYNTAX OK
+$ py -c "from pipeline import analyst; print(analyst.LLM_BACKEND, analyst.SECTOR_SYNTHESIS_SCHEMA is not None, analyst.SUMMARY_SCHEMA is not None)"
+groq True True
+```
+
+**Check 3 — Groq-branch inspection vs. original 3 call sites (no live call, no quota spent):**
+- `_extract_sector`: identical (`_chat_completion(..., 2000)`, no schema → no `response_format`, matches original).
+- `_synthesize_sector` / `_synthesize_summary`: identical `model`/`max_tokens`/`response_format={"type":"json_object"}` — confirmed via direct diff read by the dispatching session.
+- `analyse()`'s Groq client now conditional on `LLM_BACKEND != "local"` — required so a local-only run never needs `GROQ_API_KEY`.
+
+**Deliberate deviation from this task file's literal point-4 wording (flagged by the executor, verified by the dispatching session via `git diff pipeline/analyst.py`):** the task text said to pass `json_schema=SCHEMA if LLM_BACKEND == "local" else None` at the two synthesis call sites. Taken literally this sets `json_schema=None` on the Groq path, which — given `_chat_completion` only sets `response_format` when `json_schema is not None` — would silently drop Groq's `response_format={"type":"json_object"}`, violating this same task's overriding "Groq path byte-for-byte identical" constraint. Resolved by passing the schema **unconditionally** to `_chat_completion` at both synthesis sites: the Groq branch only checks the schema's *presence* (preserving old behavior exactly), while the local branch consumes its *content* via `format=`. The `user_message` local-only hints remain correctly gated on `LLM_BACKEND == "local"`. Verified correct and intentional — approved.

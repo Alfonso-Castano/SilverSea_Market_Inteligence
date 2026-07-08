@@ -6,12 +6,18 @@ import datetime
 from groq import Groq
 
 try:
+    import ollama
+    OLLAMA_AVAILABLE = True
+except Exception:
+    OLLAMA_AVAILABLE = False
+
+try:
     from pipeline.vectorstore import query, add_documents, COMPANY_CONTEXT, REPORT_HISTORY, FEEDBACK_DIGESTS
     RAG_ENABLED = True
 except Exception:
     RAG_ENABLED = False
 
-from config.models import GROQ_MODEL
+from config.models import GROQ_MODEL, LLM_BACKEND, LOCAL_MODEL, LOCAL_NUM_CTX
 CALL_DELAY = 2
 MIN_CONTENT_CHARS = 150
 
@@ -99,6 +105,115 @@ Respond with ONLY valid JSON:
 }"""
 
 
+_SCORE_DIMENSIONS = ["strategic_fit", "revenue_potential", "win_probability", "urgency", "intelligence_quality"]
+
+# JSON schemas used ONLY on the local (Ollama) backend, via /api/chat's native
+# `format` field for genuine schema-constrained output. The Groq path never uses
+# these — it keeps its loose response_format={"type": "json_object"} mode.
+
+# Ollama's native `format` schemas must be objects, not bare arrays — so the
+# sector synthesis result is wrapped in a top-level `signals` array. This matches
+# the dict-unwrap tolerance already in _synthesize_sector (result.get("signals", ...)).
+SECTOR_SYNTHESIS_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "signals": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "entity": {"type": "string"},
+                    "signal": {"type": "string"},
+                    "source_name": {"type": "string"},
+                },
+                "required": ["entity", "signal", "source_name"],
+            },
+        }
+    },
+    "required": ["signals"],
+}
+
+# Mirrors SUMMARY_PROMPT's top-level object shape exactly.
+SUMMARY_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "executive_summary": {"type": "array", "items": {"type": "string"}},
+        "opportunities": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "title": {"type": "string"},
+                    "source_quote": {"type": "string"},
+                    "named_entry_point": {"type": "string"},
+                    "concrete_action": {"type": "string"},
+                    "deadline": {"type": "string"},
+                    "source_name": {"type": "string"},
+                    "product_fit": {"type": "string"},
+                    "scores": {
+                        "type": "object",
+                        "properties": {dim: {"type": "integer"} for dim in _SCORE_DIMENSIONS},
+                        "required": list(_SCORE_DIMENSIONS),
+                    },
+                    "total_score": {"type": "integer"},
+                },
+                "required": [
+                    "title",
+                    "source_quote",
+                    "named_entry_point",
+                    "concrete_action",
+                    "deadline",
+                    "source_name",
+                    "product_fit",
+                    "scores",
+                    "total_score",
+                ],
+            },
+        },
+        "synthesis": {"type": "array", "items": {"type": "string"}},
+    },
+    "required": ["executive_summary", "opportunities", "synthesis"],
+}
+
+
+def _chat_completion(client, system_prompt: str, user_message: str, max_tokens: int, json_schema: dict | None = None) -> str:
+    """Dispatch one LLM call to the configured backend (LLM_BACKEND: 'groq' | 'local').
+
+    Returns the raw text content. json_schema, when given, is a JSON-schema dict describing
+    the exact expected structured output — enforced via Ollama's native structured-outputs
+    'format' field on the local backend. The Groq path is unchanged: it keeps using its
+    existing loose response_format={"type": "json_object"} whenever json_schema is given,
+    and a plain completion otherwise.
+    """
+    if LLM_BACKEND == "local":
+        if not OLLAMA_AVAILABLE:
+            raise RuntimeError("LLM_BACKEND=local but the 'ollama' package is not installed (see requirements.txt)")
+        response = ollama.chat(
+            model=LOCAL_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message},
+            ],
+            format=json_schema,  # None => free-text, matching the extraction call site
+            options={"num_ctx": LOCAL_NUM_CTX, "num_predict": max_tokens, "temperature": 0},
+        )
+        return response["message"]["content"]
+
+    kwargs = {}
+    if json_schema is not None:
+        kwargs["response_format"] = {"type": "json_object"}
+    response = client.chat.completions.create(
+        model=GROQ_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_message},
+        ],
+        max_tokens=max_tokens,
+        **kwargs,
+    )
+    return response.choices[0].message.content
+
+
 def _build_rag_context(filtered_results: list) -> str:
     """Query the vector store for company context, feedback priorities, and past
     report themes relevant to today's sources."""
@@ -148,15 +263,7 @@ def _extract_sector(client, sector_name: str, sources: list) -> str:
     user_message = f"Sector: {label}\n\n" + "\n\n---\n\n".join(source_blocks)
 
     try:
-        response = client.chat.completions.create(
-            model=GROQ_MODEL,
-            messages=[
-                {"role": "system", "content": SECTOR_EXTRACT_PROMPT},
-                {"role": "user", "content": user_message},
-            ],
-            max_tokens=2000,
-        )
-        return response.choices[0].message.content
+        return _chat_completion(client, SECTOR_EXTRACT_PROMPT, user_message, 2000)
     except Exception as e:
         print(f"    Error extracting {sector_name}: {e}")
         return f"**{label}**: Extraction failed — {e}"
@@ -167,18 +274,18 @@ def _synthesize_sector(client, sector_name: str, extraction_text: str) -> list:
     label = SECTOR_LABELS.get(sector_name, sector_name.replace("_", " ").title())
 
     user_message = f"Sector: {label}\n\nExtracted signals:\n{extraction_text}"
+    if LLM_BACKEND == "local":
+        user_message += '\n\nReturn a JSON object with a top-level "signals" array of the entries.'
 
     try:
-        response = client.chat.completions.create(
-            model=GROQ_MODEL,
-            messages=[
-                {"role": "system", "content": SECTOR_SYNTHESIS_PROMPT},
-                {"role": "user", "content": user_message},
-            ],
-            max_tokens=2000,
-            response_format={"type": "json_object"},
+        content = _chat_completion(
+            client,
+            SECTOR_SYNTHESIS_PROMPT,
+            user_message,
+            2000,
+            json_schema=SECTOR_SYNTHESIS_SCHEMA,
         )
-        result = json.loads(response.choices[0].message.content)
+        result = json.loads(content)
         if isinstance(result, dict):
             result = result.get("signals", list(result.values())[0] if result else [])
         if not isinstance(result, list):
@@ -187,9 +294,6 @@ def _synthesize_sector(client, sector_name: str, extraction_text: str) -> list:
     except Exception as e:
         print(f"    Error synthesizing {sector_name}: {e}")
         return []
-
-
-_SCORE_DIMENSIONS = ["strategic_fit", "revenue_potential", "win_probability", "urgency", "intelligence_quality"]
 
 
 def _clamp_opportunity_scores(opportunities: list) -> list:
@@ -218,18 +322,21 @@ def _synthesize_summary(client, signals_by_sector: dict) -> dict:
         sections.append(f"=== {sector_name} ===\n" + "\n".join(lines))
 
     user_message = "Structured signals by sector:\n\n" + "\n\n".join(sections)
+    if LLM_BACKEND == "local":
+        user_message += (
+            '\n\nReturn a single JSON object with the top-level keys '
+            '"executive_summary", "opportunities", and "synthesis".'
+        )
 
     try:
-        response = client.chat.completions.create(
-            model=GROQ_MODEL,
-            messages=[
-                {"role": "system", "content": SUMMARY_PROMPT},
-                {"role": "user", "content": user_message},
-            ],
-            max_tokens=2000,
-            response_format={"type": "json_object"},
+        content = _chat_completion(
+            client,
+            SUMMARY_PROMPT,
+            user_message,
+            2000,
+            json_schema=SUMMARY_SCHEMA,
         )
-        result = json.loads(response.choices[0].message.content)
+        result = json.loads(content)
         result["opportunities"] = _clamp_opportunity_scores(result.get("opportunities", []))
         return result
     except Exception as e:
@@ -332,7 +439,7 @@ def _derive_competition_risks(report_data: dict) -> None:
 
 def analyse(filtered_results: list, country: dict) -> dict:
     """Multi-pass analysis: extract per sector, synthesize per sector, then summarize."""
-    client = Groq(api_key=os.environ["GROQ_API_KEY"])
+    client = Groq(api_key=os.environ["GROQ_API_KEY"]) if LLM_BACKEND != "local" else None
 
     substantive = [r for r in filtered_results if len(r.get("content", "")) >= MIN_CONTENT_CHARS]
 
