@@ -1,5 +1,7 @@
 # Task 006: Re-seed ChromaDB's `COMPANY_CONTEXT` collection
 
+**Status:** done
+
 ## Files
 
 - None modified. This task runs the existing `scripts/seed_vectorstore.py` unchanged.

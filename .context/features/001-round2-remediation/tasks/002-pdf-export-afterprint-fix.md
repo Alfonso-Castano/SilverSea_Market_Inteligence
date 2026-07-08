@@ -1,5 +1,7 @@
 # Task 002: Fix PDF-export afterprint bug (`static/animations.js`)
 
+**Status:** done
+
 ## Files
 
 - `static/animations.js` (modify only)

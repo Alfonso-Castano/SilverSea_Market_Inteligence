@@ -1,5 +1,7 @@
 # Task 001: Fix admin/viewer auth bypass and harden `/feedback` (`app.py`)
 
+**Status:** done
+
 ## Files
 
 - `app.py` (modify only)

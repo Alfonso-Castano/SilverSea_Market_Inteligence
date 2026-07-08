@@ -1,5 +1,7 @@
 # Task 005: Add EDU keywords and dual-tag NUS/NTU in `config/sources.json`
 
+**Status:** done
+
 ## Files
 
 - `config/sources.json` (modify only)

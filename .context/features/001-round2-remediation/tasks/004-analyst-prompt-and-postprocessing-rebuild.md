@@ -1,5 +1,7 @@
 # Task 004: Finish SpatioX→real-catalog rebuild in `pipeline/analyst.py`
 
+**Status:** done
+
 ## Files
 
 - `pipeline/analyst.py` (modify only)

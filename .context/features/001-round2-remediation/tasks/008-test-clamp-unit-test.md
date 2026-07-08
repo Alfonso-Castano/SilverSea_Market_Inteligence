@@ -1,5 +1,7 @@
 # Task 008: First unit test — `tests/test_clamp.py` for the opportunity-scoring clamp
 
+**Status:** done
+
 ## Files
 
 - `tests/test_clamp.py` (create — new file)

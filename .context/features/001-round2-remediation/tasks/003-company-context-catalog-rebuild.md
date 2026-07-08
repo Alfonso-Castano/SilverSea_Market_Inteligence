@@ -1,5 +1,7 @@
 # Task 003: Finish SpatioX→real-catalog rebuild in `data/company_context.md`
 
+**Status:** done
+
 ## Files
 
 - `data/company_context.md` (modify only)

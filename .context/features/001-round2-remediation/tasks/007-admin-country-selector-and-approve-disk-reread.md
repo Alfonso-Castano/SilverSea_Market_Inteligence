@@ -1,5 +1,7 @@
 # Task 007: Admin country selector + `approve()` disk-reread fix
 
+**Status:** done
+
 ## Files
 
 - `config/sources.py` (modify — add one function)
