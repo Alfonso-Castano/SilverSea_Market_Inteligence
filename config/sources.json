@@ -786,6 +786,7 @@
           "sector": "gov_agencies",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -807,45 +808,49 @@
           "url": "https://most.gov.vn",
           "sector": "gov_agencies",
           "type": "website",
-          "active": true,
+          "active": false,
           "domain": [
             "GENERAL",
             "BER"
-          ]
+          ],
+          "inactive_reason": "Consistently times out (ERR_CONNECTION_TIMED_OUT) on default requests, Scrapling stealth, and Scrapling dynamic fetchers alike — host unreachable from this network"
         },
         {
           "name": "Ministry of Health (MOH)",
           "url": "https://moh.gov.vn",
           "sector": "gov_agencies",
           "type": "website",
-          "active": true,
+          "active": false,
           "domain": [
             "GENERAL",
             "BER"
-          ]
+          ],
+          "inactive_reason": "Consistently times out (ERR_CONNECTION_TIMED_OUT) on default requests, Scrapling stealth, and Scrapling dynamic fetchers alike — host unreachable from this network"
         },
         {
           "name": "Ministry of Education & Training (MOET)",
           "url": "https://moet.gov.vn",
           "sector": "gov_agencies",
           "type": "website",
-          "active": true,
+          "active": false,
           "domain": [
             "GENERAL",
             "BER",
             "EDU"
-          ]
+          ],
+          "inactive_reason": "Default fetch gets a forcibly-closed connection reset; Scrapling stealth and dynamic fetchers both consistently time out (ERR_CONNECTION_TIMED_OUT) — host unreachable from this network"
         },
         {
           "name": "National Innovation Center (NIC)",
           "url": "https://nic.gov.vn",
           "sector": "gov_agencies",
           "type": "website",
-          "active": true,
+          "active": false,
           "domain": [
             "GENERAL",
             "BER"
-          ]
+          ],
+          "inactive_reason": "Page renders almost no text (~72 chars, title only) across default, stealth, and dynamic fetchers — near-empty shell with no crawlable body content"
         },
         {
           "name": "Vingroup",
@@ -853,6 +858,7 @@
           "sector": "customers",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -874,11 +880,12 @@
           "url": "https://vsip.com.vn",
           "sector": "customers",
           "type": "website",
-          "active": true,
+          "active": false,
           "domain": [
             "GENERAL",
             "BER"
-          ]
+          ],
+          "inactive_reason": "DNS resolution failure (NXDOMAIN) — domain does not resolve, confirmed via default requests, Scrapling stealth, and Scrapling dynamic fetchers"
         },
         {
           "name": "VNPT",
@@ -886,6 +893,7 @@
           "sector": "customers",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -897,6 +905,7 @@
           "sector": "customers",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -918,11 +927,12 @@
           "url": "https://fpt.com",
           "sector": "competitors",
           "type": "website",
-          "active": true,
+          "active": false,
           "domain": [
             "GENERAL",
             "BER"
-          ]
+          ],
+          "inactive_reason": "Cloudflare bot-challenge page returned by all three fetcher tiers — default 403; stealth and dynamic both return the 'Just a moment...' verification page, never real content"
         },
         {
           "name": "Viettel Group",
@@ -930,6 +940,7 @@
           "sector": "competitors",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -941,6 +952,7 @@
           "sector": "competitors",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -963,6 +975,7 @@
           "sector": "competitors",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -1007,6 +1020,7 @@
           "sector": "competitors",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -1062,6 +1076,7 @@
           "sector": "partners",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -1073,6 +1088,7 @@
           "sector": "partners",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -1204,11 +1220,12 @@
           "url": "https://atz.com.vn/en",
           "sector": "customers",
           "type": "website",
-          "active": true,
+          "active": false,
           "domain": [
             "GENERAL",
             "BER"
-          ]
+          ],
+          "inactive_reason": "Cloudflare-blocked ('Sorry, you have been blocked') on all three fetcher tiers — default 403; stealth and dynamic both return the block page, never real content"
         },
         {
           "name": "Coca-Cola Vietnam",
@@ -1227,6 +1244,7 @@
           "sector": "customers",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "BER"
@@ -1316,22 +1334,24 @@
           "url": "https://www.cmc.com.vn/",
           "sector": "customers",
           "type": "website",
-          "active": true,
+          "active": false,
           "domain": [
             "GENERAL",
             "BER"
-          ]
+          ],
+          "inactive_reason": "403 Forbidden (nginx) on all three fetcher tiers — appears to block automated/headless clients outright"
         },
         {
           "name": "Lạc Việt",
           "url": "https://lacviet.vn/",
           "sector": "customers",
           "type": "website",
-          "active": true,
+          "active": false,
           "domain": [
             "GENERAL",
             "BER"
-          ]
+          ],
+          "inactive_reason": "Access explicitly restricted ('You have been restricted from accessing this website') on all three fetcher tiers"
         },
         {
           "name": "Newtecons",

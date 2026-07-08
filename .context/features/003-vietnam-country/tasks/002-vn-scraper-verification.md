@@ -1,6 +1,6 @@
 # Task 002: Dry-run and verify all new VN sources (fetcher tiering + active flags)
 
-**Status:** pending
+**Status:** done
 
 ## Files
 
@@ -108,3 +108,23 @@ after Task 001 lands, not in parallel with it.
 
 ## Evidence
 
+Executor report (DONE). Live dry-run of all 52 active URL-bearing VN sources (60 total unchanged):
+
+| Tier | Count |
+|---|---|
+| `active: true`, no fetcher (default) | 32 |
+| `active: true`, `fetcher: "stealth"` | 11 |
+| `active: true`, `fetcher: "dynamic"` | 0 |
+| Newly `active: false` (this task) | 9 |
+| Pre-existing `active: false` (no-URL, Task 001) | 8 |
+| **Total** | **60** |
+
+Stealth-tier: MOC, Vingroup, VNPT, Panasonic Vietnam, Viettel Group, Becamex IDC, Schneider Electric, Bentley Systems, Dell Technologies, Cisco, Biz Eyes.
+
+Newly inactive (all 3 tiers failed, reason recorded per-source): MOST, MOH, MOET (timeout/connection-reset — host unreachable from this network), NIC (near-empty ~72-char shell), VSIP (DNS NXDOMAIN), FPT Corporation & ATZ (Cloudflare challenge page — caught by reading actual body text, not just status/length), CMC (403), Lạc Việt (explicit access restriction).
+
+Spot-checked 3 sources end-to-end via `pipeline.scraper.scrape_source()` with real VN keyword lists — all returned real extracted text (ITPC 2487 chars default, Vingroup 1670 chars stealth, Cisco 2084 chars stealth).
+
+Notable finding: FPT and ATZ initially looked like stealth/dynamic successes by char-count alone (368/751 chars, above the 150-char bar) but were actually Cloudflare "Just a moment..." challenge pages — caught by inspecting actual body text rather than trusting length+200-status.
+
+Files changed: `config/sources.json` only (field-level: `active`/`fetcher`/`inactive_reason`, no structural changes, source count unchanged at 60).
