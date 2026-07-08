@@ -1,6 +1,6 @@
 # Task 008: Country-scope `pipeline/feedback.py` and `pipeline/weekly.py`
 
-**Status:** pending
+**Status:** done
 
 ## Files
 
@@ -397,3 +397,15 @@ it before adding a duplicate.
 
 ## Evidence
 
+Executor report (DONE):
+1. AST parse — all 4 files clean.
+2. Load-bearing `collection.get(where=...)` filter verified directly against live ChromaDB: SG+VN throwaway docs added to REPORT_HISTORY, `where={"country":"VN"}` returned only the VN doc; cleaned up after.
+3. `aggregate_feedback`'s country-filter logic verified against two throwaway feedback files — selected only the VN one.
+4. `report.html` hidden field renders `value="VN"` / `value="SG"` correctly.
+5. `POST /feedback` with `country:"VN"` writes `country: VN`; `country:"XX"` falls back to `SG`. Test files cleaned up.
+6. Grep-confirmed all three call sites in `main.py` now pass `country_code=country["code"]`.
+7. Confirmed `limit=14` + `where` filter with 1 match does not error — no `min()` guard needed.
+
+Files changed: `templates/report.html`, `app.py` (receive_feedback only), `pipeline/feedback.py`, `pipeline/weekly.py`, `main.py`.
+
+Flagged (not a defect, out of this task's scope): `pipeline/weekly.py`'s `WEEKLY_PROMPT` constant still hardcodes "Singapore" in its system framing — task constraints explicitly said not to touch prompt constants, so correctly left as-is, but it's the same class of bug Task 006 fixed in `SUMMARY_PROMPT`. Worth a follow-up. Also flagged: `receive_feedback()`'s filename scheme (`%Y%m%d_%H%M%S_{submitter}`) can collide if the same submitter posts twice within one second — pre-existing behavior, unrelated to country-scoping, not fixed here.

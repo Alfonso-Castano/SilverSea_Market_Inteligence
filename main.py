@@ -41,12 +41,12 @@ def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: s
         active_countries = [c for c in active_countries if c["code"] == country_arg]
     print(f"Running pipeline for {len(active_countries)} active country/countries...\n")
 
-    print("Processing feedback from previous run...")
-    aggregate_feedback()
-    consolidate_feedback_digests()
-
     for country in active_countries:
         print(f"=== {country['name']} ({country['code']}) ===")
+
+        print("Processing feedback from previous run...")
+        aggregate_feedback(country_code=country["code"])
+        consolidate_feedback_digests(country_code=country["code"])
 
         sources = country["sources"]
         if domain_arg:
@@ -97,7 +97,8 @@ def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: s
 
     if datetime.date.today().weekday() == 6:  # Sunday
         print("Running weekly summary (Sunday)...")
-        generate_weekly_summary()
+        for country in active_countries:
+            generate_weekly_summary(country_code=country["code"])
 
 
 if __name__ == "__main__":

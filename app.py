@@ -171,6 +171,10 @@ def receive_feedback():
     raw_submitter = (data.get("submitter") or "anonymous").strip()
     submitter = re.sub(r"[^A-Za-z0-9_-]", "_", raw_submitter) or "anonymous"
 
+    raw_country = (data.get("country") or "SG").strip()
+    valid_codes = {c["code"] for c in load_sources()}
+    country_code = raw_country if raw_country in valid_codes else "SG"
+
     raw_rating = data.get("relevance_rating") or data.get("relevance") or 0
     try:
         relevance_rating = int(raw_rating)
@@ -193,6 +197,7 @@ def receive_feedback():
 
     feedback = {
         "report_date": data.get("report_date", ""),
+        "country": country_code,
         "relevance_rating": relevance_rating,
         "most_useful": data.get("most_useful", ""),
         "missed_topics": data.get("missed_topics", ""),

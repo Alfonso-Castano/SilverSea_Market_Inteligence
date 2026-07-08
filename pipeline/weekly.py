@@ -22,15 +22,14 @@ Daily reports:
 {reports}"""
 
 
-def generate_weekly_summary() -> str:
-    """Retrieve recent daily reports, compress into weekly summary, update vector store."""
+def generate_weekly_summary(country_code: str = None) -> str:
+    """Retrieve recent daily reports for one country, compress into weekly summary, update vector
+    store. country_code=None retains the old global (all-countries) behavior."""
     collection = get_collection(REPORT_HISTORY)
-    count = collection.count()
-    if count == 0:
-        print("No daily reports in vector store — skipping weekly summary.")
-        return ""
-
-    results = collection.get(limit=min(count, 14), include=["documents", "metadatas"])
+    get_kwargs = {"limit": 14, "include": ["documents", "metadatas"]}
+    if country_code:
+        get_kwargs["where"] = {"country": country_code}
+    results = collection.get(**get_kwargs)
     documents = results.get("documents", [])
     metadatas = results.get("metadatas", [])
     ids = results.get("ids", [])
@@ -76,19 +75,19 @@ def generate_weekly_summary() -> str:
 
     delete_documents(REPORT_HISTORY, weekly_ids)
 
-    add_documents(
-        REPORT_HISTORY,
-        [summary],
-        metadatas=[{
-            "date": today.isoformat(),
-            "type": "weekly_summary",
-            "covers_from": week_ago.isoformat(),
-            "covers_to": today.isoformat(),
-            "daily_count": str(len(weekly_docs)),
-        }],
-    )
+    metadata = {
+        "date": today.isoformat(),
+        "type": "weekly_summary",
+        "covers_from": week_ago.isoformat(),
+        "covers_to": today.isoformat(),
+        "daily_count": str(len(weekly_docs)),
+    }
+    if country_code:
+        metadata["country"] = country_code
+    add_documents(REPORT_HISTORY, [summary], metadatas=[metadata])
 
-    print(f"  Weekly summary: compressed {len(weekly_docs)} daily reports into 1 summary")
+    scope_note = f" [{country_code}]" if country_code else ""
+    print(f"  Weekly summary: compressed {len(weekly_docs)} daily reports into 1 summary{scope_note}")
     return summary
 
 

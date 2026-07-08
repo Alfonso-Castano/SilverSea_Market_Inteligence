@@ -524,6 +524,7 @@
 
     <form id="feedback-form" class="space-y-5">
       <input type="hidden" name="report_date" value="{{ report._metadata.date }}" />
+      <input type="hidden" name="country" value="{{ current_country|default('SG') }}" />
 
       <!-- Relevance rating -->
       <div>
