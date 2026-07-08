@@ -4,6 +4,25 @@ Running record of decisions that constrain future work. Newest first. Check here
 
 ---
 
+## [2026-07-08] — Feature 002 (Local LLM Backend): config-switchable Ollama backend added to `analyst.py`
+
+**Decision:** `pipeline/analyst.py` gained a config-switchable local LLM backend via a new `LLM_BACKEND` env var (`groq`|`local`, default `groq`) in `config/models.py`, alongside `LOCAL_MODEL` (default `qwen3-32b-q6k`) and `LOCAL_NUM_CTX` (default `32768`). All 3 of `analyst.py`'s LLM call sites were rewired through one new `_chat_completion` dispatch helper keyed on `LLM_BACKEND`, rather than adding parallel branch logic at each call site.
+**Rationale:** A single dispatch point keeps the Groq path (default, unset `LLM_BACKEND`) provably byte-for-byte unchanged — verified in `/feature-verify`'s evidence gate — while giving Alfonso's own GPU hardware a path to run the pipeline with zero Groq token-budget constraint. One helper avoids the 3-call-site duplication that would otherwise be needed for a second backend.
+
+**Decision:** The local backend uses the native `ollama` Python package calling Ollama's `/api/chat` endpoint directly (`ollama.chat(..., format=<json_schema>)`), not an OpenAI-SDK/`base_url` shim pointed at Ollama's OpenAI-compatible endpoint.
+**Rationale:** Ollama's OpenAI-compatible endpoint does not support genuine JSON-schema enforcement — only prompt-level hinting. The two `analyst.py` call sites that need structured JSON (`SECTOR_SYNTHESIS_SCHEMA`, `SUMMARY_SCHEMA`) require real schema enforcement to stay reliable at the reduced instruction-following capacity of the target model class; the native API's `format=` parameter is the only mechanism that actually guarantees this.
+
+**Decision:** Qwen3-32B at Q6_K quantization was chosen as the target local model, run on Alfonso's own hardware (RTX 5090, 32GB VRAM). Since Q6_K isn't a standard Ollama library tag, `README.md` documents a manual GGUF import from `bartowski/Qwen3-32B-GGUF` via a one-line Modelfile (done outside the repo, not automated); `LOCAL_MODEL` defaults to the resulting tag name `qwen3-32b-q6k`.
+**Rationale:** 32GB VRAM comfortably fits a 32B model at Q6_K (higher quality than Q4/Q5 quantizations commonly pre-packaged in Ollama's library) with headroom for the 32k context window (`LOCAL_NUM_CTX`). This is a manual, one-time provisioning step per machine, not something the pipeline needs to automate.
+
+**Decision:** No changes made to `pipeline/filter.py` (kept pure keyword-weighted, no AI) or to the 3-phase extract→synthesize→summary pipeline architecture in this feature, despite local compute removing the original Groq token-budget constraint that forced that split. Both explicitly named as candidate future features, not built now.
+**Rationale:** Alfonso wants the local backend proven stable on real hardware first (still an open manual checkpoint) before reconsidering architecture that was originally shaped by a constraint (Groq TPM/TPD limits) the local backend may no longer impose. Evaluating whether local-model judgment should append to or replace the existing keyword filter is a separate decision requiring its own discussion, not a natural side-effect of adding the backend switch.
+
+**Decision:** `pipeline/feedback.py` and `pipeline/weekly.py` were left untouched — they continue to import `GROQ_MODEL` directly and remain Groq-only even when `LLM_BACKEND=local` is set for `analyst.py`.
+**Rationale:** CONTEXT.md scoped this feature to `analyst.py`'s 3 LLM call sites only. Extending the local-backend switch to `feedback.py`/`weekly.py` would require the same dispatch-helper treatment there and wasn't part of the discussed scope — noted as a known limitation in `/feature-verify`'s review rather than silently left ambiguous.
+
+---
+
 ## [2026-07-08] — Feature 001 (Round 2 Remediation): remediation scope and fixes locked
 
 **Decision:** A full remediation feature (`.context/features/001-round2-remediation/`) was scoped against the "Supervisor Feedback Round 2" WIP commit (`3dc471a`) after an independent Fable-model review found the admin/viewer auth gate had a bypass, the SpatioX→real-catalog rebuild was only partially applied (accurate transcription in `company_context.md`'s catalog section, but prompts/gate keywords/post-processing/filter keywords downstream still ran on the old 4-product SpatioX worldview), and a broader recon pass surfaced three additional `/feedback`-route hardening gaps.
