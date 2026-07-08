@@ -104,6 +104,39 @@ Competitor moves to watch: new product launches, government tender wins, new par
 
 **Government agencies tracked for tender and policy signals:** BCA (Building and Construction Authority — Green Mark, IDD policy), MND (Ministry of National Development), URA (Urban Redevelopment Authority), HDB (Housing & Development Board), GeBIZ (government tender portal), Smart Nation/GovTech (Smart Nation initiatives), JTC Corporation (industrial estate digital twin potential).
 
+### Vietnam
+
+**Vingroup** — Vietnam's largest private conglomerate, real estate/smart city developer.
+Prospective buyer of Digital Twin for smart-city and large-scale development projects.
+
+**Sun Group** — Major Vietnamese developer (resorts, urban, entertainment). Prospective buyer of
+Digital Twin and 3D/VR Virtual Tour for new development marketing and facilities planning.
+
+**VSIP (Vietnam Singapore Industrial Park)** — Industrial park developer/operator. Prospective
+buyer of Smart Facility Management System and Digital Twin for industrial park asset management.
+
+**VNPT** — State-owned telecom group active in smart city initiatives. Prospective partner/buyer
+for Digital Twin and IoT & AI Solutions in smart city programmes.
+
+**Panasonic Vietnam** — Manufacturing operations. Prospective buyer of Smart Facility Management
+System and IoT & AI Solutions for smart factory initiatives.
+
+**Samsung Vietnam** — Large-scale manufacturing operations. Prospective buyer of Smart Facility
+Management System and Digital Twin for factory digitalization.
+
+**Education prospects:** Văn Lang University and HUIT (Ho Chi Minh City University of Industry
+and Trade) — campus digital twin (Digital Twin) and virtual event/orientation use cases (3D/VR
+Virtual Tour, Virtual Event Platform), same profile as NUS/NTU in Singapore. Sao Mai Group
+(Vrealab platform) and Lạc Việt (VR training for medical/education) are additional
+education-technology-adjacent prospects worth tracking for partnership or competitive signals.
+
+**Government agencies tracked for tender and policy signals:** ITPC (Ho Chi Minh City Investment
+& Trade Promotion Centre — IT solution focus), Ministry of Construction (MOC — BIM policy, smart
+buildings, digital twin), Ministry of Industry & Trade (MOIT — Industry 4.0, energy), Ministry of
+Science & Technology (MOST — AI, innovation), Ministry of Health (MOH — smart hospital), Ministry
+of Education & Training (MOET — smart campus), National Innovation Center (NIC — innovation
+funding).
+
 ## Ecosystem Players
 
 Companies in Silversea's broader market ecosystem — not direct BD targets, but sources of partnership, channel, and competitive signals.
@@ -134,6 +167,23 @@ Companies in Silversea's broader market ecosystem — not direct BD targets, but
 - Cushman & Wakefield — Global real estate services; existing partner, potential Smart Facility Management System customer for FM portfolio management
 - ST Synthesis (ST Engineering) — Singapore defence/engineering conglomerate's smart FM arm; potential customer or competitor for government facility management contracts
 - Savills — Global property consultancy with Singapore operations; potential Digital Twin / Smart Facility Management System customer for portfolio-wide digital twin adoption
+
+**Vietnam — technology dealers/suppliers** — Infrastructure and platform partners whose products
+complement Silversea's delivery stack, not direct BD targets:
+- NVIDIA — AI GPUs, Omniverse; potential technology partner for Digital Twin/3D rendering
+  infrastructure
+- Microsoft Azure — Cloud AI; potential cloud infrastructure partner
+- Amazon Web Services — Cloud; potential cloud infrastructure partner
+- Dell Technologies — Workstations; potential hardware supplier for 3D scanning/rendering
+  workloads
+- Cisco — Networking; potential infrastructure partner for large-scale smart building deployments
+
+**Vietnam — facility management firms** — Potential customers for Smart Facility Management
+System, or channel partners reselling FM services on top of it:
+- Savills Vietnam — Global property consultancy's Vietnam arm; potential Smart Facility
+  Management System / Digital Twin customer for portfolio-wide FM contracts
+- CBRE Vietnam — Global real estate services' Vietnam arm; potential Smart Facility Management
+  System customer for FM portfolio management
 
 ## BD Priorities
 

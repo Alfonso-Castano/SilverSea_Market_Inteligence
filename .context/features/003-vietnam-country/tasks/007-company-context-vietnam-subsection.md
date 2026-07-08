@@ -1,6 +1,6 @@
 # Task 007: Add a Vietnam subsection to `data/company_context.md` + re-seed the vectorstore
 
-**Status:** pending
+**Status:** done
 
 ## Files
 
@@ -149,3 +149,11 @@ other task touches this file.
 
 ## Evidence
 
+Executor report (DONE):
+1. `grep -c "^### Vietnam"` → `1`.
+2. Single `## Ecosystem Players` heading confirmed; Vietnam subsections appended inside it before `## BD Priorities`.
+3. SpatioX-absence check — printed `OK`.
+4. `py scripts/seed_vectorstore.py` → `Seeded 41 chunks into 'company_context' collection.` (up from 34), exit 0.
+5. Re-seed content check → `41 chunks confirmed, Vietnam content present`.
+
+Files changed: `data/company_context.md` only. `git diff` confirmed purely additive to the two named sections.
