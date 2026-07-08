@@ -6,3 +6,4 @@ chromadb
 scrapling[fetchers]
 flask
 Jinja2
+ollama

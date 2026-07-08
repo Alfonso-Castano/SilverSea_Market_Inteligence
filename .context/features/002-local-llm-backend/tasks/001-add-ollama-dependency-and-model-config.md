@@ -1,6 +1,6 @@
 # Task 001: Add `ollama` dependency and backend config constants
 
-**Status:** pending
+**Status:** done
 **Depends on:** none
 **Model tier:** cheap — the exact code is specified below; the executor's job is transcription plus verification.
 
@@ -47,3 +47,21 @@ LOCAL_NUM_CTX = int(os.environ.get("LOCAL_LLM_NUM_CTX", "32768"))
 Run `py -c "from config.models import GROQ_MODEL, LLM_BACKEND, LOCAL_MODEL, LOCAL_NUM_CTX; print(GROQ_MODEL, LLM_BACKEND, LOCAL_MODEL, LOCAL_NUM_CTX)"` — must exit 0 and print `meta-llama/llama-4-scout-17b-16e-instruct groq qwen3-32b-q6k 32768` (defaults, since no env vars are set in this shell). Then run `pip show ollama` (or `py -m pip show ollama` if `pip` isn't on PATH) — must exit 0 confirming the package installed from `requirements.txt` (install it first with `pip install -r requirements.txt` if not already present).
 
 ## Evidence
+
+**Verification 1 — config.models import and defaults:**
+```
+$ py -c "from config.models import GROQ_MODEL, LLM_BACKEND, LOCAL_MODEL, LOCAL_NUM_CTX; print(GROQ_MODEL, LLM_BACKEND, LOCAL_MODEL, LOCAL_NUM_CTX)"
+meta-llama/llama-4-scout-17b-16e-instruct groq qwen3-32b-q6k 32768
+```
+Exit code: 0
+
+**Verification 2 — ollama package installation:**
+```
+$ py -m pip show ollama
+Name: ollama
+Version: 0.6.2
+Summary: The official Python client for Ollama.
+License-Expression: MIT
+Requires: httpx, pydantic
+```
+Exit code: 0
