@@ -219,7 +219,8 @@ def approve_source(filename):
         return redirect(url_for("login"))
     sector = request.form.get("sector")
     domain = request.form.getlist("domain") or ["GENERAL"]
-    source_suggestions.approve(filename, sector, domain)
+    country = request.form.get("country", "SG")
+    source_suggestions.approve(filename, sector, domain, country_code=country)
     return redirect(url_for("admin"))
 
 

@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 
-from config.sources import COUNTRIES, save_sources
+from config.sources import load_sources, save_sources
 
 PENDING_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "pending_sources")
 PROCESSED_DIR = os.path.join(PENDING_DIR, "processed")
@@ -38,7 +38,7 @@ def approve(filename, sector, domain, country_code="SG"):
         "active": True,
     }
 
-    countries = COUNTRIES
+    countries = load_sources()
     for country in countries:
         if country["code"] == country_code:
             country["sources"].append(new_source)
