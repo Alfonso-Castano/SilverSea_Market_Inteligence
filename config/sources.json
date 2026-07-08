@@ -763,6 +763,778 @@
         "online learning",
         "blended learning"
       ]
+    },
+    {
+      "name": "Vietnam",
+      "code": "VN",
+      "active": true,
+      "sources": [
+        {
+          "name": "ITPC",
+          "url": "https://itpc.hochiminhcity.gov.vn/home",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Ministry of Construction (MOC)",
+          "url": "https://moc.gov.vn",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Ministry of Industry & Trade (MOIT)",
+          "url": "https://moit.gov.vn",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Ministry of Science & Technology (MOST)",
+          "url": "https://most.gov.vn",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Ministry of Health (MOH)",
+          "url": "https://moh.gov.vn",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Ministry of Education & Training (MOET)",
+          "url": "https://moet.gov.vn",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER",
+            "EDU"
+          ]
+        },
+        {
+          "name": "National Innovation Center (NIC)",
+          "url": "https://nic.gov.vn",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Vingroup",
+          "url": "https://vingroup.net",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Sun Group",
+          "url": "https://sungroup.com.vn",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "VSIP",
+          "url": "https://vsip.com.vn",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "VNPT",
+          "url": "https://vnpt.com.vn",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Panasonic Vietnam",
+          "url": "https://www.panasonic.com/vn",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Samsung Vietnam",
+          "url": "https://www.samsung.com/vn",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "FPT Corporation",
+          "url": "https://fpt.com",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Viettel Group",
+          "url": "https://viettel.com.vn/en/",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Becamex IDC",
+          "url": "https://becamex.com.vn",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Siemens",
+          "url": "https://www.siemens.com",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Schneider Electric",
+          "url": "https://www.se.com/vn",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Honeywell",
+          "url": "https://www.honeywell.com",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Johnson Controls",
+          "url": "https://www.johnsoncontrols.com",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Autodesk",
+          "url": "https://www.autodesk.com",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Bentley Systems",
+          "url": "https://www.bentley.com",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Matterport",
+          "url": "https://matterport.com",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "NVIDIA",
+          "url": "https://www.nvidia.com",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Microsoft Azure",
+          "url": "https://azure.microsoft.com",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Amazon Web Services",
+          "url": "https://aws.amazon.com",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Dell Technologies",
+          "url": "https://www.dell.com",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Cisco",
+          "url": "https://www.cisco.com",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Savills Vietnam",
+          "url": "https://www.savills.com.vn",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "CBRE Vietnam",
+          "url": "https://www.cbrevietnam.com",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Vietnam Investment Review",
+          "url": "https://vir.com.vn",
+          "sector": "general_news",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "VnExpress Business",
+          "url": "https://vnexpress.net/kinh-doanh",
+          "sector": "general_news",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Vietnam Briefing",
+          "url": "https://www.vietnam-briefing.com",
+          "sector": "general_news",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "World Bank Vietnam",
+          "url": "https://www.worldbank.org/en/country/vietnam",
+          "sector": "general_news",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "VIFA Liên Minh",
+          "url": "https://vifafair.com/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "TTDecor",
+          "url": "https://ttdecor.net/gioi-thieu-art",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "BambuUP",
+          "url": "https://bambuup.com/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "GIZ",
+          "url": "https://www.giz.de/en/vi/viet-nam",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Vietsoft Pro",
+          "url": "https://vietsoftpro.com/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "ATZ",
+          "url": "https://atz.com.vn/en",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Coca-Cola Vietnam",
+          "url": "https://www.coca-cola.com/vn/vi",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Biz Eyes",
+          "url": "https://biz-eyes.com.vn/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "HUIT",
+          "url": "https://huit.edu.vn/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER",
+            "EDU"
+          ]
+        },
+        {
+          "name": "MIK Group",
+          "url": "https://www.mikgroup.vn/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "BM Windows",
+          "url": "https://bmwindows.vn/vi",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Arobid",
+          "url": "https://arobid.com/vi",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "QMS",
+          "url": "https://qms.vn/bat-dong-san",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Sao Mai Group",
+          "url": "https://saomaiedu.com/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Văn Lang University",
+          "url": "https://www.vlu.edu.vn/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER",
+            "EDU"
+          ]
+        },
+        {
+          "name": "CMC",
+          "url": "https://www.cmc.com.vn/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Lạc Việt",
+          "url": "https://lacviet.vn/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Newtecons",
+          "url": "https://newtecons.vn/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "VNDC Technology Media",
+          "url": "",
+          "sector": "customers",
+          "type": "website",
+          "active": false,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ],
+          "inactive_reason": "no URL supplied in source list — needs Alfonso to provide"
+        },
+        {
+          "name": "BPRO",
+          "url": "",
+          "sector": "customers",
+          "type": "website",
+          "active": false,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ],
+          "inactive_reason": "no URL supplied in source list — needs Alfonso to provide"
+        },
+        {
+          "name": "Digital World",
+          "url": "",
+          "sector": "customers",
+          "type": "website",
+          "active": false,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ],
+          "inactive_reason": "no URL supplied in source list — needs Alfonso to provide"
+        },
+        {
+          "name": "CTO Group",
+          "url": "",
+          "sector": "customers",
+          "type": "website",
+          "active": false,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ],
+          "inactive_reason": "no URL supplied in source list — needs Alfonso to provide"
+        },
+        {
+          "name": "Exporum",
+          "url": "",
+          "sector": "customers",
+          "type": "website",
+          "active": false,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ],
+          "inactive_reason": "no URL supplied in source list — needs Alfonso to provide"
+        },
+        {
+          "name": "Steamzone",
+          "url": "",
+          "sector": "customers",
+          "type": "website",
+          "active": false,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ],
+          "inactive_reason": "no URL supplied in source list — needs Alfonso to provide"
+        },
+        {
+          "name": "Delta",
+          "url": "",
+          "sector": "customers",
+          "type": "website",
+          "active": false,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ],
+          "inactive_reason": "no URL supplied in source list — needs Alfonso to provide"
+        },
+        {
+          "name": "Đa Minh Education - Gia Đình Education",
+          "url": "",
+          "sector": "customers",
+          "type": "website",
+          "active": false,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ],
+          "inactive_reason": "no URL supplied in source list — needs Alfonso to provide"
+        }
+      ],
+      "priority_keywords": [
+        "tender",
+        "RFP",
+        "ITQ",
+        "ITT",
+        "digital twin",
+        "BIM",
+        "smart FM",
+        "smart building",
+        "proptech",
+        "building automation",
+        "3D scanning",
+        "point cloud",
+        "facility management",
+        "smart facility"
+      ],
+      "keywords": [
+        "virtual tour",
+        "3D scan",
+        "3D visualization",
+        "immersive",
+        "XR",
+        "extended reality",
+        "virtual reality",
+        "augmented reality",
+        "metaverse",
+        "spatial computing",
+        "building management",
+        "smart estate",
+        "intelligent building",
+        "IoT",
+        "CMMS",
+        "predictive maintenance",
+        "construction technology",
+        "contech",
+        "greenfield",
+        "smart construction",
+        "IDD",
+        "integrated digital delivery",
+        "TOP inspection",
+        "defect inspection",
+        "virtual inspection",
+        "sustainability",
+        "green building",
+        "net zero",
+        "public sector",
+        "smart nation",
+        "government digital",
+        "built environment",
+        "M&E integration",
+        "BMS",
+        "building automation system",
+        "asset management system",
+        "Axomem",
+        "DataMesh",
+        "FacilityBot",
+        "Cryotos",
+        "Minuscule Technologies",
+        "Alstern Technologies",
+        "Aperio",
+        "Nuvola Media",
+        "SSI Corporate",
+        "NeuronCloud",
+        "CapitaLand",
+        "Mapletree",
+        "Lendlease",
+        "JTC",
+        "HDB estate",
+        "MCC",
+        "CSCEC",
+        "CCCC",
+        "CHEC",
+        "Sembcorp",
+        "SJ Group",
+        "Meinhardt",
+        "BECA",
+        "Ramboll",
+        "Azbil",
+        "Johnson Controls",
+        "Schneider",
+        "Quantum Automation",
+        "ST Synthesis",
+        "Savills",
+        "edtech",
+        "e-learning",
+        "LMS",
+        "learning management system",
+        "campus digital",
+        "STEM lab",
+        "virtual lab",
+        "virtual campus",
+        "online learning",
+        "blended learning"
+      ]
     }
   ],
   "_domain_tagging_status": "draft — mechanical sector-based defaults applied 2026-07-02, pending Alfonso review, see supervisor-feedback-v2-implementation.md Phase B2"

@@ -1,6 +1,6 @@
 # Task 001: Add Vietnam (`VN`) country block to `config/sources.json`
 
-**Status:** pending
+**Status:** done
 
 ## Files
 
@@ -307,3 +307,15 @@ None.
 
 ## Evidence
 
+Executor report (DONE):
+1. JSON valid — parses cleanly.
+2. `60 14 76` — matches expected source/priority_keywords/keywords counts exactly.
+3. Dual-tag check (MOET, Văn Lang University, HUIT) → three `['GENERAL', 'BER', 'EDU']` lists.
+4. Inactive-list check → exactly the 8 no-URL entries.
+5. `COUNTRIES` codes → `['SG', 'VN']`.
+6. SG-specific-term exclusion check → `True True True`.
+7. `git diff --stat` → 772 insertions, 0 deletions — SG block and `_domain_tagging_status` untouched.
+
+Note: hit a Windows console `cp1252` UnicodeEncodeError printing Vietnamese diacritics in one verification command; resolved with `PYTHONIOENCODING=utf-8`, no data issue.
+
+Files changed: `config/sources.json` only.
