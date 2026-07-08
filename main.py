@@ -80,7 +80,7 @@ def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: s
             "sources_scraped": len(scraped),
             "sources_passed_filter": len(filtered),
         }
-        metadata_path = os.path.join("data", "run_metadata.json")
+        metadata_path = os.path.join("data", f"run_metadata_{country['code']}.json")
         os.makedirs("data", exist_ok=True)
         with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(run_metadata, f, indent=2)

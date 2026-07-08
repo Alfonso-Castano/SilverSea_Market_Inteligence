@@ -1,6 +1,6 @@
 # Task 003: Country-aware `/` and `/internals` routing, admin country list, run_metadata scoping
 
-**Status:** pending
+**Status:** done
 
 ## Files
 
@@ -213,3 +213,11 @@ context this task introduces.
 
 ## Evidence
 
+Executor report (DONE):
+1. `ast.parse` on both files — clean.
+2. Flask test-client: `GET /?country=SG`, `/?country=VN`, `/?country=XX`, `/internals?country=VN` all → 200, no tracebacks.
+3. Mocked `load_sources()` to include VN (since 001 hadn't landed yet at dispatch time) and confirmed the "no VN report yet" fallback does NOT mislabel SG's report as VN's.
+4. `render_template("admin.html", ..., countries=load_sources())` renders cleanly (no Jinja error).
+5. Grep-confirmed `_country_mode()`, its call sites in `report()`/`internals()`, `admin()`'s `countries=load_sources()`, and `main.py`'s `run_metadata_{country['code']}.json` f-string.
+
+Files changed: `app.py`, `main.py`. Did not run `py main.py` (would trigger Groq LLM call) — metadata path verified via grep only, per instructions.
