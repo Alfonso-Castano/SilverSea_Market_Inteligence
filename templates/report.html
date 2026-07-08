@@ -206,13 +206,13 @@
               {% set impl = signal.implication | default('') %}
               {% if not impl %}
                 {% if 'competitor' in sector | lower %}
-                  {% set impl = "Monitor " ~ signal.entity ~ "'s moves and assess competitive positioning against SpatioX products." %}
+                  {% set impl = "Monitor " ~ signal.entity ~ "'s moves and assess competitive positioning against Silversea's product suite." %}
                 {% elif 'partner' in sector | lower %}
                   {% set impl = "Explore potential collaboration or channel partnership opportunity with " ~ signal.entity ~ "." %}
                 {% elif 'gov' in sector | lower %}
                   {% set impl = "Track this government initiative for upcoming tender or pilot project opportunities." %}
                 {% elif 'customer' in sector | lower %}
-                  {% set impl = "Engage " ~ signal.entity ~ " to assess fit for SpatioX digital twin or smart FM solutions." %}
+                  {% set impl = "Engage " ~ signal.entity ~ " to assess fit for Silversea's relevant solutions (digital twin, smart FM, or education/EdTech products depending on sector)." %}
                 {% else %}
                   {% set impl = "Assess relevance to Silversea's market positioning and product roadmap." %}
                 {% endif %}
@@ -306,14 +306,29 @@
         What do these scores mean?
         <svg class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200 details-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
       </summary>
-      <div class="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
-        <ul class="space-y-1.5">
-          <li><span class="font-semibold text-navy dark:text-gray-100">Strategic Fit (0–5):</span> How directly the opportunity matches a SpatioX product capability.</li>
-          <li><span class="font-semibold text-navy dark:text-gray-100">Revenue Potential (0–5):</span> Estimated deal size / business value if pursued.</li>
-          <li><span class="font-semibold text-navy dark:text-gray-100">Win Probability (0–5):</span> How likely Silversea is to win given known relationships and competition.</li>
-          <li><span class="font-semibold text-navy dark:text-gray-100">Urgency (0–5):</span> How time-sensitive the opportunity is (deadline proximity, competitive pressure).</li>
-          <li><span class="font-semibold text-navy dark:text-gray-100">Intelligence Quality (0–5):</span> How well-grounded the signal is (named entities, dates, amounts vs. vague mentions).</li>
-          <li><span class="font-semibold text-navy dark:text-gray-100">Total Score (0–25):</span> Sum of the five sub-scores. <span class="text-score-high font-medium">20–25 = High</span> &nbsp;|&nbsp; <span class="text-score-medium font-medium">13–19 = Medium</span> &nbsp;|&nbsp; <span class="text-score-low font-medium">0–12 = Low</span>.</li>
+      <div class="mt-4 space-y-3 text-sm text-gray-700 dark:text-gray-300">
+        <ul class="space-y-3">
+          <li>
+            <span class="font-semibold text-navy dark:text-gray-100">Strategic Fit (1–5):</span> How directly the opportunity matches one of Silversea's actual solutions (see the full product catalog by business sector — not a single flagship product).
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">1 = barely touches Silversea's product categories · 3 = plausible fit with one product line · 5 = direct fit, explicitly matches a named solution</div>
+          </li>
+          <li>
+            <span class="font-semibold text-navy dark:text-gray-100">Revenue Potential (1–5):</span> Estimated deal size / business value if pursued.
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">1 = no budget/scale indication · 3 = mid-size project, no figure stated · 5 = named budget/tender value, or large-scale (nationwide/multi-site)</div>
+          </li>
+          <li>
+            <span class="font-semibold text-navy dark:text-gray-100">Win Probability (1–5):</span> How likely Silversea is to win given known relationships and competition.
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">1 = no visible relationship, competitor already engaged · 3 = neutral, open opportunity with no known blockers · 5 = existing Silversea relationship, or entity actively seeking vendors</div>
+          </li>
+          <li>
+            <span class="font-semibold text-navy dark:text-gray-100">Urgency (1–5):</span> How time-sensitive the opportunity is (deadline proximity, competitive pressure).
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">1 = no deadline, long-term exploratory · 3 = deadline stated but more than 3 months out · 5 = deadline imminent (under 1 month) or "now accepting proposals"</div>
+          </li>
+          <li>
+            <span class="font-semibold text-navy dark:text-gray-100">Intelligence Quality (1–5):</span> How well-grounded the signal is (named entities, dates, amounts vs. vague mentions).
+            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">1 = vague, secondhand, or inferred · 3 = direct quote with some detail · 5 = direct quote plus named entity plus specific numbers/dates</div>
+          </li>
+          <li><span class="font-semibold text-navy dark:text-gray-100">Total Score (5–25):</span> Sum of the five sub-scores. <span class="text-score-high font-medium">20–25 = escalate to BD immediately</span> &nbsp;|&nbsp; <span class="text-score-medium font-medium">13–19 = monitor</span> &nbsp;|&nbsp; <span class="text-score-low font-medium">5–12 = log only</span>.</li>
         </ul>
       </div>
     </details>
