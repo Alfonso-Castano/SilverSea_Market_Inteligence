@@ -58,7 +58,7 @@ Respond with ONLY valid JSON, no other text:
 
 If there are no actionable signals, respond with: []"""
 
-SUMMARY_PROMPT = """You are writing an executive summary for a market intelligence report for Silversea Media, a digital twin / smart FM company in Singapore.
+SUMMARY_PROMPT = """You are writing an executive summary for a market intelligence report for Silversea Media, a digital twin / smart FM company operating in {country_name}.
 
 You will receive structured signals already organized by sector. Your job is to produce ONLY the summary fields — the signals themselves are already finalized.
 
@@ -208,7 +208,7 @@ def _clamp_opportunity_scores(opportunities: list) -> list:
     return opportunities
 
 
-def _synthesize_summary(client, signals_by_sector: dict) -> dict:
+def _synthesize_summary(client, signals_by_sector: dict, country_name: str) -> dict:
     """Produce executive_summary, opportunities, and synthesis from structured signals."""
     sections = []
     for sector_name, signals in signals_by_sector.items():
@@ -218,12 +218,13 @@ def _synthesize_summary(client, signals_by_sector: dict) -> dict:
         sections.append(f"=== {sector_name} ===\n" + "\n".join(lines))
 
     user_message = "Structured signals by sector:\n\n" + "\n\n".join(sections)
+    system_prompt = SUMMARY_PROMPT.replace("{country_name}", country_name)
 
     try:
         response = client.chat.completions.create(
             model=GROQ_MODEL,
             messages=[
-                {"role": "system", "content": SUMMARY_PROMPT},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
             ],
             max_tokens=2000,
@@ -366,7 +367,7 @@ def analyse(filtered_results: list, country: dict) -> dict:
     # Phase 4: summary synthesis (executive_summary + opportunities + synthesis)
     print("    Generating summary...")
     time.sleep(CALL_DELAY)
-    summary = _synthesize_summary(client, signals_by_sector)
+    summary = _synthesize_summary(client, signals_by_sector, country["name"])
 
     # Assemble final report
     report_data = {

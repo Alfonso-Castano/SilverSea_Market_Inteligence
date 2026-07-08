@@ -1,6 +1,6 @@
 # Task 006: Interpolate the actual country name into `pipeline/analyst.py`'s `SUMMARY_PROMPT`
 
-**Status:** pending
+**Status:** done
 
 ## Files
 
@@ -141,3 +141,10 @@ None. Isolated to `pipeline/analyst.py`, touched by no other task in this featur
 
 ## Evidence
 
+Executor report (DONE):
+1. `py -c "import ast; ast.parse(...)"` — no output, syntax valid.
+2. Placeholder/JSON-schema integrity check — printed `OK`.
+3. `inspect.signature(_synthesize_summary)` — `(client, signals_by_sector: dict, country_name: str) -> dict`.
+4. Call site at `analyse()` line 370 confirmed: `_synthesize_summary(client, signals_by_sector, country["name"])`.
+
+Files changed: `pipeline/analyst.py` only.
