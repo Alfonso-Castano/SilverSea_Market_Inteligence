@@ -259,9 +259,10 @@
         },
         {
           "name": "NUS",
-          "url": "https://news.nus.edu.sg/press-room/",
+          "url": "https://news.nus.edu.sg/press-releases",
           "sector": "customers",
           "type": "website",
+          "fetcher": "dynamic",
           "active": true,
           "domain": [
             "BER",
@@ -273,6 +274,7 @@
           "url": "https://www.ntu.edu.sg/news",
           "sector": "customers",
           "type": "website",
+          "fetcher": "dynamic",
           "active": true,
           "domain": [
             "BER",
