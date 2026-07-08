@@ -1,0 +1,386 @@
+# Decisions Log
+
+Running record of decisions that constrain future work. Newest first. Check here before re-deciding something already settled. Migrated verbatim from the project's original `CONTEXT.md` (2026-06 through 2026-07-02) on 2026-07-08 — every entry below existed in that file; none were invented during migration. Any future session or `/feature-*` run should append new entries above this note, newest-first.
+
+---
+
+## [2026-07-02] — Supervisor Feedback Round 2: execution deviations and inline fixes
+
+**Decision:** `save_sources()` in `config/sources.py` reads the existing `sources.json` before writing back, preserving all sibling root-level keys (`_domain_tagging_status` and any future ones) — not just the `countries` list.
+**Rationale:** The original Phase B1 implementation wrote `{"countries": countries}` fresh on every call, silently dropping `_domain_tagging_status` on the first real admin approval. Surfaced by a post-implementation review. Fixed inline (read-modify-write) since it's two lines in the same file, fully backward-compatible, and prevents the source-suggestion approval flow from erasing the pending-review flag.
+
+**Decision:** `_synthesize_summary()`'s LLM input f-string in `pipeline/analyst.py` now includes each signal's `source_name` — extending the original A2 spec scope by one line.
+**Rationale:** Code-grounding during execution confirmed the pre-existing `f"- {entity}: {signal}"` string dropped `source_name` entirely, which would have made A2's schema change (LLM emitting `source_name` in opportunities) fail silently. Smallest possible fix; redesigning the message format was disproportionate.
+
+**Decision:** Phase A parallelization was reduced from three concurrent subagents to one sequential subagent doing A1+A2+A3 back-to-back.
+**Rationale:** A1+A2 both edit `SUMMARY_PROMPT`; A2+A3 both edit `templates/report.html`. Concurrent edits would silently overwrite each other. The consolidated agent still ran in parallel with disjoint Phase B1 and Phase C agents, so wall-clock impact was minimal.
+
+**Decision:** Phase F's `analyse()` REPORT_HISTORY writes already carried `"country": country["code"]` metadata before this session — no F3 code change was made.
+**Rationale:** Confirmed via `git show HEAD:pipeline/analyst.py` that the country key predated the session. `pipeline/feedback.py` and `pipeline/weekly.py` were deliberately left un-tagged per spec default, meaning `REPORT_HISTORY` accumulates a mix of country-tagged and untagged documents going forward — `where={"country":"SG"}` queries would silently exclude weekly-summary docs. Flagged to Alfonso, unresolved.
+
+---
+
+## [2026-07-02] — Supervisor Feedback Round 2: implementation planning, open items resolved
+
+**Decision:** ChromaDB country-scoping uses a metadata filter (`"country": "SG"` added to existing `metadatas` dicts, plus an optional `where` parameter on `pipeline/vectorstore.py`'s `query()`), not separate collections per country.
+**Rationale:** `pipeline/vectorstore.py` is a thin ~50-line global singleton (three fixed collection-name constants, one `PersistentClient`, four passthrough functions). A metadata filter is additive and backward-compatible everywhere `where` isn't passed. Separate collections would require dynamic collection-name generation at every call site for a feature with zero real non-SG data to test against yet.
+
+**Decision:** The `config/sources.py` → `config/sources.json` migration does NOT add a per-source `"country"` field.
+**Rationale:** Sources already nest inside each country's dict (`COUNTRIES = [{"code": "SG", "sources": [...]}]`) — country is already fully determined by nesting. A redundant field risks consistency drift for zero new information. `--country` filtering operates on `COUNTRIES[i]["code"]`; `--domain` filtering is genuinely per-source (one SG source can be both BER and GENERAL) and uses its own field. The admin-approval flow achieves the practical goal (picking which country's list to append to) without the redundant field.
+
+**Decision:** `company_context.md`'s product catalog was rebuilt around the full 7-sector table (EDU, BER, MFG, HLS, RCC, CTE, PSS) transcribed directly from `docs/Copy of Business Sector _ed01.pdf` pages 1-3, replacing the "four-product SpatioX suite" framing that still persisted at several lines despite the earlier 2026-07 decision to move away from it.
+**Rationale:** Code-grounding found the file was never actually updated past the SpatioX 4-product framing even though the architectural decision to change it had already been made. The PDF was now on disk and its per-sector product lists transcribed verbatim.
+
+**Correction (not a new decision):** The 2026-06-26 entries below describing a fixed `SYNTHESIS_PROMPT` at specific line numbers, with an explicit widened `RELEVANCE GATE` and a sector-categorization instruction, no longer describe the current file. Code-grounding this session found `pipeline/analyst.py` was restructured into three separate prompts (`SECTOR_EXTRACT_PROMPT`, `SECTOR_SYNTHESIS_PROMPT`, `SUMMARY_PROMPT`) during the 2026-06-29/06-30 rewrites, and the widened relevance gate is no longer present — `SUMMARY_PROMPT` reverted to a keyword-only gate. Not a deliberate revert; appears lost when the prompt was restructured. Trust this correction over the 2026-06-26 entries' line numbers.
+
+---
+
+## [2026-07] — Supervisor Feedback Round 2: scope and architecture locked
+
+**Decision:** Eight supervisor/Alfonso feedback topics (report auth, opportunity source links, opportunity scoring fix, feedback-driven source suggestion, PDF export, multi-domain EDU/BER/General restructure, company context rework, multi-country scaffolding) were bundled into one planning document, sequenced Phase A→F by dependency rather than executed ad hoc.
+**Rationale:** Several topics share files or ordering constraints (source-suggestion approval needs the auth work; multi-domain, multi-country, and source-suggestion all touch `config/sources.py`). Bundling with an explicit dependency-aware sequence avoids touching shared files multiple times across sessions — same rationale as the original Phase 4 bundling decision (2026-06-26).
+
+**Decision:** Report authentication uses two static shared passwords (`VIEWER_PASSWORD`, `ADMIN_PASSWORD`) with Flask session cookies — no user accounts, no per-person login.
+**Rationale:** Requirement is company-wide shared access gated by a password, with password-rotation privilege restricted to CEO/technical roles. A second admin-only secret satisfies the role restriction without building real per-user authentication the project doesn't otherwise need. The viewer password is stored in a local file (not just an env var) so an admin can change it without a redeploy.
+
+**Decision:** `config/sources.py` (a Python literal) migrated to `config/sources.json`, with `sources.py` reduced to a thin loader.
+**Rationale:** The source-suggestion feature needs an admin-approval action to safely append a new source to the live config from a web request. Writing to Python source from a request handler (text templating or AST manipulation) is fragile and hard to review/rollback; JSON supports safe read-modify-write and diffs cleanly in git.
+
+**Decision:** Opportunity source links reuse the existing `source_name` → `data_sources` URL-lookup pattern already built for signal cards (2026-06-30), rather than having the LLM generate a URL directly.
+**Rationale:** `SUMMARY_PROMPT` had the LLM fill in `"source_url": ""` itself with no real URL to draw from — the actual cause of empty opportunity links. The signal-card mechanism already solves this; reusing it needs only a schema change (opportunities emit `source_name` instead of a fabricated URL).
+
+**Decision:** Opportunity scoring bug root cause: `SUMMARY_PROMPT`'s `scores` JSON block specified no scale, range, or total-score calculation method — the LLM had always been inventing its own scale. Fix: a locked 5-dimension rubric (strategic fit, revenue potential, win probability, urgency, intelligence quality; each 1-5, `total_score` capped at 25), stated explicitly in the prompt, plus a Python-side clamp-and-recompute safety net after parsing the LLM's JSON.
+**Rationale:** Supersedes the earlier "model sometimes outputs scores >5 per dimension" framing — the actual defect was a missing instruction, not inconsistent model behavior. The Python-side net guards against a future prompt regression silently reproducing out-of-range totals.
+
+**Decision:** The `domain` field (from the earlier "Multi-domain pipeline architecture" decision below) becomes 3-valued for this round — `BER`, `EDU`, `GENERAL` — rather than just BER/EDU. Company context and analyst prompts rebuilt around Silversea's real ~14-solution product catalog (from `Copy of Business Sector _ed01.pdf`) instead of the SpatioX 4-product framing, even though only EDU/BER/GENERAL are active domains this round.
+**Rationale:** `GENERAL` fills the role of "relevant to Silversea overall, not sector-specific" as a first-class domain rather than a fallback bucket. The product-catalog rebuild was prompted by the sector sheet revealing the current framing doesn't reflect Silversea's actual catalog; fixing it now avoids a second rework pass when MFG/HLS/RCC/CTE/PSS eventually get built out.
+
+**Decision:** Company context regulatory content stripped to universal-only statements — no country-specific regulatory detail — leaving regulatory-fit judgment to each local team.
+**Rationale:** Maintaining per-country regulatory detail in one shared file is unsustainable as country expansion proceeds.
+
+---
+
+## [2026-07] — Multi-domain pipeline architecture chosen for BER + EDU expansion
+
+**Decision:** The pipeline supports multiple industry domains (starting BER — Built Environment & Real Estate, and EDU — Education & EdTech) on one shared pipeline, not two separate pipelines. Each source in `config/sources.py` gains a `domain` field (`"BER"`, `"EDU"`, or a list for shared sources). `main.py` accepts `--domain` to filter sources and produce a domain-specific report. The Flask dashboard gets a domain switcher tab.
+**Rationale:** BER and EDU have significant source overlap (e.g. GovTech, Smart Nation publish signals relevant to both). Two fully separate pipelines would scrape the same sources twice with no cross-domain signal surfacing. Implementation deferred until the EDU source list was received.
+
+**Decision:** The existing pipeline sectors (`gov_agencies`, `associations`, `customers`, `partners`, `competitors`, `general_news`) describe each source's *relationship to Silversea*, not the *industry domain* it covers — this stays fixed. The new `domain` field is additive and orthogonal.
+**Rationale:** The supervisor's 7-sector business document (EDU, BER, MFG, HLS, RCC, CTE, PSS) clarified that the current pipeline covers almost exclusively BER + PSS by content, with EDU appearing only incidentally. The relationship taxonomy stays unchanged; domain tagging is the mechanism for multi-sector expansion.
+
+**Decision:** Other-country teams submit source lists via `docs/source_submission_template.xlsx`, generated by `scripts/generate_source_sheet.py`. Required fields: Source Name, Source URL, Description. Optional: Relationship Type (dropdown), Business Domain (dropdown). 100 pre-formatted rows with conditional formatting graying out unused rows.
+**Rationale:** PDF fillable forms require Adobe Acrobat Pro to author. Google Sheets required MCP tooling that added friction. Excel via openpyxl generates locally in seconds, opens natively anywhere, and converts to Google Sheets if needed. Grayed rows (vs. Apps-Script dynamic row spawning) avoids the Google authorization prompt that macro-bearing sheets trigger.
+
+---
+
+## [2026-06-30] — Frontend redesign: interaction and visual architecture
+
+**Decision:** Collapsible entity-based grouping within each sector — signals grouped by entity (e.g. BCA, URA) via Jinja2 dict aggregation, collapsed by default. Applies to Competition Risks too.
+**Rationale:** With 65 signals, a flat grid is overwhelming; grouping by entity lets users scan entity names and expand only what's relevant. Collapse animation uses CSS `grid-template-rows: 0fr → 1fr` for smooth height transitions.
+
+**Decision:** Signal spotlight interaction — inline expansion with backdrop dim/blur, not a modal.
+**Rationale:** Alfonso chose inline over modal to preserve spatial context. Clicking adds a `spotlight-active` class (scale + border glow + larger text), applies `spotlight-mode` to body (dims/blurs other cards), shows a backdrop overlay. Dismissed via click, Escape, or overlay click.
+
+**Decision:** Sector color coding — 5 accent colors via CSS custom properties and `data-sector` selectors: Government=#3b82f6 (blue), Associations=#0d9488 (teal), Partners=#8b5cf6 (purple), Competitors=#e11d48 (rose), General News=#64748b (slate).
+**Rationale:** Alfonso wanted "heavier color scheming" for instant sector scannability without reading text. Colors carry through sector header bars, card left borders, implication boxes, entity group badges.
+
+**Decision:** Dark mode via Tailwind `darkMode: 'class'` with a nav-bar toggle switch, state persisted in `localStorage`, falling back to system preference if unset.
+**Rationale:** Alfonso wanted a user-controlled toggle, not just system preference. `localStorage` persistence prevents the toggle resetting on reload with minimal added complexity.
+
+**Decision:** Source URLs mapped from the `data_sources` array to signal cards via a Jinja2 dict lookup (`source_urls[signal.source_name]`) — no pipeline code changes.
+**Rationale:** Signal objects have `source_name` but empty `source_url`; the URLs already exist in `data_sources` in the same JSON. Template-level mapping avoids touching pipeline code.
+
+---
+
+## [2026-06-29] — Per-sector synthesis architecture: information density fix
+
+**Decision:** Replaced the single monolithic synthesis LLM call with a three-phase approach: (1) 6x per-sector extraction calls (unchanged), (2) 6x per-sector JSON synthesis calls via `SECTOR_SYNTHESIS_PROMPT` — each converts one sector's extraction text into structured `[{entity, signal, source_name}]` JSON, (3) 1x summary-only call via `SUMMARY_PROMPT` producing only `executive_summary`, `opportunities`, `synthesis` from the already-structured signals. The old monolithic `SYNTHESIS_PROMPT` was deleted. Implications (`implication` field) generated in Python post-processing (`_generate_implications()`) with keyword-specific overrides — zero LLM cost.
+**Rationale:** The single synthesis call was the proven bottleneck, dropping ~90% of extracted signals (60-80 → 7). The 17B `llama-4-scout` model handles small, focused tasks well but can't compress all sectors into one large JSON response. Splitting synthesis per-sector gave each sector dedicated attention. Signal count: 7 → 65. Total LLM calls/run: 7 → 13. Token budget: ~15-20k/run, well within 100k TPD and 30k TPM limits.
+
+**Decision:** Signal grid layout in `templates/report.html` changed from stacked full-width cards to responsive 3-column grid (`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4`).
+**Rationale:** Alfonso requested a grid layout matching a reference site's Discovery card layout instead of full-width stacked rectangles.
+
+---
+
+## [2026-06-29] — Dashboard density overhaul: schema expansion backfired
+
+**Decision:** Expanded `SYNTHESIS_PROMPT` signal schema from `{entity, signal}` to `{entity, signal, source_name, implication}` and added a Python-based competition-risks post-processor classifying competitor signals by threat level.
+**Rationale:** Alfonso reviewed the dashboard against a reference site and found per-signal information far too sparse. Competition risks were derived in pure Python (zero token cost) to avoid overloading the LLM.
+
+**Decision (reverted):** The schema expansion caused a signal-count regression from 11 to 7. Adding fields to the synthesis prompt was confirmed counterproductive on the 17B model — it trades count for marginal depth, and Alfonso wants both. This directly motivated the per-sector synthesis rewrite above.
+**Rationale:** `llama-4-scout` has limited instruction-following capacity; more output fields per signal means fewer signals total. The fundamental bottleneck (one monolithic call compressing all sectors) can't be solved by prompt engineering alone on a 17B model.
+
+**Decision:** Template restructured from bullet lists to individual cards per signal, with "For Silversea Media" implication callouts (LLM-generated with sector-based fallback heuristics). Competition risks section added with threat-level badges. Data sources collapsible table added.
+**Rationale:** Alfonso confirmed the card-per-finding approach was correct but wanted a 3-column grid (like the reference site) instead of full-width stacked rectangles — direction correct, layout needed adjustment (resolved by the per-sector rewrite's grid change above).
+
+---
+
+## [2026-06-29] — Pipeline verification: bugs found and fixed
+
+**Decision:** Fixed `analyst.py` which used `MODEL` instead of `GROQ_MODEL`, causing a `NameError` at synthesis time — a leftover from the split-model refactor's variable rename.
+**Rationale:** Stage-by-stage verification caught it before a full pipeline run; without the fix, `main.py` would crash after all extraction calls completed but before producing the final report.
+
+**Decision:** IMDA URL corrected from `/resources/press-releases` to `/resources/press-releases-factsheets-and-speeches`, fetcher set to `"dynamic"`.
+**Rationale:** The old URL 404-redirected ("Page Not Found"); the correct path was found via the IMDA homepage. The page is JS-rendered, requiring the dynamic fetcher. Content went from 25 chars (useless) to 5,545 chars (real press releases).
+
+**Decision:** CCCC set to `active: False`.
+**Rationale:** Consistently times out (15s exceeded) — site unreachable from Singapore. CSCEC (same category) still works and stays active.
+
+**Decision:** Scrapling installed and all stealth/dynamic fetchers verified working. Active source count: 57.
+**Rationale:** Verification run confirmed real content returned for SJ Group, Schneider Electric, Alstern Technologies, Aperio, MCC, IMDA — all previously failing due to missing Scrapling.
+
+---
+
+## [2026-06-29] — Pipeline optimization pass: Scrapling integration and dead code removal
+
+**Decision:** Scrapling library integrated into `pipeline/scraper.py` with tiered fetcher strategy: `_fetch_default()` (plain requests), `_fetch_stealth()` (Scrapling StealthyFetcher — Cloudflare/bot bypass), `_fetch_dynamic()` (Scrapling DynamicFetcher — full browser rendering for JS SPAs). Per-source `"fetcher"` config field dispatches. Imports are lazy so the pipeline still works without Scrapling installed.
+**Rationale:** 5+ sources were inactive due to 403 errors or JS-only rendering that requests+BeautifulSoup can't handle. API verified against official docs before integration.
+
+**Decision:** `pipeline/dedup.py`, `pipeline/entities.py`, `pipeline/scoring.py` deleted; `sentence-transformers` dependency dropped.
+**Rationale:** All three produced no useful output in practice — dedup loaded a 90MB model and consistently merged 0 results; entities attached data nothing downstream read; scoring tracked unreliable citation-based scores that decayed to 0. Removing them simplifies the pipeline and drops ~500MB of dependencies.
+
+**Decision:** Filter keyword rebalancing — entity names (competitors, customers, ecosystem players) moved from `priority_keywords` (3x weight) to `keywords` (1x weight).
+**Rationale:** Sources were auto-passing the relevance filter just by mentioning their own name (e.g. CapitaLand's newsroom scoring 3+ just because "CapitaLand" was a priority keyword). Now a source must mention a technology/domain term to score high enough to pass.
+
+---
+
+## [2026-06-29] — Split-model approach failed — simplified prompt instead
+
+**Decision (reverted the 2026-06-26 split-model decision below):** `gpt-oss-120b` rejected entirely for synthesis. It returns empty output on `SYNTHESIS_PROMPT` — tested both with and without `response_format={"type": "json_object"}`.
+**Rationale:** Three failure modes discovered: (1) Groq counts `max_tokens` against TPM, so input 5.4k + max_tokens 6k = 11.4k >> 8k limit; (2) reducing max_tokens to 2.5k (total 7.9k < 8k) still produced empty output with response_format; (3) without response_format, still empty. The model simply couldn't handle this task.
+
+**Decision:** `SYNTHESIS_PROMPT` simplified from ~117 lines to ~30 lines, keeping `llama-4-scout` for both extraction and synthesis.
+**Rationale:** The dense multi-rule prompt was designed for when the LLM saw raw content directly; in the multi-pass architecture extraction already handles grounding, so the synthesis prompt carried unnecessary weight the 17B model couldn't process. Opportunities improved 0 → 3. Signal count still ~9 vs ~30+ in extraction (~60-70% loss, improved from ~80% but still unacceptable — resolved later by the per-sector synthesis rewrite). Known issues at this point: scoring ignored the 0-5 scale, G Element duplicated across sectors.
+
+**Decision:** RAG context (`_build_rag_context()`) removed from the synthesis call — became dead code at this point.
+**Rationale:** Token budget constraint — RAG context added ~1-2k redundant tokens (company context already hardcoded in the prompt) plus feedback priorities and past themes. Must be restored when switching to Claude Haiku (200k context removes the constraint).
+
+**Decision:** Claude Haiku upgrade deferred until pipeline optimization is complete.
+**Rationale:** Alfonso wants scraper, filter, RAG, and feedback systems hardened and verified before switching the synthesis model — no point feeding a better model through a leaky pipeline.
+
+---
+
+## [2026-06-26] — Split-model architecture for extraction vs synthesis (superseded 2026-06-29 above)
+
+**Decision:** Multi-pass analyst pipeline used two different Groq models: `meta-llama/llama-4-scout-17b-16e-instruct` (17B, 30k TPM) for per-sector extraction, `openai/gpt-oss-120b` (120B, 8k TPM) for the single synthesis call.
+**Rationale:** No single free-tier Groq model worked for both stages. `gpt-oss-120b` had strong instruction-following but only 8k TPM — too small for extraction where raw content across 9-11 sources/sector reaches 9-10k tokens. `llama-4-scout` had 30k TPM (extraction never hit it) but was too weak to follow the dense synthesis prompt, over-summarizing (report went ~25 → ~10 signals). Synthesis input was only ~5.7k tokens, fitting under `gpt-oss-120b`'s 8k TPM.
+
+**Decision:** Both `SYNTHESIS_PROMPT` bug fixes (widened relevance gate, sector categorization — see 2026-06-26 execution entry below) confirmed working on a `llama-4-scout` run.
+**Rationale:** Verification run with all 6 sectors extracting: opportunities gate correctly identified BCA Construction Startup Competition (18/25), correctly excluded URA residential tenders; no cross-sector signal duplication. Status upgraded "unverified" → "verified" (later superseded when `gpt-oss-120b` was abandoned entirely).
+
+**Decision:** `CALL_DELAY` reduced from 25s to 2s.
+**Rationale:** `llama-4-scout`'s 30k TPM made the old 25s inter-call delays (designed for 6-12k TPM models) unnecessary. Even the `gpt-oss-120b` synthesis call fit in a single request. Pipeline run time dropped ~3 min → ~30s.
+
+---
+
+## [2026-06-26] — Phase 4 execution: SYNTHESIS_PROMPT bug fixes applied (later reverted/lost, see 2026-07-02 correction above)
+
+**Decision:** Widened the RELEVANCE GATE in `SYNTHESIS_PROMPT` to accept a second path for opportunities: a tracked ecosystem entity (customer, partner, competitor, government agency) taking a built-environment-relevant action, alongside the original keyword-mention path. Anti-fabrication rule preserved.
+**Rationale:** The strict keyword-only gate produced zero opportunities on the last real run — technically correct per design, but useless for a BD-facing report every run.
+**Status note:** Per the 2026-07-02 correction above, this fix no longer exists in the current file — it appears to have been lost during the 2026-06-29/06-30 prompt restructuring, not deliberately reverted.
+
+**Decision:** Added a sector mis-categorization prevention instruction to `SYNTHESIS_PROMPT`.
+**Rationale:** Sources configured under `competitors` (e.g. G Element, DataMesh) had signals duplicated into the `Partners` bucket — the LLM was bucketing by semantic content rather than configured sector.
+**Status note:** Same as above — no longer present in the current prompt structure.
+
+**Decision:** Model research revealed `llama-3.3-70b-versatile` was deprecated by Groq on 2026-06-17. Recommended replacement: `openai/gpt-oss-120b` (drop-in) or `meta-llama/llama-4-scout-17b-16e-instruct` (30k TPM, eliminates inter-call delays). See `data/model_research.md`.
+**Rationale:** The pipeline would fail or behave unpredictably on the next run if the model string wasn't updated — this surfaced unexpectedly during research, not as a planned change.
+
+---
+
+## [2026-06-26] — Phase 4 scope locked: efficiency, coverage, and bug-fix pass
+
+**Decision:** Eight items bundled into one sequential pass: (1) expand `company_context.md` with ecosystem-player detail, (2) build a no-AI rule-based keyword filter with tiered weighting, (3) replace `scraper.py`'s blind character-cut truncation with keyword-anchored smart truncation, (4) add the supervisor's full ~50-source ecosystem list (deduplicated) and fix known broken scrapers, (5) add a metrics/scores glossary to the dashboard, (6) add feedback-digest consolidation to stop unbounded ChromaDB growth, (7) produce a written LLM model-research comparison with zero live API calls, (8) fix two known `SYNTHESIS_PROMPT` bugs — sequenced last, shipped "unverified."
+**Rationale:** These items spanned token-efficiency, source coverage, model choice, and report clarity, all interrelated enough that splitting into separate phases risked losing shared context (e.g. the filter's keywords depend on the expanded company context). Alfonso explicitly chose one big phase over splitting, since there was no fixed deadline. Two rounds of plan review (code-grounded, then pure-logic) found and corrected real sequencing issues before lock-in.
+
+**Decision:** Chinese state contractors (CSCEC, CCCC, CHEC) included as `partners`-sector sources, superseding the 2026-06-23 exclusion below.
+**Rationale:** The 2026-06-23 exclusion was scoped to a prioritized demo subset, not a permanent call. The supervisor's full ecosystem-list PDF re-listed them under "Main contractors."
+
+**Decision:** TwinMatrix re-added as a `competitors`-sector source, superseding the 2026-06-23 drop below.
+**Rationale:** Same as above — the 2026-06-23 drop was specific to that round's prioritized subset; the supervisor's full list re-included it under "Key competitors."
+
+**Decision:** Main contractors, consultants, M&E/BMS system integrators, and facility-management firms all map onto the existing `partners` sector — no new sector introduced.
+**Rationale:** Consistent with the existing convention (AECOM, CPG Consultant, Honeywell, Cushman & Wakefield already classified as `partners`) and the fixed five-sector-plus-general_news taxonomy. Owners are buyers (→ `customers`); every other ecosystem role is a potential service/channel partner (→ `partners`).
+
+---
+
+## [2026-06-24] — Presentation prep: demo toggle kept, two analyst quality bugs surfaced
+
+**Decision:** `app.py`'s `?demo=clean|feedback` query-param toggle and the "Clean Run"/"With Feedback" badge were kept as working state, not reverted — even though the feedback-influenced report was never generated (`data/presentation/` doesn't exist) and the supervisor demo already happened.
+**Rationale:** Alfonso confirmed the supervisor saw this in-progress state and it's fine as historical/working state; reverting would discard harmless scaffolding for no benefit. (Still non-functional as of the last check — `data/presentation/` still doesn't exist.)
+
+**Decision:** Two analyst-output quality issues logged as known bugs, not fixed immediately: (1) `opportunities: []` — the relevance gate let zero signals through, "correct" per the prompt's design but unhelpful for a demo; (2) sources configured under `competitors` (G Element, DataMesh) had signals duplicated into the "Partners" bucket.
+**Rationale:** Both required a `SYNTHESIS_PROMPT` change, out of scope for presentation-prep and costly to test against Groq tokens. Deferred to Phase 4 (addressed 2026-06-26 above, later lost per the 2026-07-02 correction).
+
+**Decision:** Groq's free-tier daily quota (100k TPD) was fully exhausted for 2026-06-24 (~99,481/100,000). No further `main.py` runs until UTC midnight reset — confirmed with Alfonso to hold off intentionally.
+**Rationale:** Groq's 429 message ("try again in Xm") understates the real wait — it's a daily quota tied to UTC midnight, not a short rolling window.
+
+---
+
+## [2026-06-23] — Multi-pass analyst architecture for information density
+
+**Decision:** Rewrote the analyst from a single monolithic LLM call to a two-phase multi-pass approach: Phase 1 makes one Groq call per sector with full untruncated source content, extracting every named signal; Phase 2 synthesizes all sector extractions into the final structured report.
+**Rationale:** Info-gap analysis showed the single-call approach lost ~75% of actionable signals. Root causes: the LLM silently dropped entire sectors (Competitors, Partners) when given 21 sources at once, and 800-char truncation cut rich sources (e.g. DataMesh 8000 chars → 800). Multi-pass eliminated truncation (each sector has 2-6 sources, fits under 12k TPM) and forced per-sector attention. Report size 4,600 → 8,000 chars, 17/17 key signals present. Trade-off: ~3 min runtime (25s inter-call delay for Groq TPM compliance) vs ~30s for single call.
+
+---
+
+## [2026-06-23] — Phase 3.5: visual design revamp direction locked, then executed
+
+**Decision:** Report page (`/`) gets a dark navy-to-black glassmorphism revamp — continuous dark zone spanning top nav, country tabs, and a new hero section with animated glass stat cards, a sticky scroll-spy nav, and a restructured Opportunities section (top 3 by score expanded equally, rest collapsible) — transitioning to a light, soft-shadowed body below. Internals page (`/internals`) gets the same shadow/hover/animation vocabulary but stays light throughout, no dark hero.
+**Rationale:** An initial "Notion-style restrained polish" framing was explicitly rejected by Alfonso as underselling the ambition — he wanted a genuine structural/visual revamp ("luxurious," "visually impressive"), not incremental styling. Internals stays lighter because it's dev-facing and lower priority, not because the revamp direction was scaled back generally.
+
+**Decision (explicitly declined alternatives, recorded so they aren't reintroduced as undecided):** Glow/accent color stays brand green (`#2d6a4f`) only — no new accent (e.g. gold/champagne) introduced. Sector cards keep a uniform grid (no bento layout). Opportunities keep equal visual weight across the top 3 (no single spotlight card for #1).
+**Rationale:** These were live options Alfonso considered and chose not to take in discussion.
+
+**Decision:** Space Grotesk (Google Fonts CDN) added for headlines/section headers/stat numbers; Inter remains the body font. AOS (Animate On Scroll, CDN) added for scroll-reveal animations.
+**Rationale:** Both are zero-build-step CDN additions fitting the "no architecture change" constraint — Flask + Jinja2 server-side rendering is preserved; the dark hero and glass effects are pure CSS (`backdrop-filter`), not a new rendering layer.
+
+**Decision:** All visual revamp changes were implemented exactly per the locked spec. New CDN dependencies: Google Fonts (Space Grotesk + Inter), AOS 2.3.1. New file: `static/animations.js` (count-up, scroll-spy, sticky nav). No Python packages added, no architecture change.
+**Rationale:** Execution session; all decisions were made in the prior discussion session.
+
+---
+
+## [2026-06-23] — Phase 3 dashboard architecture decisions
+
+**Decision:** Analyst output changed from freeform markdown to structured JSON (`executive_summary`, `signals_by_sector`, `opportunities`, `synthesis`).
+**Rationale:** The dashboard needs to render score badges, sector cards, score-breakdown bars — impossible from a prose string requiring regex parsing. Grounding rules and scoring rubric stayed untouched; only an additive OUTPUT FORMAT block was appended.
+
+**Decision:** Flask + Jinja2 with live per-request rendering (no SPA, no React, no FastAPI).
+**Rationale:** The pipeline is batch-driven (once/day). Pages are server-rendered from JSON files + ChromaDB reads. Flask was already a dependency (feedback server). A JS framework would add npm/build tooling for no capability gain. Live rendering (vs. pre-baked HTML) is simpler — always current, no generation step to keep in sync.
+
+**Decision:** Tailwind CSS via CDN for styling; Chart.js via CDN for internals charts.
+**Rationale:** No build step. CDN is fine for an internal low-traffic dashboard. Tailwind gives utility-class control without custom CSS overhead; Chart.js is the lightest free option covering bar/line/doughnut.
+
+**Decision:** Two-page split — report page built from scratch, internals page adapts a free Volt Dashboard template.
+**Rationale:** The CEO-facing report page must not look generic — custom Tailwind + CSS variables gives visual-identity control. The maintainer-facing internals page has no such constraint, so adapting a free admin template saves build time on a page no one judges aesthetically.
+
+**Decision:** Feedback endpoint consolidated from a separate `scripts/feedback_server.py` (port 5050) into the main Flask app (`app.py`, port 5000).
+**Rationale:** One server instead of two, same CORS/JSON logic. The feedback form's action URL changed to `/feedback` (relative, same origin).
+
+---
+
+## [2026-06-23] — Real sources finalization executed: branding + sources + feedback-loop demo
+
+**Decision:** `data/company_context.md` (vector-store seed doc) updated alongside `analyst.py` to replace all MetaTwin→SpatioX references, then re-seeded into ChromaDB.
+**Rationale:** The RAG pipeline retrieves company-context chunks at inference time; if the seed doc still said "MetaTwin," the LLM could echo wrong product names even with the system prompt fixed. Both files must stay consistent.
+
+**Decision:** SGTech, CPG Consultant, and FacilityBot marked `active: False` after dry-run scrape verification.
+**Rationale:** SGTech's ASP.NET news URLs return 404. CPG Consultant has no dedicated newsroom page. FacilityBot's `/blog` returns 404. All three kept in config for future re-evaluation, excluded from the daily pipeline to avoid error noise.
+
+**Decision:** Final active source count was 30 (not the ~24 originally estimated) because pre-existing sources were kept as-is per the execution plan.
+**Rationale:** The plan said "leave existing ones as-is" for sources like GeBIZ, Smart Nation, NUS/NTU/SGH. The ~24 estimate counted only new + key existing sources, but the file already had more active entries from Phase 1.
+
+---
+
+## [2026-06-23] — Branding bug found: analyst prompt referenced wrong product names
+
+**Decision:** `pipeline/analyst.py`'s SYSTEM_PROMPT corrected to reference Silversea's real products (SpatioX Twin/Ops/Audit/Walk) instead of the placeholder "MetaTwin Object/Space/Immerse/Augment."
+**Rationale:** The placeholder names were never updated after the company profile was confirmed. Since this string drives the Product Fit field in every generated Opportunity, it would surface as a visible factual error in any manager-facing report. The locked grounding-rule structure (closed-book framing, quote-before-extract, abstain tokens, scoring rubric) was preserved — only product-name content changed.
+
+---
+
+## [2026-06-23] — Real source list received: prioritized subset locked for prototype
+
+**Decision:** Of the ~50 ecosystem sources in the supervisor's Built Environment doc, only a ~24-source prioritized subset was wired in for a presentation: gov_agencies +IMDA, associations +SGTech/REDAS, customers +Keppel, partners (newly populated) = AECOM/CPG Consultant/Honeywell/Cushman & Wakefield, competitors +FacilityBot/Cryotos (TwinMatrix dropped). Chinese state contractors, NUS/NTU/SGH, GeBIZ, Smart Nation/GovTech, BCI Asia, and Construction Plus Asia left as-is/out of scope for this round.
+**Rationale:** Finding a real newsroom/press URL per source (not just the PDF's homepage) is the slow part — same cost Phase 1 already paid. Attempting all ~50 in one session risked discovering scraping failures only at demo time; a smaller fully-verified set is more defensible than a larger, partially-broken one. Sector taxonomy stayed exactly as Phase 1/2 built it. **Both the Chinese-state-contractor exclusion and the TwinMatrix drop were later reversed** — see the 2026-06-26 Phase 4 entry above.
+
+**Decision:** LinkedIn and Facebook source URLs remained out of scope for this round.
+**Rationale:** LinkedIn scraping was already ruled out in Phase 1 (anti-bot, no free no-auth method). Facebook carries the same risk profile and wasn't worth researching under the deadline. Still a Phase 4+ candidate if a paid scraping API gets budget.
+
+---
+
+## [2026-06-22] — Phase 2 completion decisions
+
+**Decision:** Google Drive export deferred from the weekly summarizer to Phase 4.
+**Rationale:** The supervisor's real source lists (customers, partners, associations, MY/VN/ID) weren't finalized yet; building Drive export before that would mean reworking it once scope locked. The weekly summarizer's core function (compressing daily reports, replacing them in the vector store) was built and verified — only the external push was deferred.
+
+**Decision:** Phase 3 scope expanded to two separate dashboard surfaces.
+**Rationale:** Alfonso wants a polished, professional report view for BD/sales plus a separate developer-facing internals page (vector store contents, source scores, feedback digests, run metadata) so anyone maintaining the system can see what's driving output without reading code.
+
+---
+
+## [2026-06-19] — Phase 1 prompt engineering decisions
+
+**Decision:** Grounded prompting pattern for the analyst — closed-book framing, quote-before-extract for opportunities, negative few-shot examples, per-field abstain tokens.
+**Rationale:** Llama 3.3 70B fabricated causal links and invented deadlines when given a structured template to fill. Three iterations proved explicit grounding constraints (not just "be accurate") were required. Quality jumped from 13/25 to 21/25.
+
+**Decision:** Content truncated to 800 chars/source in the analyst prompt (down from 2000).
+**Rationale:** Groq free tier has a 12k TPM limit; with 18+ sources passing the filter, 2000 chars/source exceeded it. This constraint was lifted once the pipeline switches to Claude Haiku in production (200k context).
+
+**Decision:** LinkedIn scraping deferred from Phase 1.
+**Rationale:** All free no-auth approaches were blocked by LinkedIn's anti-bot measures. Not a Phase 1 blocker — revisit when budget for paid options (Apify, PhantomBuster) is available.
+
+---
+
+## [2026-06-19] — AI system design decisions locked
+
+**Decision:** Groq (Llama 3.3 70B) for development/testing; Claude Haiku 3.5 for production.
+**Rationale:** Groq's free tier eliminates dev cost. Claude Haiku has better tool-use support for future agent work. Model is a config variable — trivial to swap. Production cost estimate: ~$0.05–0.15/day.
+
+**Decision:** ChromaDB as vector store (local, free).
+**Rationale:** No external API/cost; runs on the company server. Switch to Pinecone only if a multi-server architecture is required in Phase 3+.
+
+**Decision:** RAG + context only for Phase 2; no AI agents.
+**Rationale:** Agents add per-run cost (multiple LLM calls) and complexity without proportional gain at this scale. Agentic verification (high-scoring opportunities trigger web search) deferred to Phase 3+ once the base system is proven.
+
+**Decision:** Three Phase 2 AI enhancements confirmed: semantic deduplication, named entity extraction, source quality scoring.
+**Rationale:** All three add measurable signal-quality improvement with low complexity — dedup reduces cross-source noise, entity extraction improves RAG retrieval, source scoring enables passive learning without extra LLM calls. (Note: all three were later deleted — see the 2026-06-29 "Pipeline optimization pass" entry above — as producing no useful output in practice.)
+
+**Decision:** Hard rate limit on LLM calls per run and per day.
+**Rationale:** Safety measure to prevent runaway loops and API abuse from misconfigured cron or feedback pipelines. Pipeline logs a breach and exits cleanly.
+
+**Decision:** Feedback form submissions are aggregated and LLM-summarized before vector-store ingestion.
+**Rationale:** Raw submissions are too verbose and varied for clean retrieval. A short consensus digest is more useful analyst context than many individual paragraphs, and prevents context bloat.
+
+**Decision:** Pre-run context injection removed from scope.
+**Rationale:** Alfonso confirmed the feedback form already covers this purpose — team feedback on one report becomes context for the next run. No separate injection mechanism needed.
+
+---
+
+## [2026-06] — Project scope expanded: pipeline → AI system
+
+**Decision:** The system is no longer a reporting pipeline — it's a stateful AI market intelligence system with a RAG-based feedback loop that learns and improves over time.
+**Rationale:** Supervisor requirements expanded to include sector-based scraping (gov agencies, associations, customers, partners, competitors), an AI brain with persistent context, a feedback form that reweights priorities, weekly summaries, and a proper internal web dashboard.
+
+**Decision:** Sector-based scraper architecture — five sectors: gov_agencies, associations, customers, partners, competitors.
+**Rationale:** The supervisor wants intelligence organized by who the signal comes from, not just what topic it covers — each sector has distinct BD relevance.
+
+**Decision:** Daily pipeline cadence, not weekly.
+**Rationale:** Supervisor confirmed daily reports are the target cadence (GitHub Actions cron at 09:00 SGT — cron itself never actually configured for daily prod use; app runs locally).
+
+**Decision:** Production hosting on company servers, not Vercel.
+**Rationale:** Supervisor confirmed an internal web dashboard on company infrastructure; Vercel was prototype-only. (Never actually provisioned — still runs locally as of the last session.)
+
+**Decision:** Build fully for Singapore first, then expand to MY, VN, ID.
+**Rationale:** Avoids premature generalization — the SG system becomes the template; other countries just add sector sources.
+
+**Decision:** RAG-based feedback loop using a vector store.
+**Rationale:** User feedback submitted via a form at the end of each daily report must update what the AI prioritizes. Vector store accumulates context; weekly summarization prevents bloat. No fine-tuning — prompt-time retrieval only.
+
+**Decision:** Lightweight context management (CLAUDE.md + a handful of files + `/phase` + `/context-update`) over the GSD framework.
+**Rationale:** Solo project, token efficiency is a constraint; GSD overhead wasn't justified at that scale. **Superseded 2026-07-08** by the `.context/` + `/feature-*` workflow this migration establishes — see `.context/OVERVIEW.md`.
+
+---
+
+## [2026-06] — Initial Architecture
+
+**Decision:** Plain Python pipeline (`requests` + BeautifulSoup) over n8n or Firecrawl.
+**Rationale:** Free, zero external dependencies for MVP, sufficient for the ~15 target sources. Firecrawl could be added later if JS-heavy sites proved unscrapable with plain requests (later partially superseded — Scrapling was added in 2026-06-29 for exactly this reason, though still not Firecrawl).
+
+**Decision:** GitHub Actions for scheduling over a hosted server or n8n cloud.
+**Rationale:** Free, no server to maintain, integrates naturally with the GitHub repo, straightforward cron syntax for a weekly run. (Cadence later changed to daily; GitHub Actions cron never actually finished being wired for production.)
+
+**Decision:** Vercel for report hosting over GitHub Pages.
+**Rationale:** Cleaner URL, easier custom-domain migration later, same auto-deploy-from-GitHub workflow, still free. Migration to Alibaba Cloud OSS or company servers planned once the supervisor approved. **Superseded** — production hosting direction changed to company servers (see the 2026-06 "Project scope expanded" entry above), Vercel was prototype-only.
+
+**Decision:** Claude Haiku (not Sonnet/Opus) for `analyst.py`.
+**Rationale:** Cost — at ~15-30 articles/week, Haiku costs ~$0.10-0.30/run vs. $1-3 for Sonnet. Upgrade to Sonnet only if report quality proves insufficient. **Superseded for the dev phase** — Groq became the dev/test LLM (see 2026-06-19 above); Claude Haiku remains the intended production model, not yet switched to.
+
+**Decision:** Country-config structure from day one even though only SG is active.
+**Rationale:** The supervisor's original brief mentioned SG, MY, ID, VN. Restructuring later would be expensive; one `active: True/False` flag per country costs nothing now.
+
+**Decision:** No database — GitHub repo as storage.
+**Rationale:** MVP only; HTML output is ephemeral (regenerated weekly, later daily). No historical querying needed for MVP. Add SQLite or similar if archiving past reports becomes a requirement. (ChromaDB later added for the vector store, but no relational/document DB was ever introduced.)
+
+**Decision:** Gmail SMTP for email delivery.
+**Rationale:** Free, no new service sign-up. Alfonso's personal Gmail used for testing; company email to be swapped in for production (never completed — email delivery appears to have been superseded in priority by the web dashboard).

@@ -6,3 +6,6 @@ __pycache__/
 data/chromadb/
 data/feedback/
 data/source_scores.json
+data/.flask_secret_key
+data/viewer_password.txt
+data/pending_sources/
