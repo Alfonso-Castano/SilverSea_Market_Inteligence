@@ -80,7 +80,7 @@ def _demo_mode():
 
 def _domain_mode():
     domain = request.args.get("domain", "BER")
-    return domain if domain in ("EDU", "BER", "GENERAL") else "BER"
+    return domain if domain in ("EDU", "BER", "GENERAL", "RCC", "HLS", "MFG", "CTE", "PSS") else "BER"
 
 
 def _country_mode():
