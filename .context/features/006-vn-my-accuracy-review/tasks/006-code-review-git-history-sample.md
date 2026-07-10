@@ -1,6 +1,6 @@
 # Task 006: Code-correctness review — rapid-dispatch git history sample (appends to CODE-REVIEW.md)
 
-**Status:** pending
+**Status:** done
 **Depends on:** Task 005 (`005-code-review-data-flow-and-gates.md`) — must run strictly after Task 005
 lands, since both write to the same `CODE-REVIEW.md` file (Task 005 creates it with a `## 2.` placeholder
 section this task fills in; running concurrently would race on the same file).
@@ -104,4 +104,10 @@ Do not modify section 1 (Task 005's content) above the `## 2.` heading.
    explicitly (not just "see the file").
 
 ## Evidence
-[Filled in at completion]
+DONE (opus executor). Filled CODE-REVIEW.md §2 (8696 chars); §1 + header untouched, placeholder gone; verification `len(s2) > 200` → OK 8696. Read-only git (`show`/`log`/`blame`), no checkout, no code edits, no LLM calls. Of ~24 newly-reviewed commits, 6 raised findings across 4 rows, all **Low/Informational** (none High/Medium):
+- **G1 `975086a` Low:** VN keyword list message-vs-diff drift (claimed SG-terms stripped; still carries `smart nation`/`JTC`/`CapitaLand`/SG competitor roster).
+- **G2 `89ce900` vs `975086a` Low:** inconsistent VN/MY keyword derivation — MY reused SG verbatim, so MY carries `GeBIZ` as a 3× priority_keyword + `BCA Green Mark`/`TwinMatrix`.
+- **G3 `519c772` vs `4012532` Info:** cosmetic `inactive_reason` key-order / em-dash drift, no functional effect.
+- **G4 `4202de0` vs `b3a1bbc` Info:** parallel base.html tab edits caused merge conflict `b1549d6`, resolved correctly to SG/MY/VN; `b3a1bbc`'s "reproduces VN state exactly" claim slightly inaccurate.
+- Corroborations (folded, not rows): `f0be7e3` confirms lead 4/Task 009 (country-scoped retrieval but left WEEKLY_PROMPT SG-hardcoded); `8771013` confirms app.py fallback tuple predates it (from `bb6fbd3`). Context note: `c9f6464`'s VN retag makes the audited VN_BER report stale vs config (not a code bug).
+- **Provenance conclusion (key):** `source_name` breakage **predates this session's 3 features** — `_synthesize_sector()` + its `"Extracted signals:"` literal introduced `ebd90f6` (2026-06-29), loose extract format `59e4f52` (2026-06-23), both 9-15 days before feature/003's first commit. Reclassifies it as a **scope/testing-coverage failure** — 3 consecutive `/feature-verify` PASSes shipped a report-breaking attribution defect without ever checking source_name joins back to data_sources. Net verdict: rapid-dispatch work was mechanically sound; no new correctness bug introduced by the VN/MY/domain dispatches themselves — all Medium/High findings live in pre-session code.

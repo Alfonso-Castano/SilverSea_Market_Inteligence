@@ -169,4 +169,75 @@ content, the RAG metadata schema (add `domain`), *and* the `analyse()`/`main.py`
 
 ## 2. Rapid-dispatch git history sample
 
-[Left for Task 006 to fill in — do not write anything here.]
+Sampled all 27 commits across `feature/003-vietnam-country`, `feature/004-malaysia-country`, and
+`feature/005-domain-activation` (full list: `RESEARCH.md` §6). 3 were already reviewed during planning
+research (`b10537d`, `aea7783`, `bb6fbd3` — see RESEARCH.md §3-4 and section 1 above: `b10537d` is the
+SUMMARY_PROMPT country-name fix `weekly.py` never got (Task 009 / finding 4); `aea7783` broadened the
+global opportunities gate (finding 3); `bb6fbd3` is the introducing commit for the `app.py` domain-tuple
+mismatch (finding 1b / Task 007)). This section covers the remaining **24**, all read-only via
+`git show`/`git log`/`git blame`, zero LLM/Groq calls.
+
+**feature/003-vietnam-country (11 commits):** `8771013` (country-aware routes) verified — all **3** routes
+covered (report/internals/admin), fallback discipline mirrors `_domain_mode`, and it confirms the 3-domain
+fallback tuple *predates* it (it only swapped `SG`→`{country}`; the tuple-vs-`_domain_mode` mismatch was
+introduced later by `bb6fbd3`, consistent with RESEARCH.md §4). `f0be7e3` (feedback/weekly
+country-scoping) is clean — the removed `count==0` guard was relocated to a correct `if not documents:`
+check (`weekly.py:37`), `matched_files` move logic is right, and it **corroborates lead 4 / Task 009**:
+it country-scoped retrieval + metadata but left `WEEKLY_PROMPT`'s hardcoded "Silversea Media (… Singapore)"
+untouched. `060dad9` (UTF-8 stdout) minimal and correct. `07638b2`, `4202de0` reviewed (see finding rows
+for `4202de0`; `975086a`/`519c772` also below). `86daa43`, `61881cb`, `585633e` are docs/`.context`-only,
+no code impact. **Findings: `975086a`, `519c772`, `4202de0` (all Low/Informational).**
+
+**feature/004-malaysia-country (7 commits):** near-mechanical mirrors of the VN work; the value here is
+the VN-vs-MY consistency check. `89ce900` (MY sources.json) and `4012532` (MY fetcher tiering) each drift
+from their VN counterparts (finding rows below). `b3a1bbc` (base.html) reworked the same block VN already
+rewrote (finding row). `a90f5f2` (company_context MY subsection) is additive RAG-seed prose — content
+accuracy is the ACCURACY-AUDIT track's concern, not code-correctness; diff shape is clean. `36d2530`,
+`1f158ff` docs-only. `b1549d6` (merge) conflict-resolved `base.html`, `config/sources.json`,
+`company_context.md` et al.; merged `sources.json` re-parses valid with all 3 country blocks intact (SG 62
+/ VN 60 / MY 55 — section 1), so the conflict resolution was sound. **Findings: `89ce900`, `4012532`,
+`b3a1bbc` (all Low/Informational).**
+
+**feature/005-domain-activation (6 commits):** `e1505c9` (5 new domain tabs) correctly carry
+`&country={{ _country }}`, preserving the country-preservation pattern. `4f174f4` (admin RCC/HLS/MFG/CTE/PSS
+checkboxes) use the consistent `name="domain"` multi-checkbox convention. `4ec3052` de-flags 5
+company_context headings, product text unchanged — the correct docs partner to `aea7783`'s prompt wiring.
+`c9f6464` (retag 30 VN sources to real domains) is internally consistent (GENERAL preserved on every
+source, dual-tag pattern followed); **context note, not a code bug:** it moves 30 VN sources off `BER`,
+so the audited `latest_report_VN_BER.json` (generated pre-retag under blanket-BER tagging) is now stale
+relative to config — a fresh VN/BER run would scrape far fewer sources. `bcdcfba`, `efe5125` docs-only.
+**No code-correctness findings.**
+
+| # | Commit(s) | Finding | Severity |
+|---|-----------|---------|----------|
+| G1 | `975086a` (VN sources.json) | **Message-vs-diff drift.** Message: VN keywords = "SG's lists minus SG-specific terms," naming 6 removals (GeBIZ, BCA Green Mark, Hiverlab, Gelement, TwinLogic, TwinMatrix). Diff removes exactly those 6 but the VN `keywords` list still carries many SG-specific entities — `smart nation`, `HDB estate`, `JTC`, `CapitaLand`, `Mapletree`, `Lendlease`, `Sembcorp`, `SJ Group`, and the full SG competitor roster. The "minus SG-specific terms" cleanup is only partial. Runtime harm is low (filter keywords can only *add* score when matched, and these SG terms rarely appear in VN content), but the VN filter carries irrelevant SG vocabulary. | Low |
+| G2 | `89ce900` vs `975086a` (MY vs VN keyword derivation) | **Inconsistent pattern across the two country blocks.** VN stripped 6 SG-specific terms; MY reused SG's lists **verbatim** (message is accurate: "reuse SG's verbatim plus 18") — so MY retains `GeBIZ` **as a `priority_keyword` (3× weight)**, plus `BCA Green Mark`, `TwinMatrix`, etc. Two different philosophies applied to the identical task type by different dispatches. Concrete artifact: a Malaysian source mentioning Singapore's `GeBIZ` procurement portal gets 3× priority credit it shouldn't. Low real-world impact (GeBIZ ≈ absent from MY content), but the two blocks should have agreed on whether SG-specific terms belong. | Low |
+| G3 | `4012532` vs `519c772` (MY vs VN fetcher tiering) | **Cosmetic convention drift, no functional effect.** VN places `inactive_reason` *after* the `domain` array and phrases reasons with an em-dash and "on all three fetcher tiers"; MY places `inactive_reason` *immediately after `active`* (before `domain`) and phrases with a hyphen and "across default, stealth, and dynamic fetchers." JSON key order is semantically irrelevant, so no bug — recorded only as evidence the two near-identical dispatches used different house styles. Both commits' active/stealth/inactive counts reconcile with their messages. | Informational |
+| G4 | `4202de0` vs `b3a1bbc` (base.html country tabs) | **Parallel edits to identical lines → real merge conflict, resolved correctly.** Both commits rewrote the same country-tab block from the same base (`7eaaba4`), producing **different tab orderings** (VN branch: SG/**VN/MY**; MY branch: SG/**MY/VN**). `b3a1bbc`'s message claims it "reproduces Vietnam's already-decided final state exactly," but the ordering differs — a small message inaccuracy. Merge `b1549d6` conflict-resolved `base.html` to the MY ordering (SG/MY/VN, current state); functionally correct — all three are real `?country=` links with the right codes, ID inert. No functional defect; flagged as message-vs-actual drift + a merge-surface worth noting. | Informational |
+
+**Net:** of the 24 newly-reviewed commits, **6 raised a finding** across 4 rows (G1 `975086a`, G2 `89ce900`
++`975086a`, G3 `519c772`+`4012532`, G4 `4202de0`+`b3a1bbc`) — all **Low or Informational**, none High/Medium.
+No silently-introduced correctness bug was found in the sampled history: every commit's diff matched its
+stated intent modulo the keyword-cleanup overstatement (G1) and the tab-ordering claim (G4), and the two
+higher-risk pipeline commits (`8771013` routing, `f0be7e3` feedback/weekly scoping) are correct. The three
+Medium/High findings in section 1 (`source_name` breakage, gate divergence, RAG scoping) all live in code
+that **predates** this session's three features (see provenance below) — the rapid-dispatch work itself was
+mechanically sound.
+
+**`source_name` breakage provenance — it predates this session's 3 features (pre-existing latent bug,
+newly exposed).** Hard git evidence: `_synthesize_sector()` and its `f"Sector: {label}\n\nExtracted
+signals:\n{extraction_text}"` user-message construction (the root cause in section 1 finding 5) were
+introduced in **`ebd90f6` (2026-06-29, "prototype #2 — per-sector synthesis")**; `SECTOR_EXTRACT_PROMPT`'s
+loose "Format as a flat list grouped by source name" contract dates to **`59e4f52` (2026-06-23,
+"multi-pass analyst")**. Both are **9-15 days older** than `feature/003-vietnam-country`'s first commit
+(`86daa43`, 2026-07-08). Within this session's 27-commit range only `b10537d` and `aea7783` touched
+`pipeline/analyst.py`, and **neither went near** the extract→synthesize handoff (`b10537d` = SUMMARY_PROMPT
+country-name interpolation; `aea7783` = opportunities-gate broadening + product catalogs). Conclusion: this
+is **not** a rapid-dispatch quality defect — it is a pre-existing SG-era latent bug that VN's larger, real,
+multi-source content newly *exposed* (SG's smaller earlier reports masked it). That makes it a
+**scope/testing-coverage failure**, arguably worse than a fresh dispatch bug: three `/feature-verify`
+PASSes across features 003/004/005 all generated VN/MY reports without any step re-checking that signal
+`source_name`s actually join back to real `data_sources` — so a report-breaking attribution defect shipped
+through three consecutive green gates. Fixing it requires prompt-engineering judgment on the
+`SECTOR_EXTRACT_PROMPT`↔`SECTOR_SYNTHESIS_PROMPT` per-source format contract (section 1 finding 5), not a
+mechanical one-liner.
