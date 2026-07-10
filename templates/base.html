@@ -141,7 +141,7 @@
     <!-- Domain tabs -->
     <div class="border-b border-white/10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex gap-3 py-2">
+        <div class="flex gap-3 py-2 flex-wrap">
           <a href="/?domain=EDU&country={{ _country }}" class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium transition-colors
             {% if _domain == 'EDU' %}text-white{% else %}text-gray-500 hover:text-gray-300{% endif %}"
             style="{% if _domain == 'EDU' %}border-color: rgba(45,106,79,0.6);{% else %}background: rgba(255,255,255,0.03);{% endif %}">
@@ -159,6 +159,36 @@
             style="{% if _domain == 'GENERAL' %}border-color: rgba(45,106,79,0.6);{% else %}background: rgba(255,255,255,0.03);{% endif %}">
             <span class="w-2 h-2 rounded-full inline-block {% if _domain == 'GENERAL' %}bg-green-300{% else %}bg-white/20{% endif %}"></span>
             General
+          </a>
+          <a href="/?domain=RCC&country={{ _country }}" class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium transition-colors
+            {% if _domain == 'RCC' %}text-white{% else %}text-gray-500 hover:text-gray-300{% endif %}"
+            style="{% if _domain == 'RCC' %}border-color: rgba(45,106,79,0.6);{% else %}background: rgba(255,255,255,0.03);{% endif %}">
+            <span class="w-2 h-2 rounded-full inline-block {% if _domain == 'RCC' %}bg-green-300{% else %}bg-white/20{% endif %}"></span>
+            Retail & Consumer Goods
+          </a>
+          <a href="/?domain=HLS&country={{ _country }}" class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium transition-colors
+            {% if _domain == 'HLS' %}text-white{% else %}text-gray-500 hover:text-gray-300{% endif %}"
+            style="{% if _domain == 'HLS' %}border-color: rgba(45,106,79,0.6);{% else %}background: rgba(255,255,255,0.03);{% endif %}">
+            <span class="w-2 h-2 rounded-full inline-block {% if _domain == 'HLS' %}bg-green-300{% else %}bg-white/20{% endif %}"></span>
+            Healthcare & Life Sciences
+          </a>
+          <a href="/?domain=MFG&country={{ _country }}" class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium transition-colors
+            {% if _domain == 'MFG' %}text-white{% else %}text-gray-500 hover:text-gray-300{% endif %}"
+            style="{% if _domain == 'MFG' %}border-color: rgba(45,106,79,0.6);{% else %}background: rgba(255,255,255,0.03);{% endif %}">
+            <span class="w-2 h-2 rounded-full inline-block {% if _domain == 'MFG' %}bg-green-300{% else %}bg-white/20{% endif %}"></span>
+            Manufacturing & Industry 4.0
+          </a>
+          <a href="/?domain=CTE&country={{ _country }}" class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium transition-colors
+            {% if _domain == 'CTE' %}text-white{% else %}text-gray-500 hover:text-gray-300{% endif %}"
+            style="{% if _domain == 'CTE' %}border-color: rgba(45,106,79,0.6);{% else %}background: rgba(255,255,255,0.03);{% endif %}">
+            <span class="w-2 h-2 rounded-full inline-block {% if _domain == 'CTE' %}bg-green-300{% else %}bg-white/20{% endif %}"></span>
+            Culture & Tourism
+          </a>
+          <a href="/?domain=PSS&country={{ _country }}" class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium transition-colors
+            {% if _domain == 'PSS' %}text-white{% else %}text-gray-500 hover:text-gray-300{% endif %}"
+            style="{% if _domain == 'PSS' %}border-color: rgba(45,106,79,0.6);{% else %}background: rgba(255,255,255,0.03);{% endif %}">
+            <span class="w-2 h-2 rounded-full inline-block {% if _domain == 'PSS' %}bg-green-300{% else %}bg-white/20{% endif %}"></span>
+            Public Sector & Smart Cities
           </a>
         </div>
       </div>
