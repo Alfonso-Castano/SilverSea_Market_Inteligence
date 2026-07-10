@@ -1,6 +1,6 @@
 # Task 003: Accuracy audit — Vietnam BER report (creates ACCURACY-AUDIT.md)
 
-**Status:** pending
+**Status:** done
 **Depends on:** Task 001 (`001-refetch-vn-sources.md`) — needs `refetched/vn_sources.json` to exist.
 **Model tier:** mid — pin to Sonnet 5 (`sonnet`). Per Alfonso's 2026-07-10 directive (CONTEXT.md Global
 Constraints), the knowledge/accuracy-audit half of this feature is explicitly assigned Sonnet 5, not
@@ -120,4 +120,11 @@ instead."]
    re-opening the file.
 
 ## Evidence
-[Filled in at completion]
+DONE (sonnet executor). Created `ACCURACY-AUDIT.md` header + `## Vietnam` section + intact `## Malaysia` placeholder; verification `assert '## Vietnam' and '## Malaysia'` → OK. Read-only, no LLM/Groq calls. Counts: **38 Grounded / 0 Unverifiable / 5 Contradicted-Suspect** of 43 signals; **1 Grounded / 0 Unverifiable / 2 Contradicted-Suspect** of 3 opportunities. All 43 signals' `entity` matched a `data_sources` entry, so the source_name-breakage entity-fallback fully substituted (no third-party unverifiables). Contradicted/Suspect findings:
+1. **Becamex IDC signal — HIGH:** "data storage centers and virtual servers" is a near-verbatim lift from **Viettel's** homepage, not Becamex — cross-source contamination (260 MWp solar figure itself is grounded).
+2. **Opp 3 BM Windows — HIGH:** product_fit "Smart Building, Building Automation" — not real Silversea product names; fabrication repeated in concrete_action.
+3. **Opp 2 Vietsoftpro — MEDIUM:** product_fit "E-learning solutions" not a named Silversea product.
+4. **Ninh Thuan 2 nuclear (General News) — MEDIUM:** report says VN/S.Korea "are collaborating"; source says VN "will select the official partner... Q3 2026" (prospective, not active).
+5. **NVIDIA DiffusionGemma — LOW:** report says NVIDIA "released" it; it's Google DeepMind's model NVIDIA merely accelerates.
+6. **Becamex "VSIC" — LOW:** report expands as "Vietnam-Singapore Industrial Corporation"; source says "Innovation Centre".
+7. **TTDecor implication — LOW:** Python post-processing collided "BIM Corporation" (a developer) with Building Information Modeling — pipeline artifact, not LLM. (5 of 15 sources produced zero signals — noted as unused capacity, not a finding.)
