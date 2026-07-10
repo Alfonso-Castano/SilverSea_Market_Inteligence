@@ -104,6 +104,60 @@ Competitor moves to watch: new product launches, government tender wins, new par
 
 **Government agencies tracked for tender and policy signals:** BCA (Building and Construction Authority — Green Mark, IDD policy), MND (Ministry of National Development), URA (Urban Redevelopment Authority), HDB (Housing & Development Board), GeBIZ (government tender portal), Smart Nation/GovTech (Smart Nation initiatives), JTC Corporation (industrial estate digital twin potential).
 
+### Malaysia
+
+**Sunway Group** — Major Malaysian conglomerate spanning property, retail, hospitality, and
+healthcare. Prospective buyer of Digital Twin and Smart Facility Management System across its
+property portfolio, AR way-finding for its Umrah/Hajj travel operations (Culture, Tourism &
+Events), and AR way-finding for Sunway Medical Centre (Healthcare & Life Sciences).
+
+**PKNS FM Integrated Sdn Bhd** — Existing client for the metaverse-integrated operation centre and
+smart facilities platform (Smart Facility Management System).
+
+**TOGL Technology Sdn Bhd** — Existing client for a metaverse solution built for their annual
+gathering event (Metaverse Platform), delivered across two versions.
+
+**Property developers (4D Virtual Tour rendering prospects):** BDB Land, UOA Development Berhad,
+TA Global, Sunsuria Berhad, Skyworld Development Berhad, and Sunway Property — all prospective
+buyers of 3D/VR Virtual Tour rendering services for property marketing; UOA additionally a
+prospect for AR way-finding at its Bangsar South car park.
+
+**Healthcare prospects:** Avisena Women's & Children Specialist Hospital (existing client, VR
+safety courseware rental, potential Deepmoo scanning upsell for a new hospital launch), IHH
+Healthcare and UCSI Hospital (AR way-finding prospects), and Sunway Medical Centre (AR
+way-finding) — all Healthcare & Life Sciences prospects (Smart Facility Management System,
+Customized AR/VR Content).
+
+**Manufacturing prospects:** Perodua and Daikin Malaysia — automotive and appliance manufacturers,
+prospective buyers of Smart Facility Management System and IoT & AI Solutions for smart-factory
+initiatives, with Perodua also a prospect for immersive roadshow content and Digital Twin.
+
+**Retail/hospitality prospects:** Ricoh (Malaysia), Panasonic Appliances Marketing Asia Pacific,
+and Sharp — prospective buyers of Virtual Showroom and AI-enabled Digital Twin with Smart Facility
+Management System; Capri by Fraser (existing client, 4D Virtual Tour scanning) and City Motor
+Group (existing client, virtual showroom/facilities landing page embed) round out the Retail,
+Commerce & Consumer Goods relationship base.
+
+**Telecom/media prospects:** U Mobile — Digital Twin aligned with its Ultra 5G rollout, plus AR
+way-finding for a BERJAYA-group shopping mall; YTL Info Screen — AR solution for marketing
+campaigns.
+
+**Aviation prospects:** Malaysia Airlines (VR training courseware for cabin crew) and Malaysia
+Airport Holding Berhad (AR way-finding and Digital Twin) — both Public Sector & Smart Cities
+prospects.
+
+**Education-adjacent partners:** Inkube Edu Sdn Bhd (existing partner, Vrealab solution to
+government schools and metaverse solution to a government university) and U Learning (potential
+partner, Vrealab solutions) — same education-technology-adjacent profile as NUS/NTU in Singapore.
+
+**Government agencies tracked for tender and policy signals:** MDEC (Malaysia Digital Economy
+Corporation — grants, tech-industry business opportunities), Air Selangor (water utilities, tender
+pipeline), JPJ (Jabatan Pengangkutan Jalan — Road Transport Department, VR safety driving
+simulation potential), Think City (Kuala Lumpur Council-appointed agency, Digital Twin/Smart
+Facility Management System for KL city area), SEDIA (Sabah Economic Development and Investment
+Authority — metaverse career and VR training prospects), National Art Gallery (immersive
+experience centre prospect), and PR1MA Corporation Berhad (4D Virtual Tour prospect).
+
 ## Ecosystem Players
 
 Companies in Silversea's broader market ecosystem — not direct BD targets, but sources of partnership, channel, and competitive signals.
@@ -134,6 +188,37 @@ Companies in Silversea's broader market ecosystem — not direct BD targets, but
 - Cushman & Wakefield — Global real estate services; existing partner, potential Smart Facility Management System customer for FM portfolio management
 - ST Synthesis (ST Engineering) — Singapore defence/engineering conglomerate's smart FM arm; potential customer or competitor for government facility management contracts
 - Savills — Global property consultancy with Singapore operations; potential Digital Twin / Smart Facility Management System customer for portfolio-wide digital twin adoption
+
+**Malaysia — main partners and channel prospects** — Potential collaboration/JV or channel
+partners, not direct BD targets:
+- Ezytap Sdn Bhd — Existing partner delivering the Sabah Tourism Metaverse to KePKAS; potential
+  collaboration on AR gamification for the Sandakan Heritage Trail (Culture, Tourism & Events)
+- ITMAX System Berhad — Potential partner for AI-enabled Digital Twin with Smart Facility
+  Management System; NDA pending
+- SAINS — Potential partner for AI-enabled Digital Twin with Smart Facility Management System
+- TRB Ventures Sdn Bhd (Mhub) — Existing partner for 4D Virtual Tour rendering; potential upsell to
+  a digital-twin property booking platform
+- Huawei Cloud — Potential technology/referral partner across multiple solution lines
+- CelcomDigi — Potential partner for AI-enabled Digital Twin and Vrealab solutions; NDA pending
+- Redtone — Dormant existing partner (4D Virtual Tour rendering and scanning); relationship needs
+  re-establishing with the right point of contact
+- Art Network Events — Potential partner for creative-tech event content (AR launch gimmicks, AR
+  gamification)
+
+**Malaysia — government/association ecosystem:**
+- GreenRE — Potential collaborator on AI-enabled Digital Twin with Smart Facility Management
+  System (green-building certification body)
+- REDHA Institute — Potential association membership for developer-industry connections
+- Malaysia Retail Chain Association (MRCA) — Potential association membership for retail-industry
+  connections
+
+**Malaysia — competitors to watch:**
+- Esri Malaysia — GIS technology including digital twin solutions
+- Serve Deck Innovation Sdn Bhd — Smart facilities management platform
+- Accenture — Metaverse and AI solutions; also a potential partnership-collaboration angle
+- Virtualtech Frontier, EDT, THEXRA, 3 Particles — Metaverse/VR/AR/immersive and creative-tech
+  content solution providers
+- Unbound Malaysia — AI, AR, and education-related solutions
 
 ## BD Priorities
 
