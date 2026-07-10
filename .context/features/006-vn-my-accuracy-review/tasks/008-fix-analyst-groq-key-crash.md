@@ -1,6 +1,6 @@
 # Task 008 (FIX, optional): analyst.py crashes with KeyError on unset GROQ_API_KEY
 
-**Status:** pending
+**Status:** done
 **Depends on:** none — standalone, optional fix, fully specified below. Does not require the audit tasks
 to run first (finding already confirmed in `RESEARCH.md` §4, lead 5). Per CONTEXT.md's "fix tasks are
 separate and optional" decision, Alfonso may execute this alone or skip it.
@@ -72,4 +72,4 @@ print('OK — pattern replaced')
    per the no-LLM-calls constraint).
 
 ## Evidence
-[Filled in at completion]
+DONE (haiku executor). Single-line change at `pipeline/analyst.py:341`: `os.environ["GROQ_API_KEY"]` → `os.environ.get("GROQ_API_KEY", "")`; `git diff` confirms 1 insertion / 1 deletion, that line only. Verified: (1) AST parse → syntax OK; (2) regex → old pattern gone, new present; (3) module imports cleanly with GROQ_API_KEY unset → "import OK, no KeyError at import time" (import-time behavior only, not a full analyse() call — no LLM invoked). No early-exit/print added (out of scope). No other file touched.

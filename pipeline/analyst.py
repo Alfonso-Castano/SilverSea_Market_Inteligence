@@ -338,7 +338,7 @@ def _derive_competition_risks(report_data: dict) -> None:
 
 def analyse(filtered_results: list, country: dict) -> dict:
     """Multi-pass analysis: extract per sector, synthesize per sector, then summarize."""
-    client = Groq(api_key=os.environ["GROQ_API_KEY"])
+    client = Groq(api_key=os.environ.get("GROQ_API_KEY", ""))
 
     substantive = [r for r in filtered_results if len(r.get("content", "")) >= MIN_CONTENT_CHARS]
 
