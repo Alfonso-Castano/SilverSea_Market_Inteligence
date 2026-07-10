@@ -786,6 +786,7 @@
           "sector": "gov_agencies",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "PSS"
@@ -951,6 +952,7 @@
           "sector": "customers",
           "type": "website",
           "active": true,
+          "fetcher": "stealth",
           "domain": [
             "GENERAL",
             "RCC"
@@ -1225,7 +1227,8 @@
           "url": "https://www.ulearning.asia/ulearning/index.html#/i18n",
           "sector": "partners",
           "type": "website",
-          "active": true,
+          "active": false,
+          "inactive_reason": "Hash-routing JS SPA - default, stealth, and dynamic fetchers all return only a cookie-consent banner (~530 chars, Chinese-language), no real page content is reachable",
           "domain": [
             "GENERAL",
             "EDU"
@@ -1269,7 +1272,8 @@
           "url": "https://artnetwork.com.my/",
           "sector": "partners",
           "type": "website",
-          "active": true,
+          "active": false,
+          "inactive_reason": "JS SPA shell returns near-empty text (~30 chars, page title only) across default, stealth, and dynamic fetchers - no real content accessible",
           "domain": [
             "GENERAL",
             "PSS"
@@ -1357,7 +1361,8 @@
           "url": "https://www.unboundmalaysia.com/",
           "sector": "competitors",
           "type": "website",
-          "active": true,
+          "active": false,
+          "inactive_reason": "JS SPA shell returns near-empty text (~116 chars, just a user counter) across default, stealth, and dynamic fetchers - no real content accessible",
           "domain": [
             "GENERAL",
             "EDU"
