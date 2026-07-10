@@ -1,6 +1,6 @@
 # Task 001: Re-fetch the 15 live source pages cited in the VN BER report
 
-**Status:** pending
+**Status:** done
 **Depends on:** none
 **Model tier:** cheap — the exact source list, fetcher tiers, and the function to call are all specified
 below; this is mechanical execution (call an existing function per source, dump the results), not
@@ -81,4 +81,4 @@ source to `"dynamic"` — that's out of scope here; just record the error and mo
    3 of the 15 sources, so the dispatching session can see real output was captured, not stub data.
 
 ## Evidence
-[Filled in at completion]
+DONE (haiku executor). Verification output: `15` / `15` — all 15 VN sources present, all fetched with zero errors, zero LLM/Groq calls (pure HTTP/Scrapling via `scrape_source()`). Spot-check content lengths: Viettel 6000, Becamex IDC 6000, Johnson Controls 2460, NVIDIA 6000, CBRE Vietnam 1113, BM Windows 4840 chars (all error=None). VN keywords loaded correctly (14 priority + 76 regular). Output written to `refetched/vn_sources.json` (66 KB, UTF-8, indent=2). No pipeline files modified.
