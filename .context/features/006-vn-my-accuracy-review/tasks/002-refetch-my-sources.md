@@ -1,6 +1,6 @@
 # Task 002: Re-fetch the 25 live source pages cited in the MY GENERAL report
 
-**Status:** pending
+**Status:** done
 **Depends on:** none
 **Model tier:** cheap — the exact source list, fetcher tiers, and the function to call are all specified
 below; this is mechanical execution (call an existing function per source, dump the results), not
@@ -94,4 +94,4 @@ just record the error, don't promote the tier yourself).
    3 of the 25 sources, so the dispatching session can see real output was captured, not stub data.
 
 ## Evidence
-[Filled in at completion]
+DONE (haiku executor). Verification output: `25` / `25` — all 25 MY sources present, all fetched with zero errors, zero LLM/Groq calls (pure HTTP/Scrapling via `scrape_source()`). Spot-check content lengths: National Art Gallery 1361, Capri by Fraser 6000, Sunway Medical Centre 6000 chars (all error=None). MY keywords loaded correctly (15 priority + 99 regular). Output written to `refetched/my_sources.json` (UTF-8, ensure_ascii=False, indent=2). No pipeline files modified.
