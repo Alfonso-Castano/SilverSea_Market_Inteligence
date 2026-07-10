@@ -4,6 +4,22 @@ Running record of decisions that constrain future work. Newest first. Check here
 
 ---
 
+## [2026-07-10] — Pre-review sequencing: two-part VN/MY review scoped as its own feature before any live pipeline run or dashboard polish
+
+**Decision:** Before running a fresh live pipeline for Vietnam or Malaysia, and before finalizing either country's dashboard pages further, a thorough two-part review of everything built across Features 003 (Vietnam), 004 (Malaysia), and 005 (domain activation) will happen first, scoped as its own feature (likely numbered `006`). Part 1, knowledge/accuracy: does the analyst's LLM-generated report content actually reflect real information from the scraped sources, with no hallucinated facts, connections, or figures — i.e. do `pipeline/analyst.py`'s grounding rules (closed-book framing, quote-before-extract, abstain tokens) actually hold up in practice, not just on paper. Part 2, code-correctness: does the codebase actually wire source data through to report output correctly — domain filtering, sector mapping, keyword relevance gating, RAG retrieval, the Vietnam domain retag from Feature 005, and the `SUMMARY_PROMPT` catalog/gate expansion from Feature 005.
+**Rationale:** A large amount of surface area (three features) was built quickly via subagent execution this session, on top of each other, without a live pipeline run to exercise most of it end-to-end. Alfonso wants to catch hallucinations or wiring bugs now, before investing further effort in dashboard polish or burning Groq quota on a live run that might just be re-confirming pre-existing bugs.
+
+**Decision:** This review will be run as its own feature in a fresh chat/session, using the standard `/feature-discuss` → `/feature-plan` sequence — explicitly **not** the `/feature-quick` fast path, despite Alfonso initially describing it in terms that sounded like a quick-path request. Given the review's stated thoroughness and genuinely two-part scope (accuracy *and* code-correctness, spanning three prior features), the full discuss→plan sequence was judged the better fit; Alfonso was informed of this distinction and agreed. Discussion and planning will run on a Sonnet 5 agent; execution will run on a separate Opus 4.8 agent.
+**Rationale:** This mirrors the project's existing tier-based subagent dispatch pattern (see CLAUDE.md's Subagent Strategy section) but applies it to the discuss/plan-vs-execute split of an entire feature, not just individual tasks within one feature — a genuinely new application of the pattern, recorded here since it's a process decision that will shape how Feature 006 gets dispatched.
+
+**Decision:** A live pipeline re-run for VN and/or MY (to observe the Feature 005 broadened opportunities gate in action) and any further VN/MY dashboard polish both remain explicitly deferred until after this review completes.
+**Rationale:** Direct consequence of the above — no point spending Groq's daily quota or polish effort on output that this review might reveal to be wrong or wired incorrectly.
+
+**Decision:** The original ground-truth source documents behind Features 003 and 004 were located and archived into `docs/`: `Silversea_Vietnam_Market_07072026.pdf`, `Source_submission_Malaysia_Sources.pdf`, and `Source_submission_Malaysia.xlsx` (commit `851853b`).
+**Rationale:** These are the ground-truth documents the upcoming accuracy review needs to check report content against, alongside `config/sources.json`'s data (which was derived from them in Features 003/004). Archiving them now, ahead of the review, means Feature 006 doesn't need a separate step to go find them.
+
+---
+
 ## [2026-07-10] — Feature 005 (Full Business-Domain Activation): all 8 domains wired, Vietnam retagged
 
 **Decision:** All 5 remaining business domains (RCC, HLS, MFG, CTE, PSS) activated as first-class, routable, analyzed pipeline domains alongside the already-active BER/EDU/GENERAL — `app.py`'s `_domain_mode()` now validates 8 codes (invalid input still falls back to `BER`); `templates/base.html`'s domain-tabs row expanded from 3 to 8 real links with `flex-wrap` added so they wrap on narrow viewports instead of overflowing; `templates/admin.html`'s source-approval checkboxes expanded from 3 to 8, matching the same set, only `GENERAL` pre-checked.
