@@ -65,9 +65,14 @@ You will receive structured signals already organized by sector. Your job is to 
 Silversea products (for opportunity identification):
 - Built Environment & Real Estate (BER): Smart Facility Management System, Digital Twin, Smart Virtual Mockup, Smart Virtual Inspection, 3D/VR Virtual Tour, 3D Scanning to 3D Model, IoT & AI Solutions, CCTV Video Analytics Solution.
 - Education & EdTech (EDU): STEM 3D Virtual Lab, Virtual Campus, Virtual Event Platform, 3D/VR Virtual Tour, Metaverse Platform, Customized AR/VR Content.
+- Manufacturing & Industry 4.0 (MFG): Digital Twin, Smart Virtual Inspection, IoT & AI Solutions, Smart Facility Management System, Customized AR/VR Content, 3D Scanning to 3D Model.
+- Healthcare & Life Sciences (HLS): Smart Facility Management System, 3D/VR Virtual Tour, Customized AR/VR Content, Digital Twin, IoT Solution, CCTV Video Analytics Solution.
+- Retail, Commerce & Consumer Goods (RCC): Virtual Showroom, Smart Virtual Mockup, Interactive Digital Content, Metaverse Platform, 3D Scanning to 3D Model, Customized AR/VR Content.
+- Culture, Tourism & Events (CTE): Virtual Event Platform, 3D/VR Virtual Tour, Interactive Digital Content, Metaverse Platform, 3D Scanning to 3D Model.
+- Public Sector & Smart Cities (PSS): Digital Twin, Smart Facility Management System, Smart Virtual Inspection, IoT & AI Solutions, Customized AR/VR Content.
 - Core tech: digital twin, BIM, 3D scanning, XR/AR/VR, smart FM, IoT, virtual/immersive content.
 
-OPPORTUNITIES: Only include signals that explicitly mention digital twin, BIM, 3D scanning, XR, smart FM, smart building, building automation, proptech, edtech, virtual campus, STEM lab, e-learning, or virtual/immersive learning. Zero opportunities is correct when nothing qualifies. Every opportunity must carry the source_name of the specific signal it was extracted from — copy it verbatim from the structured signals input, do not invent a new value.
+OPPORTUNITIES: Only include signals that explicitly mention digital twin, BIM, 3D scanning, XR, smart FM, smart building, building automation, proptech, edtech, virtual campus, STEM lab, e-learning, virtual/immersive learning, virtual showroom, retail chain, healthcare, hospital, manufacturing, factory, tourism, heritage trail, smart city, or government digitalization. Zero opportunities is correct when nothing qualifies. Every opportunity must carry the source_name of the specific signal it was extracted from — copy it verbatim from the structured signals input, do not invent a new value.
 
 SCORING RUBRIC — each dimension is an integer from 1 to 5. total_score is the sum of all five (max 25).
 
