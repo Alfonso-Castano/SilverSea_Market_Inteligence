@@ -1,6 +1,6 @@
 # Task 004: Accuracy audit — Malaysia GENERAL report (appends to ACCURACY-AUDIT.md)
 
-**Status:** pending
+**Status:** done
 **Depends on:** Task 002 (`002-refetch-my-sources.md`) — needs `refetched/my_sources.json` to exist.
 Task 003 (`003-accuracy-audit-vn.md`) — must run strictly after Task 003 lands, since both write to the
 same `ACCURACY-AUDIT.md` file (Task 003 creates it with a `## Malaysia` placeholder section this task
@@ -98,4 +98,8 @@ header).
    finding by name.
 
 ## Evidence
-[Filled in at completion]
+DONE (sonnet executor). Filled `## Malaysia` section (10302 chars); VN section + header untouched (diff: 1 deletion of placeholder, 49 insertions, all below `## Malaysia`); verification `len(my_section) > 200` → OK 10302. Read-only, no LLM/Groq calls, no py main.py. Counts: **8 Grounded / 0 Unverifiable / 1 Contradicted-Suspect** of 9 signals; **1 Grounded / 0 Unverifiable / 2 Contradicted-Suspect** of 3 opportunities. Contradicted/Suspect:
+1. **National Art Gallery implication — LOW:** signal text grounded, but Python `implication` says "BIM-to-digital-twin workflow" — keyword collision on "BIM" inside "BIMP-EAGA" (ASEAN bloc). Same post-processing artifact class as VN's TTDecor finding, not an LLM hallucination.
+2. **Opp — Malaysia Airport Holding (Subang MRO) — MEDIUM:** product_fit "Building Automation" not a real Silversea product; diverges from company_context.md's own fit for this prospect ("AR way-finding and Digital Twin").
+3. **Opp — GreenRE / CamTech University — MEDIUM:** product_fit "Smart Building" not a real product name; diverges from company_context.md's GreenRE fit ("AI-enabled Digital Twin with Smart Facility Management System").
+**Disclosed limitation:** MY PDF (`docs/Source_submission_Malaysia_Sources.pdf`) could not be read in the executor's environment (Read tool's PDF path needs poppler/`pdftoppm`, not installed) — proceeded on priority-1 live re-fetched content (`my_sources.json`, sufficient for every claim) + priority-3 config cross-check (all 7 entity names matched). Disclosed in the audit's Coverage note. MY source_name breakage milder than VN (5/9 signals + all 3 opps carry correct names), matching RESEARCH.md §2.
