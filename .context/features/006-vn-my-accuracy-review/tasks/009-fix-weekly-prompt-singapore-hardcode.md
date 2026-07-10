@@ -1,6 +1,6 @@
 # Task 009 (FIX, optional): weekly.py's WEEKLY_PROMPT hardcodes "Singapore" for every country
 
-**Status:** pending
+**Status:** done
 **Depends on:** none — standalone, optional fix, fully specified below. Does not require the audit tasks
 to run first (finding already confirmed in `RESEARCH.md` §4, lead 4). Per CONTEXT.md's "fix tasks are
 separate and optional" decision, Alfonso may execute this alone or skip it.
@@ -122,4 +122,4 @@ print('Substitution verified — Vietnam appears, Singapore does not')
    found" if that check fires first — either graceful-skip path is fine), not a crash.
 
 ## Evidence
-[Filled in at completion]
+DONE (haiku executor). 4 edits across 2 files (`git diff`: weekly.py 7 lines, main.py 1 line): (1) WEEKLY_PROMPT first line `Singapore)` → `{country_name})`; (2) signature `country_name: str = "Singapore"` added; (3) `system_prompt = WEEKLY_PROMPT.replace("{country_name}", country_name)` then `.format()` on the result (order correct); (4) main.py call site `country_name=country["name"]`. Verified: (1) AST parse both files → syntax OK; (2) regex → all 4 edits present; (3) substitution → `.replace('{country_name}','Vietnam').format(...)` yields text with "Vietnam", no "Singapore"; (4) `generate_weekly_summary(country_code='VN', country_name='Vietnam')` with no GROQ_API_KEY → graceful skip, returns '', no crash. `if __name__ == "__main__":` no-arg call correctly uses the "Singapore" default. No LLM calls. analyst.py (reference pattern) left untouched.

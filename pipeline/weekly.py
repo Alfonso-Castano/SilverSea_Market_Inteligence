@@ -8,7 +8,7 @@ from config.models import GROQ_MODEL
 from pipeline.vectorstore import query, add_documents, delete_documents, get_collection, REPORT_HISTORY
 
 WEEKLY_PROMPT = """You are summarizing a week of daily market intelligence reports for Silversea Media
-(digital twin & immersive tech company, Singapore).
+(digital twin & immersive tech company, {country_name}).
 
 Compress these {count} daily reports into ONE weekly intelligence summary. Structure:
 1. TOP SIGNALS THIS WEEK — 5-7 most important developments
@@ -22,7 +22,7 @@ Daily reports:
 {reports}"""
 
 
-def generate_weekly_summary(country_code: str = None) -> str:
+def generate_weekly_summary(country_code: str = None, country_name: str = "Singapore") -> str:
     """Retrieve recent daily reports for one country, compress into weekly summary, update vector
     store. country_code=None retains the old global (all-countries) behavior."""
     collection = get_collection(REPORT_HISTORY)
@@ -65,9 +65,10 @@ def generate_weekly_summary(country_code: str = None) -> str:
         print("Weekly summary skipped — no GROQ_API_KEY")
         return ""
 
+    system_prompt = WEEKLY_PROMPT.replace("{country_name}", country_name)
     response = client.chat.completions.create(
         model=GROQ_MODEL,
-        messages=[{"role": "user", "content": WEEKLY_PROMPT.format(count=len(weekly_docs), reports=reports_text)}],
+        messages=[{"role": "user", "content": system_prompt.format(count=len(weekly_docs), reports=reports_text)}],
         max_tokens=2048,
     )
 

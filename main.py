@@ -103,7 +103,7 @@ def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: s
     if datetime.date.today().weekday() == 6:  # Sunday
         print("Running weekly summary (Sunday)...")
         for country in active_countries:
-            generate_weekly_summary(country_code=country["code"])
+            generate_weekly_summary(country_code=country["code"], country_name=country["name"])
 
 
 if __name__ == "__main__":
