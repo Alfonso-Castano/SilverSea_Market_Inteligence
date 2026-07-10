@@ -1,6 +1,6 @@
 # Task 005: Code-correctness review — domain/country data flow and gate consistency (creates CODE-REVIEW.md)
 
-**Status:** pending
+**Status:** done
 **Depends on:** none
 **Model tier:** quality — pin to Opus (`opus`). Per Alfonso's 2026-07-10 directive (CONTEXT.md Global
 Constraints), the code-correctness/technical-review half of this feature is explicitly assigned Opus —
@@ -116,4 +116,10 @@ Severity: use High/Medium/Low/Informational. "Optional fix task" column: task nu
    so the dispatching session can sanity-check without re-opening the file.
 
 ## Evidence
-[Filled in at completion]
+DONE (opus executor). Created `CODE-REVIEW.md` with filled §1 + intact §2 placeholder; verification `assert '## 1.' and '## 2.'` → OK. No code/config/template touched (read-only), no LLM/Groq calls. 5 findings:
+- **#5 High** — `source_name` breakage root cause (`analyst.py:174` extract→synthesize handoff, no enforced per-source delimiter vs. rigid `### {name}` blocks at line 151 the synth step never sees). Confirmed live: VN 42/43 signals + all 3 opps carry `"Extracted signals"`; MY emits `"source not specified"`/`"source text"`/`"Balai Seni Negara"`. Fix: none — needs prompt-engineering judgment.
+- **#3 Medium** — filter gate vs. global opportunities gate divergence. Measured: VN config keywords contain zero of the gate's cross-domain terms; MY contains all. Gate aligned with MY, looser than filter.py for VN. Fix: none — design change.
+- **#4 Medium** — RAG scoping: confirmed `_build_rag_context()` is dead code (never called), so no active leak today; `REPORT_HISTORY` writes country-only, domain-blind — dormant cross-domain trap on restore. Fix: none — architectural.
+- **#1b Medium** — `app.py` fallback tuple (3 domains) vs `_domain_mode()` (8); real but currently masked for VN_BER/MY_GENERAL. Fix: **Task 007**.
+- **#1a Low/Info** — `main.py:57-58` domain-filter `in`-operator fragility; latent only (all sources use list-valued `domain`). **#2 Info** — `SECTOR_LABELS` covers all 6 sectors, no typos, no issue.
+- **Correction to RESEARCH.md §3:** VN has **4** BER+EDU dual-tagged sources (MOET, HUIT, Văn Lang University, Đa Minh Education), not 2 — two are universities, widening the EDU→BER leak path.
