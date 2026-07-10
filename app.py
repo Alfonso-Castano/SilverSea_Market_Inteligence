@@ -107,7 +107,7 @@ def report():
             # to this one.
             any_domain_file_exists = any(
                 os.path.exists(os.path.join(DATA_DIR, f"latest_report_{country}_{d}.json"))
-                for d in ("BER", "EDU", "GENERAL")
+                for d in ("EDU", "BER", "GENERAL", "RCC", "HLS", "MFG", "CTE", "PSS")  # keep in sync with _domain_mode()
             )
             if not any_domain_file_exists:
                 report_data = _load_json("latest_report.json", {})

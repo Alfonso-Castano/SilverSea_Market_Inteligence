@@ -1,6 +1,6 @@
 # Task 007 (FIX, optional): app.py's report() fallback still hardcodes 3 domains, not 8
 
-**Status:** pending
+**Status:** done
 **Depends on:** none — this is a standalone, optional fix. It is fully specified below and does not
 require Task 005/006's CODE-REVIEW.md to exist first (the finding is already confirmed in
 `RESEARCH.md` §4, lead 2). Alfonso may execute this task alone, alongside the audit tasks, or skip it
@@ -82,4 +82,4 @@ print('fallback tuple now includes all 8 domains')
    in your evidence.
 
 ## Evidence
-[Filled in at completion]
+DONE (haiku executor). Single-line change at `app.py:110`: fallback tuple `("BER","EDU","GENERAL")` → `("EDU","BER","GENERAL","RCC","HLS","MFG","CTE","PSS")` + `# keep in sync with _domain_mode()` comment; `git diff` confirms 1 insertion / 1 deletion, that line only. Verified: (1) AST parse → syntax OK; (2) regex → fallback tuple now includes all 8 domains (RCC/PSS/MFG present); (3) Flask booted, both `/?country=VN&domain=BER` and `/?country=VN&domain=PSS` returned HTTP 200 with no crash, server shut down cleanly. Caveat: both routes redirected to login (auth gate intercepts before the fallback logic), so the curl confirmed no-crash/no-regression but did not behaviorally exercise the fallback branch itself; the tuple change is fully confirmed by AST+regex. No other file or route touched (internals() left alone).
