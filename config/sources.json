@@ -777,7 +777,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -800,7 +800,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "MFG"
           ]
         },
         {
@@ -811,7 +811,7 @@
           "active": false,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ],
           "inactive_reason": "Consistently times out (ERR_CONNECTION_TIMED_OUT) on default requests, Scrapling stealth, and Scrapling dynamic fetchers alike — host unreachable from this network"
         },
@@ -823,7 +823,7 @@
           "active": false,
           "domain": [
             "GENERAL",
-            "BER"
+            "HLS"
           ],
           "inactive_reason": "Consistently times out (ERR_CONNECTION_TIMED_OUT) on default requests, Scrapling stealth, and Scrapling dynamic fetchers alike — host unreachable from this network"
         },
@@ -848,7 +848,7 @@
           "active": false,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ],
           "inactive_reason": "Page renders almost no text (~72 chars, title only) across default, stealth, and dynamic fetchers — near-empty shell with no crawlable body content"
         },
@@ -896,7 +896,7 @@
           "fetcher": "stealth",
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -908,7 +908,7 @@
           "fetcher": "stealth",
           "domain": [
             "GENERAL",
-            "BER"
+            "MFG"
           ]
         },
         {
@@ -919,7 +919,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "MFG"
           ]
         },
         {
@@ -930,7 +930,7 @@
           "active": false,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ],
           "inactive_reason": "Cloudflare bot-challenge page returned by all three fetcher tiers — default 403; stealth and dynamic both return the 'Just a moment...' verification page, never real content"
         },
@@ -943,7 +943,7 @@
           "fetcher": "stealth",
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1045,7 +1045,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1056,7 +1056,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1067,7 +1067,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1079,7 +1079,7 @@
           "fetcher": "stealth",
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1091,7 +1091,7 @@
           "fetcher": "stealth",
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1124,7 +1124,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1135,7 +1135,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1146,7 +1146,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1168,7 +1168,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "CTE"
           ]
         },
         {
@@ -1179,7 +1179,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "RCC"
           ]
         },
         {
@@ -1190,7 +1190,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1201,7 +1201,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "EDU"
           ]
         },
         {
@@ -1212,7 +1212,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ]
         },
         {
@@ -1235,7 +1235,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "RCC"
           ]
         },
         {
@@ -1247,7 +1247,7 @@
           "fetcher": "stealth",
           "domain": [
             "GENERAL",
-            "BER"
+            "RCC"
           ]
         },
         {
@@ -1292,7 +1292,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "RCC"
           ]
         },
         {
@@ -1314,7 +1314,7 @@
           "active": true,
           "domain": [
             "GENERAL",
-            "BER"
+            "EDU"
           ]
         },
         {
@@ -1337,7 +1337,7 @@
           "active": false,
           "domain": [
             "GENERAL",
-            "BER"
+            "PSS"
           ],
           "inactive_reason": "403 Forbidden (nginx) on all three fetcher tiers — appears to block automated/headless clients outright"
         },
@@ -1349,7 +1349,7 @@
           "active": false,
           "domain": [
             "GENERAL",
-            "BER"
+            "HLS"
           ],
           "inactive_reason": "Access explicitly restricted ('You have been restricted from accessing this website') on all three fetcher tiers"
         },
@@ -1456,7 +1456,8 @@
           "active": false,
           "domain": [
             "GENERAL",
-            "BER"
+            "BER",
+            "EDU"
           ],
           "inactive_reason": "no URL supplied in source list — needs Alfonso to provide"
         }
