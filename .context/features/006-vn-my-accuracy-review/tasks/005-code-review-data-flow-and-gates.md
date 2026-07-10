@@ -2,8 +2,12 @@
 
 **Status:** pending
 **Depends on:** none
-**Model tier:** quality — per CONTEXT.md's Global Constraints, code-correctness review of rapidly
-cheap/mid-tier-dispatched work needs a higher-capability tier than the work being reviewed.
+**Model tier:** quality — pin to Opus (`opus`). Per Alfonso's 2026-07-10 directive (CONTEXT.md Global
+Constraints), the code-correctness/technical-review half of this feature is explicitly assigned Opus —
+this is the area Alfonso trusts least (rapid cheap/mid-tier dispatches produced the code under review)
+and wants the deepest available analysis applied. Note: this environment's `opus` tier resolves to
+Opus 4.8, the same model the main dispatching session runs as — there is no mechanism to pin this
+subagent to an older Opus point-release (see CONTEXT.md's feasibility note).
 
 ## Files
 - Create: `.context/features/006-vn-my-accuracy-review/CODE-REVIEW.md` (this task creates the file with

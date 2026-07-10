@@ -4,9 +4,10 @@
 **Depends on:** Task 005 (`005-code-review-data-flow-and-gates.md`) — must run strictly after Task 005
 lands, since both write to the same `CODE-REVIEW.md` file (Task 005 creates it with a `## 2.` placeholder
 section this task fills in; running concurrently would race on the same file).
-**Model tier:** quality — same rationale as Task 005: reviewing rapidly cheap/mid-tier-dispatched commits
-for quality issues is exactly the kind of judgment CONTEXT.md's Global Constraints call for a
-higher-capability tier on.
+**Model tier:** quality — pin to Opus (`opus`), same as Task 005 per Alfonso's 2026-07-10 directive
+(CONTEXT.md Global Constraints): the code-correctness review runs on Opus, reserving Sonnet 5 for the
+knowledge/accuracy-audit half (Tasks 003/004). Note: `opus` resolves to Opus 4.8 in this environment —
+see CONTEXT.md's feasibility note on why an older Opus point-release can't be pinned here.
 
 ## Files
 - Modify: `.context/features/006-vn-my-accuracy-review/CODE-REVIEW.md` (fill in the `## 2. Rapid-dispatch

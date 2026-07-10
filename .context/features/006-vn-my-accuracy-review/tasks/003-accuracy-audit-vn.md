@@ -2,10 +2,12 @@
 
 **Status:** pending
 **Depends on:** Task 001 (`001-refetch-vn-sources.md`) — needs `refetched/vn_sources.json` to exist.
-**Model tier:** quality — this is the core judgment task the whole feature exists for (assessing whether
-LLM-generated report content is grounded or hallucinated). Per CONTEXT.md's Global Constraints, audit-
-content judgment tasks lean toward higher-capability tiers, not cheap, since cheap-tier work is what's
-being audited.
+**Model tier:** mid — pin to Sonnet 5 (`sonnet`). Per Alfonso's 2026-07-10 directive (CONTEXT.md Global
+Constraints), the knowledge/accuracy-audit half of this feature is explicitly assigned Sonnet 5, not
+Opus — the top tier is reserved for the code-correctness review (Tasks 005/006) instead. This supersedes
+this task's earlier `quality` assignment from the initial planning pass; the underlying judgment-heavy
+nature of the task (assessing whether LLM-generated content is grounded or hallucinated) is unchanged,
+only the tier pinning is.
 
 ## Files
 - Create: `.context/features/006-vn-my-accuracy-review/ACCURACY-AUDIT.md` (this task creates the file

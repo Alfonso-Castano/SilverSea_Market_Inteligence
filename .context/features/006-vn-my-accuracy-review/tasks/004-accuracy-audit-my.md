@@ -5,8 +5,9 @@
 Task 003 (`003-accuracy-audit-vn.md`) — must run strictly after Task 003 lands, since both write to the
 same `ACCURACY-AUDIT.md` file (Task 003 creates it with a `## Malaysia` placeholder section this task
 fills in; running concurrently would race on the same file).
-**Model tier:** quality — same rationale as Task 003: this is core audit-content judgment work, not
-mechanical, and CONTEXT.md's Global Constraints call for a higher-capability tier here specifically.
+**Model tier:** mid — pin to Sonnet 5 (`sonnet`), same as Task 003 per Alfonso's 2026-07-10 directive
+(CONTEXT.md Global Constraints): the knowledge/accuracy-audit half runs on Sonnet 5, reserving Opus for
+the code-correctness review (Tasks 005/006). This supersedes the task's earlier `quality` assignment.
 
 ## Files
 - Modify: `.context/features/006-vn-my-accuracy-review/ACCURACY-AUDIT.md` (append/fill in the
