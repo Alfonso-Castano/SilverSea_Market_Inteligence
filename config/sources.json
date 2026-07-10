@@ -763,6 +763,736 @@
         "online learning",
         "blended learning"
       ]
+    },
+    {
+      "name": "Malaysia",
+      "code": "MY",
+      "active": true,
+      "sources": [
+        {
+          "name": "MDEC",
+          "url": "https://www.mdec.my/",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Air Selangor",
+          "url": "https://www.airselangor.com/?lang=en",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Jabatan Pengangkutan Jalan (JPJ)",
+          "url": "https://www.jpj.gov.my/",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Think City",
+          "url": "https://thinkcity.com.my/",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Sabah Economic Development and Investment Authority (SEDIA)",
+          "url": "https://sedia.com.my/",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "National Art Gallery",
+          "url": "https://www.artgallery.gov.my/",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "CTE"
+          ]
+        },
+        {
+          "name": "PR1MA Corporation Berhad",
+          "url": "https://www.pr1ma.my/",
+          "sector": "gov_agencies",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "GreenRE",
+          "url": "https://www.greenre.org/#",
+          "sector": "associations",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "REDHA Institute",
+          "url": "https://rehdainstitute.com/#",
+          "sector": "associations",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Malaysia Retail Chain Association (MRCA)",
+          "url": "https://www.mrca.org.my/",
+          "sector": "associations",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "PKNS FM Integrated Sdn Bhd",
+          "url": "https://pknsfmi.com/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "TOGL Technology Sdn Bhd",
+          "url": "https://www.togltechnology.com/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "Avisena Women's & Children Specialist Hospital",
+          "url": "https://ash2.avisena.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "HLS"
+          ]
+        },
+        {
+          "name": "BDB Land Sdn Bhd",
+          "url": "https://bdb.com.my/property/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Capri by Fraser",
+          "url": "https://www.frasershospitality.com/en/malaysia/kualalumpur/capri-by-fraser-bukit-bintang/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "Ricoh (Malaysia) Sdn Bhd",
+          "url": "https://www.ricoh.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "Panasonic Appliances Marketing Asia Pacific",
+          "url": "https://www.panasonic.com/my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "City Motor Group",
+          "url": "https://citymotorsgroup.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "NCT Borneo Sdn Bhd",
+          "url": "https://nct.net.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Perodua",
+          "url": "https://www.perodua.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "MFG"
+          ]
+        },
+        {
+          "name": "Daikin Malaysia",
+          "url": "https://www.daikin.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "MFG"
+          ]
+        },
+        {
+          "name": "U Mobile",
+          "url": "https://www.u.com.my/en/personal/home",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "YTL Info Screen",
+          "url": "https://www.infoscreen.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "IHH Healthcare",
+          "url": "https://www.ihhhealthcare.com/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "HLS"
+          ]
+        },
+        {
+          "name": "UCSI Hospital",
+          "url": "https://www.ucsiuniversity.edu.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "HLS"
+          ]
+        },
+        {
+          "name": "UOA Development Berhad",
+          "url": "https://uoa.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Sunway Group",
+          "url": "https://www.sunway.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "CTE"
+          ]
+        },
+        {
+          "name": "Sunway Medical Centre",
+          "url": "https://www.sunwaymedical.com/en/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "HLS"
+          ]
+        },
+        {
+          "name": "Sunway Property",
+          "url": "https://sunwayproperty.com/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "TA Global",
+          "url": "https://taglobal.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Sunsuria Berhad",
+          "url": "https://www.sunsuria.com/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Skyworld Development Berhad",
+          "url": "https://skyworldgroup.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Bandar Utama City Center Sdn Bhd",
+          "url": "https://www.1utama.com.my/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "Sharp",
+          "url": "https://my.sharp/",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "Malaysia Airlines",
+          "url": "https://www.malaysiaairlines.com/my/en/home.html",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Malaysia Airport Holding Berhad",
+          "url": "https://corporate.malaysiaairports.com.my/en",
+          "sector": "customers",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Inkube Edu Sdn Bhd",
+          "url": "https://bestaritsb.com/",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "EDU"
+          ]
+        },
+        {
+          "name": "TRB Ventures Sdn Bhd (Mhub)",
+          "url": "https://www.mhub.my/",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Ezytap Sdn Bhd",
+          "url": "https://ezytap.my/",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "CTE"
+          ]
+        },
+        {
+          "name": "ITMAX System Berhad",
+          "url": "https://itmax.com.my/",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "SAINS",
+          "url": "https://www.sains.com.my/web/home/index",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "U Learning",
+          "url": "https://www.ulearning.asia/ulearning/index.html#/i18n",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "EDU"
+          ]
+        },
+        {
+          "name": "Huawei Cloud",
+          "url": "https://www.huaweicloud.com/intl/en-us/",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "CelcomDigi",
+          "url": "https://www.celcomdigi.com/",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Redtone",
+          "url": "https://www.redtone.com/",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Art Network Events",
+          "url": "https://artnetwork.com.my/",
+          "sector": "partners",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Esri Malaysia",
+          "url": "https://esrimalaysia.com.my/",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Serve Deck Innovation Sdn Bhd",
+          "url": "https://www.servedeck.com/",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "BER"
+          ]
+        },
+        {
+          "name": "Accenture",
+          "url": "https://www.accenture.com/my-en",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        },
+        {
+          "name": "Virtualtech Frontier",
+          "url": "https://www.virtualtechfrontier.com/",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "EDT",
+          "url": "https://www.weareedt.com/",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "THEXRA",
+          "url": "https://thexra.com/",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "3 Particles",
+          "url": "https://www.3particle.com/",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "RCC"
+          ]
+        },
+        {
+          "name": "Unbound Malaysia",
+          "url": "https://www.unboundmalaysia.com/",
+          "sector": "competitors",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "EDU"
+          ]
+        },
+        {
+          "name": "Dreamory",
+          "url": "https://dreamorygroup.com/",
+          "sector": "general_news",
+          "type": "website",
+          "active": true,
+          "domain": [
+            "GENERAL",
+            "PSS"
+          ]
+        }
+      ],
+      "priority_keywords": [
+        "tender",
+        "RFP",
+        "ITQ",
+        "ITT",
+        "GeBIZ",
+        "digital twin",
+        "BIM",
+        "smart FM",
+        "smart building",
+        "proptech",
+        "building automation",
+        "3D scanning",
+        "point cloud",
+        "facility management",
+        "smart facility"
+      ],
+      "keywords": [
+        "virtual tour",
+        "3D scan",
+        "3D visualization",
+        "immersive",
+        "XR",
+        "extended reality",
+        "virtual reality",
+        "augmented reality",
+        "metaverse",
+        "spatial computing",
+        "building management",
+        "smart estate",
+        "intelligent building",
+        "IoT",
+        "CMMS",
+        "predictive maintenance",
+        "construction technology",
+        "contech",
+        "greenfield",
+        "smart construction",
+        "BCA Green Mark",
+        "IDD",
+        "integrated digital delivery",
+        "TOP inspection",
+        "defect inspection",
+        "virtual inspection",
+        "sustainability",
+        "green building",
+        "net zero",
+        "public sector",
+        "smart nation",
+        "government digital",
+        "built environment",
+        "M&E integration",
+        "BMS",
+        "building automation system",
+        "asset management system",
+        "Hiverlab",
+        "Gelement",
+        "TwinLogic",
+        "TwinMatrix",
+        "Axomem",
+        "DataMesh",
+        "FacilityBot",
+        "Cryotos",
+        "Minuscule Technologies",
+        "Alstern Technologies",
+        "Aperio",
+        "Nuvola Media",
+        "SSI Corporate",
+        "NeuronCloud",
+        "CapitaLand",
+        "Mapletree",
+        "Lendlease",
+        "JTC",
+        "HDB estate",
+        "MCC",
+        "CSCEC",
+        "CCCC",
+        "CHEC",
+        "Sembcorp",
+        "SJ Group",
+        "Meinhardt",
+        "BECA",
+        "Ramboll",
+        "Azbil",
+        "Johnson Controls",
+        "Schneider",
+        "Quantum Automation",
+        "ST Synthesis",
+        "Savills",
+        "edtech",
+        "e-learning",
+        "LMS",
+        "learning management system",
+        "campus digital",
+        "STEM lab",
+        "virtual lab",
+        "virtual campus",
+        "online learning",
+        "blended learning",
+        "virtual showroom",
+        "shopping mall",
+        "retail chain",
+        "hospitality",
+        "hospital",
+        "healthcare",
+        "safety courseware",
+        "medical centre",
+        "factory",
+        "manufacturing",
+        "industrial",
+        "heritage trail",
+        "tourism",
+        "immersive experience centre",
+        "smart city",
+        "government grant",
+        "driving simulation",
+        "water utilities"
+      ]
     }
   ],
   "_domain_tagging_status": "draft — mechanical sector-based defaults applied 2026-07-02, pending Alfonso review, see supervisor-feedback-v2-implementation.md Phase B2"
