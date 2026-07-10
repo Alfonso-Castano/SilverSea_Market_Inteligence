@@ -119,15 +119,18 @@
             <span class="w-2 h-2 rounded-full inline-block {% if _country == 'SG' %}bg-green-300{% else %}bg-white/20{% endif %}"></span>
             Singapore
           </a>
+          <a href="/?country=MY&domain={{ _domain }}" class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium transition-colors
+            {% if _country == 'MY' %}text-white{% else %}text-gray-500 hover:text-gray-300{% endif %}"
+            style="{% if _country == 'MY' %}border-color: rgba(45,106,79,0.6);{% else %}background: rgba(255,255,255,0.03);{% endif %}">
+            <span class="w-2 h-2 rounded-full inline-block {% if _country == 'MY' %}bg-green-300{% else %}bg-white/20{% endif %}"></span>
+            Malaysia
+          </a>
           <a href="/?country=VN&domain={{ _domain }}" class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium transition-colors
             {% if _country == 'VN' %}text-white{% else %}text-gray-500 hover:text-gray-300{% endif %}"
             style="{% if _country == 'VN' %}border-color: rgba(45,106,79,0.6);{% else %}background: rgba(255,255,255,0.03);{% endif %}">
             <span class="w-2 h-2 rounded-full inline-block {% if _country == 'VN' %}bg-green-300{% else %}bg-white/20{% endif %}"></span>
             Vietnam
           </a>
-          <span class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-gray-500 cursor-not-allowed" style="background: rgba(255,255,255,0.03);">
-            Malaysia
-          </span>
           <span class="glass-card inline-flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-gray-500 cursor-not-allowed" style="background: rgba(255,255,255,0.03);">
             Indonesia
           </span>
