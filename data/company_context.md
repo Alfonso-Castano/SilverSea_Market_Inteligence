@@ -26,23 +26,23 @@ Smart Facility Management System, Digital Twin, Smart Virtual Mockup, Smart Virt
 Inspection, 3D/VR Virtual Tour, 3D Scanning to 3D Model, IoT & AI Solutions, CCTV Video
 Analytics Solution.
 
-### Manufacturing & Industry 4.0 (MFG) — reference only, not active this round
+### Manufacturing & Industry 4.0 (MFG)
 Digital Twin, Smart Virtual Inspection, IoT & AI Solutions, Smart Facility Management
 System, Customized AR/VR Content, 3D Scanning to 3D Model.
 
-### Healthcare & Life Sciences (HLS) — reference only, not active this round
+### Healthcare & Life Sciences (HLS)
 Smart Facility Management System, 3D/VR Virtual Tour, Customized AR/VR Content, Digital
 Twin, IoT Solution, CCTV Video Analytics Solution.
 
-### Retail, Commerce & Consumer Goods (RCC) — reference only, not active this round
+### Retail, Commerce & Consumer Goods (RCC)
 Virtual Showroom, Smart Virtual Mockup, Interactive Digital Content, Metaverse Platform,
 3D Scanning to 3D Model, Customized AR/VR Content.
 
-### Culture, Tourism & Events (CTE) — reference only, not active this round
+### Culture, Tourism & Events (CTE)
 Virtual Event Platform, 3D/VR Virtual Tour, Interactive Digital Content, Metaverse
 Platform, 3D Scanning to 3D Model.
 
-### Public Sector & Smart Cities (PSS) — reference only, not active this round
+### Public Sector & Smart Cities (PSS)
 Digital Twin, Smart Facility Management System, Smart Virtual Inspection, IoT & AI
 Solutions, Customized AR/VR Content.
 
