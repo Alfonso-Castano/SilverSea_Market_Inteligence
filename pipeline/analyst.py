@@ -52,6 +52,7 @@ RULES:
 2. Write each "signal" field as 2-3 complete sentences preserving specific names, dates, numbers, and details from the source.
 3. Only use facts from the text below. Never invent facts.
 4. EXCLUDE: residential property sales, general economic data with no tech/construction link.
+5. If a source's extraction says "No actionable signals" (or similar), OMIT that source entirely — do not create an entry for it.
 
 Respond with ONLY valid JSON, no other text:
 [{"entity": "Company Name", "signal": "2-3 sentence description with specific details", "source_name": "name of source"}]

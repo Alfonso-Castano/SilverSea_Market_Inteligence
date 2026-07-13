@@ -89,6 +89,70 @@ def _country_mode():
     return country if country in valid_codes else "SG"
 
 
+DOMAINS_MERGED_INTO_GENERAL = ("RCC", "HLS", "MFG", "CTE", "PSS")
+
+
+def _merge_domain_reports(report_data, country):
+    """Pull RCC/HLS/MFG/CTE/PSS report files for this country (if they exist) into
+    report_data for the GENERAL view, tagging each merged item with a `domain` key
+    so nothing's provenance is lost. Mutates and returns report_data. Runs even if
+    report_data starts as {} (GENERAL's own file absent) so extra-domain content
+    isn't silently dropped."""
+    merged_any = False
+    last_extra_metadata = None
+    for extra_domain in DOMAINS_MERGED_INTO_GENERAL:
+        extra = _load_json(f"latest_report_{country}_{extra_domain}.json", {})
+        if not extra:
+            continue
+        merged_any = True
+        last_extra_metadata = extra.get("_metadata")
+        report_data.setdefault("signals_by_sector", {})
+        for sector, signals in extra.get("signals_by_sector", {}).items():
+            report_data["signals_by_sector"].setdefault(sector, [])
+            for s in signals:
+                report_data["signals_by_sector"][sector].append({**s, "domain": extra_domain})
+        report_data.setdefault("opportunities", [])
+        report_data["opportunities"].extend(
+            {**opp, "domain": extra_domain} for opp in extra.get("opportunities", [])
+        )
+        report_data.setdefault("competition_risks", [])
+        report_data["competition_risks"].extend(
+            {**risk, "domain": extra_domain} for risk in extra.get("competition_risks", [])
+        )
+        # data_sources must merge too — omitting it would silently break "View source"
+        # links (source_urls lookup in report.html) for merged-in signals/opportunities.
+        report_data.setdefault("data_sources", [])
+        report_data["data_sources"].extend(extra.get("data_sources", []))
+
+    # report.html's hero and content blocks are both gated on `report._metadata`
+    # existing. If GENERAL's own file is absent but extras exist, report_data has
+    # no _metadata and the page would silently show "No report available" —
+    # defeating the point of merging.
+    if merged_any and not report_data.get("_metadata"):
+        report_data["_metadata"] = last_extra_metadata or {
+            "country": country, "date": "", "date_display": ""
+        }
+    return report_data
+
+
+_NO_SIGNAL_RE = re.compile(r"no actionable signals?", re.IGNORECASE)
+
+
+def _strip_no_actionable_signals(report_data):
+    """Drop signal/risk entries that are just the LLM's anti-hallucination abstain
+    token, leaked into the final report as a fake entry instead of being omitted."""
+    sbs = report_data.get("signals_by_sector")
+    if sbs:
+        for sector in list(sbs.keys()):
+            sbs[sector] = [s for s in sbs[sector] if not _NO_SIGNAL_RE.search(s.get("signal", ""))]
+    risks = report_data.get("competition_risks")
+    if risks:
+        report_data["competition_risks"] = [
+            r for r in risks if not _NO_SIGNAL_RE.search(r.get("signal", ""))
+        ]
+    return report_data
+
+
 @app.route("/")
 def report():
     demo_mode = _demo_mode()
@@ -111,6 +175,12 @@ def report():
             )
             if not any_domain_file_exists:
                 report_data = _load_json("latest_report.json", {})
+        if domain == "GENERAL":
+            report_data = _merge_domain_reports(report_data, country)
+
+    if report_data:
+        report_data = _strip_no_actionable_signals(report_data)
+
     return render_template("report.html", report=report_data, demo_mode=demo_mode,
                             current_domain=domain, current_country=country)
 
