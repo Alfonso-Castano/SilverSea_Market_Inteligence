@@ -1,287 +1,101 @@
 {
   "executive_summary": [
-    "NVIDIA is expanding its Omniverse Blueprint for AI factory digital twins, which could be a potential opportunity for Silversea's digital twin solutions.",
-    "Becamex IDC is developing an Eco-Industrial Park in Vietnam, which may require smart facility management solutions like those offered by Silversea.",
-    "Siemens launched Building X, a digital twin platform for building operations, directly competing with Silversea's digital twin solutions.",
-    "Vietsoftpro launched several products, including the 3D Book Library system, E-learning and electronic lecture systems, which align with Silversea's education and EdTech solutions.",
-    "BM Windows launched BMU, a façade maintenance solution optimized for high-rise buildings, which may benefit from Silversea's smart building and building automation solutions."
+    "Becamex IDC is developing an Eco-Industrial Park according to EIP 2.0 standards and innovative infrastructure, including Techlab, Fablab, R&D Institute, and Automation Center i4.0.",
+    "Honeywell partnered with MIT to research digital technologies that can increase energy supply and reduce production costs.",
+    "BM Windows is expanding in Australia and the US market with new projects and factory establishment."
   ],
   "signals_by_sector": {
     "Competitors": [
       {
         "entity": "Becamex IDC",
-        "signal": "Becamex IDC partnered with the World Bank to co-develop the first Eco-Industrial Park in Vietnam according to international standard EIP 2.0. They also partnered with Sembcorp to co-found the Vietnam-Singapore Industrial Corporation, VSIC. Additionally, Becamex IDC collaborated with the University of National Singapore (NUS) on BLOCK71 Saigon.",
-        "source_name": "Extracted signals",
+        "signal": "Becamex IDC partnered with the World Bank to develop the first Eco-Industrial Park in Vietnam according to international standard EIP 2.0. They also partnered with Sembcorp to co-found the VSIC - Vietnam-Singapore Innovation Center. Additionally, Becamex IDC partnered with BWID to develop infrastructure with RWID.",
+        "source_name": "Becamex IDC",
         "implication": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate."
       },
       {
         "entity": "Becamex IDC",
-        "signal": "Becamex IDC launched Trang Trai Nang Luong Mat Troi, a Solar Energy Farm with a 260 MWp capacity. They also introduced digital solutions for businesses, including data storage centers and virtual servers.",
-        "source_name": "Extracted signals",
+        "signal": "Becamex IDC launched Trang Trai Nang Luong Mat Troi (Solar Energy Farm) with 260 MWp at Cây Trường. This project is part of their efforts to increase green electricity production. The solar energy farm was implemented on a total area of 240 ha.",
+        "source_name": "Becamex IDC",
         "implication": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate."
       },
       {
         "entity": "Becamex IDC",
-        "signal": "Becamex IDC is developing an Eco-Industrial Park in Vietnam. They are also launching ESG (Environmental, Social, and Governance) activities, which include creating 2 million trees estimated to reduce 44,700 tons CO2/year.",
-        "source_name": "Extracted signals",
+        "signal": "Becamex IDC implemented 2 solar energy farms at Cây Trường, providing over 260 MWp of green electricity. The company also implemented 5 ABB 110/22Kv substations to ensure stable electricity for enterprises. As part of their sustainability efforts, 2 million trees were planted, estimated to reduce 44,700 tons of CO2 per year.",
+        "source_name": "Becamex IDC",
         "implication": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate."
       },
       {
-        "entity": "Siemens",
-        "signal": "Siemens launched Vectron X, next-generation locomotives. They also introduced Building X, a digital twin platform for building operations, and Electrification X, an IoT software for electrification and automation. Furthermore, Siemens developed a digital twin for the extraction process in the Amazon rainforest.",
-        "source_name": "Extracted signals",
-        "implication": "Directly relevant to Silversea's Digital Twin solution."
-      },
-      {
-        "entity": "Honeywell",
-        "signal": "Honeywell is launching Honeywell Technologies as an independent automation company. They also partnered with MIT to analyze digital technologies for energy supply and production cost reduction.",
-        "source_name": "Extracted signals",
+        "entity": "Becamex IDC",
+        "signal": "Becamex IDC is developing an Eco-Industrial Park according to EIP 2.0 standards. The company is also developing innovative infrastructure, including Techlab, Fablab, R&D Institute, and Automation Center i4.0. These developments are part of their strategic moves to enhance industrial park capabilities.",
+        "source_name": "Becamex IDC",
         "implication": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate."
       },
       {
         "entity": "Honeywell",
-        "signal": "Honeywell expanded its fire and life safety portfolio with the NOTIFIER INSPIRE platform. They also launched Honeywell Accelerator OS.",
-        "source_name": "Extracted signals",
+        "signal": "Honeywell underwent a strategic move with the spin-off of Honeywell Aerospace. This move is aimed at focusing on core business areas. The spin-off is a significant change in the company's structure.",
+        "source_name": "Honeywell",
+        "implication": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate."
+      },
+      {
+        "entity": "Honeywell",
+        "signal": "Honeywell partnered with MIT to research digital technologies that can increase energy supply and reduce production costs. This partnership aims to leverage innovative solutions for energy efficiency. The collaboration focuses on developing and implementing new digital technologies.",
+        "source_name": "Honeywell",
+        "implication": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate."
+      },
+      {
+        "entity": "Honeywell",
+        "signal": "Honeywell launched the NOTIFIER INSPIRE platform with advanced smoke control capabilities. This platform is part of their product or service launches aimed at enhancing life safety systems. Additionally, Honeywell introduced cloud-connected life safety innovations.",
+        "source_name": "Honeywell",
         "implication": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate."
       },
       {
         "entity": "Johnson Controls",
-        "signal": "Johnson Controls was named to the Alliance for Climate Transition's Top 20 Energy Transition companies. They also launched Metasys 16.0 for mission-critical environments.",
-        "source_name": "Extracted signals",
+        "signal": "Johnson Controls was named to the Alliance for Climate Transition's Top 20 Energy Transition companies. This recognition highlights the company's efforts in energy transition and climate action. Johnson Controls was also named to the 2026 Best Companies for the Future List.",
+        "source_name": "Johnson Controls",
         "implication": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate."
-      }
-    ],
-    "Partners": [
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA and Ansys are collaborating on quantum algorithms for fluid dynamics. This partnership aims to advance the simulation and analysis of complex fluid dynamics. The specific details of the collaboration are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "Adobe and NVIDIA announced a partnership at GTC. The details of the partnership are not specified. The announcement was made during the GTC conference.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "Cadence, ETAP, Schneider Electric, and Vertiv are part of NVIDIA Omniverse Blueprint for AI factory digital twins. This initiative aims to enhance the creation and operation of AI factories. These companies are collaborating to advance digital twin technology.",
-        "source_name": "extracted signals",
-        "implication": "Directly relevant to Silversea's Digital Twin solution."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "Amazon Devices and Services has achieved zero-touch manufacturing with NVIDIA. This achievement enables Amazon to streamline its manufacturing processes. The specific metrics or details of the implementation are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA launched NVIDIA Metropolis, a platform that enhances productivity and improves safety. The specific features and applications of Metropolis are not detailed. NVIDIA aims to transform industries with this platform.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA introduced the NVIDIA OpenShell runtime, which is coming to Windows. This runtime is expected to enhance the development and deployment of shell scripts. The release date and specific features are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA expanded support for NemoClaw. The details of the expansion are not specified. This move aims to enhance the capabilities of NemoClaw.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA released NVIDIA Broadcast 2.2. This version likely includes new features or improvements for broadcasting. The specific enhancements are not detailed.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA launched DLSS Ray Reconstruction for Blender Cycles. This technology aims to improve rendering performance and quality. The specific benefits and features are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA introduced NVIDIA Blackwell RTX PRO for workstations and servers. This product is designed to enhance professional workflows and applications. The specific details and features are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA announced The World Foundation Model Platform to accelerate physical AI. This platform aims to advance the development and deployment of AI models. The specific details and applications are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA launched NVIDIA Cosmos, a platform for physical-AI-embodied systems. This platform aims to enable the creation of more sophisticated AI systems. The specific features and applications are not detailed.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA introduced NVIDIA Earth-2, a family of open models for weather AI. These models aim to improve weather forecasting and related applications. The specific details and features are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA released DiffusionGemma, an open model for text generation. This model aims to advance the capabilities of text generation. The specific details and features are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA hosted GTC, a conference with multiple announcements. The conference included various revelations and updates from NVIDIA. The specific announcements and details are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA expanded its Omniverse Blueprint for AI factory digital twins. This expansion aims to enhance the creation and operation of AI factories. The specific details and features are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Directly relevant to Silversea's Digital Twin solution."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "NVIDIA and TSMC are collaborating to bring AI into fabs to advance chipmaking. This partnership aims to improve the efficiency and effectiveness of chip manufacturing. The specific details and outcomes are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "NVIDIA",
-        "signal": "Customizable OpenUSD trainings are now available. These trainings aim to help developers and users understand and utilize OpenUSD. The specific details and benefits are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "Cisco",
-        "signal": "Cisco launched AI Canvas, a solution for resilient, high-speed AI networking. This solution aims to enhance AI networking capabilities. The specific features and benefits are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "Cisco",
-        "signal": "Cisco introduced Silicon One, a purpose-built programmable silicon for AI-scale networking. This silicon aims to improve networking performance and efficiency. The specific details and features are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "Cisco",
-        "signal": "Cisco launched Hybrid Mesh Firewall, a distributed and optimized enforcement solution. This solution aims to enhance network security and management. The specific features and benefits are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      },
-      {
-        "entity": "Cisco",
-        "signal": "Cisco introduced Smart Switches with security fused into the network. These switches aim to improve network security and performance. The specific details and features are not provided.",
-        "source_name": "extracted signals",
-        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
-      }
-    ],
-    "General News": [
-      {
-        "entity": "Vietnam and South Korea",
-        "signal": "Vietnam and South Korea are collaborating on the Ninh Thuan 2 nuclear power plant project. This partnership aims to develop the plant. No additional details on the partnership were provided.",
-        "source_name": "Vietnam Investment Review",
-        "implication": "Market development relevant to Silversea's positioning across the built environment and education sectors."
       }
     ],
     "Customers": [
       {
-        "entity": "TTDecor",
-        "signal": "TTDecor partnered with Him Lam Corporation in 2014. They also partnered with Nam Long Corporation in 2020. Additionally, TTDecor collaborated with IHG on the Intercontinental Phu Quoc Hotel project.",
-        "source_name": "Extracted signals",
-        "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
-      },
-      {
-        "entity": "TTDecor",
-        "signal": "TTDecor worked on over 800 projects, showcasing their extensive experience in the industry. No specific details on the projects were provided. Their portfolio includes various collaborations with major corporations.",
-        "source_name": "Extracted signals",
-        "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
-      },
-      {
-        "entity": "TTDecor",
-        "signal": "TTDecor partnered with BIM Corporation on The Lotus Ha Long villa project. This partnership highlights TTDecor's involvement in high-profile developments. No additional details on the partnership were provided.",
-        "source_name": "Extracted signals",
-        "implication": "Relevant to Silversea's BIM-to-digital-twin workflow."
-      },
-      {
-        "entity": "Vietsoft Pro",
-        "signal": "Vietsoftpro partnered with the Nghệ An - Xô Viết Nghệ Tĩnh Museum. This collaboration aims to enhance the museum's offerings. No specific details on the partnership's scope were provided.",
-        "source_name": "Extracted signals",
-        "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
-      },
-      {
-        "entity": "Vietsoft Pro",
-        "signal": "Vietsoftpro launched several products, including the 3D Book Library system, E-learning and electronic lecture systems, and an automated guidance system with a national database. These products aim to improve educational and cultural experiences. No specific adoption metrics were provided.",
-        "source_name": "Extracted signals",
-        "implication": "Relevant to Silversea's education-sector immersive/virtual learning solutions."
-      },
-      {
-        "entity": "Vietsoft Pro",
-        "signal": "Vietsoftpro organized and participated in several events, including the 'Eyes of Time' exhibition on January 25, the launch of the 'Thang Long Imperial Citadel' immersive experience on December 30, 2025, and the 'Lửa Xô Viết' show on September 12, 2025. These events highlight Vietsoftpro's involvement in cultural and educational activities.",
-        "source_name": "Extracted signals",
-        "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
-      },
-      {
-        "entity": "Vietsoft Pro",
-        "signal": "Vietsoftpro opened the Huế IoT Innovation Hub on April 28. This center likely focuses on Internet of Things innovations. No specific details on the hub's activities were provided.",
-        "source_name": "Extracted signals",
-        "implication": "Complementary technology to Silversea's IoT & AI Solutions."
-      },
-      {
         "entity": "BM Windows",
-        "signal": "BM Windows launched BMU, a façade maintenance solution optimized for high-rise buildings. This product aims to improve building maintenance efficiency and safety. No specific adoption metrics were provided.",
-        "source_name": "Extracted signals",
+        "signal": "BM Windows is expanding in Australia with 3 new projects set to commence in 2026. Additionally, the company is planning to expand in the US market, with a specific announcement made on 21.11.2024. BM Windows is also establishing a new factory in Châu Đức, which will serve as a strategic production center, slated for completion on 15.10.2025.",
+        "source_name": "BM Windows",
         "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
       },
       {
         "entity": "BM Windows",
-        "signal": "BM Windows started several new projects in key urban areas on March 31, 2026. These projects are part of BM Windows' expansion strategy. No specific details on the projects were provided.",
-        "source_name": "Extracted signals",
+        "signal": "BM Windows will start production at 1A Constitution Avenue, Australia, on 21.04.2026. The company launched BMU on 28.08.2025. This launch is part of BM Windows' strategic product offerings.",
+        "source_name": "BM Windows",
         "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
       },
       {
         "entity": "BM Windows",
-        "signal": "BM Windows began three new projects in Australia in early 2026. This expansion marks BM Windows' entry into the Australian market. No specific details on the projects were provided.",
-        "source_name": "Extracted signals",
+        "signal": "BM Windows is involved in several projects, including SkyLiving in Surrey City Centre, which is set to commence on 14.05.2026. Another project is The Kross, with a specific date of 14.10.2025. The company is also working on Mái kính Skylight Center Sân bay Quốc tế Long Thành, scheduled for 05.08.2025.",
+        "source_name": "BM Windows",
         "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
       },
       {
         "entity": "BM Windows",
-        "signal": "BM Windows initiated numerous projects across Vietnam in 2025. These projects contribute to the company's extensive portfolio. No specific details on the projects were provided.",
-        "source_name": "Extracted signals",
+        "signal": "BM Windows has a project at 55 Pitt Street, Sydney, and is also involved in The Marc 88 Hà Nội, scheduled for 14.10.2025. Other projects include One Central Saigon in TP. Hồ Chí Minh and Times Square Đà Nẵng in Đà Nẵng.",
+        "source_name": "BM Windows",
         "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
       },
       {
         "entity": "BM Windows",
-        "signal": "BM Windows officially started construction on their new Chau Duc factory on October 15, 2025. This factory serves as a strategic production center for BM Windows. No specific details on the factory's capacity were provided.",
-        "source_name": "Extracted signals",
-        "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
-      },
-      {
-        "entity": "BM Windows",
-        "signal": "BM Windows received an international award for façades in New York on October 15, 2025. This recognition highlights BM Windows' expertise in façade solutions. No specific details on the award criteria were provided.",
-        "source_name": "Extracted signals",
+        "signal": "BM Windows is working on Saigon Marina IFC in TP. HCM and One Bloor West in Toronto, Canada. The company is also involved in The Opera Residence in TP. HCM and Sân bay Quốc tế Long Thành in Long Thành, Đồng Nai. Additionally, BM Windows received an award in Façade nhôm kính quốc tế in New York on 15.10.2025.",
+        "source_name": "BM Windows",
         "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
       }
     ]
   },
   "opportunities": [
     {
-      "title": "Becamex IDC Eco-Industrial Park",
-      "source_quote": "Becamex IDC is developing an Eco-Industrial Park in Vietnam.",
-      "named_entry_point": "Eco-Industrial Park project",
-      "concrete_action": "Propose Silversea's smart facility management solutions for the Eco-Industrial Park.",
+      "title": "Becamex IDC Eco-Industrial Park Development",
+      "source_quote": "Becamex IDC is developing an Eco-Industrial Park according to EIP 2.0 standards.",
+      "named_entry_point": "Eco-Industrial Park Development",
+      "concrete_action": "Explore potential partnership for digital twin and smart FM solutions",
       "deadline": "No deadline found in source",
-      "source_name": "Extracted signals",
+      "source_name": "Becamex IDC",
       "product_fit": "Smart Facility Management System, Digital Twin",
       "scores": {
         "strategic_fit": 5,
@@ -293,13 +107,13 @@
       "total_score": 15
     },
     {
-      "title": "Vietsoftpro E-learning Solutions",
-      "source_quote": "Vietsoftpro launched several products, including the 3D Book Library system, E-learning and electronic lecture systems.",
-      "named_entry_point": "E-learning solutions for educational institutions",
-      "concrete_action": "Offer Silversea's STEM 3D Virtual Lab and Virtual Campus solutions to complement Vietsoftpro's e-learning products.",
+      "title": "Honeywell MIT Research Partnership",
+      "source_quote": "Honeywell partnered with MIT to research digital technologies that can increase energy supply and reduce production costs.",
+      "named_entry_point": "MIT Research Partnership",
+      "concrete_action": "Explore potential collaboration on digital technologies for energy efficiency",
       "deadline": "No deadline found in source",
-      "source_name": "Extracted signals",
-      "product_fit": "STEM 3D Virtual Lab, Virtual Campus, E-learning solutions",
+      "source_name": "Honeywell",
+      "product_fit": "IoT & AI Solutions",
       "scores": {
         "strategic_fit": 5,
         "revenue_potential": 3,
@@ -310,78 +124,79 @@
       "total_score": 15
     },
     {
-      "title": "BM Windows Façade Maintenance",
-      "source_quote": "BM Windows launched BMU, a façade maintenance solution optimized for high-rise buildings.",
-      "named_entry_point": "BMU façade maintenance solution",
-      "concrete_action": "Propose Silversea's smart building and building automation solutions to enhance BMU's façade maintenance efficiency.",
+      "title": "BM Windows Expansion",
+      "source_quote": "BM Windows is expanding in Australia and the US market with new projects and factory establishment.",
+      "named_entry_point": "BM Windows Expansion",
+      "concrete_action": "Explore potential opportunities for smart building solutions",
       "deadline": "No deadline found in source",
-      "source_name": "Extracted signals",
-      "product_fit": "Smart Building, Building Automation",
+      "source_name": "BM Windows",
+      "product_fit": "Smart Facility Management System",
       "scores": {
         "strategic_fit": 3,
-        "revenue_potential": 3,
+        "revenue_potential": 5,
         "win_probability": 3,
         "urgency": 1,
         "intelligence_quality": 3
       },
-      "total_score": 13
+      "total_score": 15
     }
   ],
   "synthesis": [
-    "NVIDIA's expansion of its Omniverse Blueprint for AI factory digital twins presents both opportunities and competition for Silversea's digital twin solutions.",
-    "The development of Eco-Industrial Parks in Vietnam by Becamex IDC and others may require smart facility management solutions, presenting an opportunity for Silversea.",
-    "The education sector is seeing growth in e-learning and virtual solutions, with Vietsoftpro's products and Silversea's STEM 3D Virtual Lab and Virtual Campus solutions potentially complementing each other."
+    "Increasing focus on sustainability and energy efficiency in industrial parks and manufacturing sectors.",
+    "Growing demand for smart building and facility management solutions in commercial and industrial projects.",
+    "Expanding opportunities for digital twin and IoT solutions in various industries."
   ],
   "competition_risks": [
     {
-      "entity": "Siemens",
-      "signal": "Siemens launched Vectron X, next-generation locomotives. They also introduced Building X, a digital twin platform for building operations, and Electrification X, an IoT software for electrification and automation. Furthermore, Siemens developed a digital twin for the extraction process in the Amazon rainforest.",
-      "threat_level": "HIGH",
-      "mitigation": "Direct competitor in Silversea's core domain. Monitor Siemens's product development closely and differentiate on Silversea's product suite integration."
-    },
-    {
       "entity": "Becamex IDC",
-      "signal": "Becamex IDC launched Trang Trai Nang Luong Mat Troi, a Solar Energy Farm with a 260 MWp capacity. They also introduced digital solutions for businesses, including data storage centers and virtual servers.",
-      "threat_level": "MEDIUM",
-      "mitigation": "Growing capability that could overlap with Silversea's market. Track Becamex IDC's strategic direction and partnership outcomes."
-    },
-    {
-      "entity": "Becamex IDC",
-      "signal": "Becamex IDC is developing an Eco-Industrial Park in Vietnam. They are also launching ESG (Environmental, Social, and Governance) activities, which include creating 2 million trees estimated to reduce 44,700 tons CO2/year.",
+      "signal": "Becamex IDC launched Trang Trai Nang Luong Mat Troi (Solar Energy Farm) with 260 MWp at Cây Trường. This project is part of their efforts to increase green electricity production. The solar energy farm was implemented on a total area of 240 ha.",
       "threat_level": "MEDIUM",
       "mitigation": "Growing capability that could overlap with Silversea's market. Track Becamex IDC's strategic direction and partnership outcomes."
     },
     {
       "entity": "Honeywell",
-      "signal": "Honeywell is launching Honeywell Technologies as an independent automation company. They also partnered with MIT to analyze digital technologies for energy supply and production cost reduction.",
+      "signal": "Honeywell partnered with MIT to research digital technologies that can increase energy supply and reduce production costs. This partnership aims to leverage innovative solutions for energy efficiency. The collaboration focuses on developing and implementing new digital technologies.",
       "threat_level": "MEDIUM",
       "mitigation": "Growing capability that could overlap with Silversea's market. Track Honeywell's strategic direction and partnership outcomes."
     },
     {
       "entity": "Honeywell",
-      "signal": "Honeywell expanded its fire and life safety portfolio with the NOTIFIER INSPIRE platform. They also launched Honeywell Accelerator OS.",
+      "signal": "Honeywell launched the NOTIFIER INSPIRE platform with advanced smoke control capabilities. This platform is part of their product or service launches aimed at enhancing life safety systems. Additionally, Honeywell introduced cloud-connected life safety innovations.",
       "threat_level": "MEDIUM",
       "mitigation": "Growing capability that could overlap with Silversea's market. Track Honeywell's strategic direction and partnership outcomes."
+    },
+    {
+      "entity": "Becamex IDC",
+      "signal": "Becamex IDC partnered with the World Bank to develop the first Eco-Industrial Park in Vietnam according to international standard EIP 2.0. They also partnered with Sembcorp to co-found the VSIC - Vietnam-Singapore Innovation Center. Additionally, Becamex IDC partnered with BWID to develop infrastructure with RWID.",
+      "threat_level": "LOW",
+      "mitigation": "Tangential activity with limited immediate impact. Continue routine monitoring of Becamex IDC."
+    },
+    {
+      "entity": "Becamex IDC",
+      "signal": "Becamex IDC implemented 2 solar energy farms at Cây Trường, providing over 260 MWp of green electricity. The company also implemented 5 ABB 110/22Kv substations to ensure stable electricity for enterprises. As part of their sustainability efforts, 2 million trees were planted, estimated to reduce 44,700 tons of CO2 per year.",
+      "threat_level": "LOW",
+      "mitigation": "Tangential activity with limited immediate impact. Continue routine monitoring of Becamex IDC."
+    },
+    {
+      "entity": "Becamex IDC",
+      "signal": "Becamex IDC is developing an Eco-Industrial Park according to EIP 2.0 standards. The company is also developing innovative infrastructure, including Techlab, Fablab, R&D Institute, and Automation Center i4.0. These developments are part of their strategic moves to enhance industrial park capabilities.",
+      "threat_level": "LOW",
+      "mitigation": "Tangential activity with limited immediate impact. Continue routine monitoring of Becamex IDC."
+    },
+    {
+      "entity": "Honeywell",
+      "signal": "Honeywell underwent a strategic move with the spin-off of Honeywell Aerospace. This move is aimed at focusing on core business areas. The spin-off is a significant change in the company's structure.",
+      "threat_level": "LOW",
+      "mitigation": "Tangential activity with limited immediate impact. Continue routine monitoring of Honeywell."
     },
     {
       "entity": "Johnson Controls",
-      "signal": "Johnson Controls was named to the Alliance for Climate Transition's Top 20 Energy Transition companies. They also launched Metasys 16.0 for mission-critical environments.",
-      "threat_level": "MEDIUM",
-      "mitigation": "Growing capability that could overlap with Silversea's market. Track Johnson Controls's strategic direction and partnership outcomes."
-    },
-    {
-      "entity": "Becamex IDC",
-      "signal": "Becamex IDC partnered with the World Bank to co-develop the first Eco-Industrial Park in Vietnam according to international standard EIP 2.0. They also partnered with Sembcorp to co-found the Vietnam-Singapore Industrial Corporation, VSIC. Additionally, Becamex IDC collaborated with the University of National Singapore (NUS) on BLOCK71 Saigon.",
+      "signal": "Johnson Controls was named to the Alliance for Climate Transition's Top 20 Energy Transition companies. This recognition highlights the company's efforts in energy transition and climate action. Johnson Controls was also named to the 2026 Best Companies for the Future List.",
       "threat_level": "LOW",
-      "mitigation": "Tangential activity with limited immediate impact. Continue routine monitoring of Becamex IDC."
+      "mitigation": "Tangential activity with limited immediate impact. Continue routine monitoring of Johnson Controls."
     }
   ],
   "data_sources": [
-    {
-      "name": "Viettel Group",
-      "url": "https://viettel.com.vn/en/",
-      "sector": "competitors"
-    },
     {
       "name": "Becamex IDC",
       "url": "https://becamex.com.vn",
@@ -413,39 +228,9 @@
       "sector": "competitors"
     },
     {
-      "name": "NVIDIA",
-      "url": "https://www.nvidia.com",
-      "sector": "partners"
-    },
-    {
-      "name": "Dell Technologies",
-      "url": "https://www.dell.com",
-      "sector": "partners"
-    },
-    {
-      "name": "Cisco",
-      "url": "https://www.cisco.com",
-      "sector": "partners"
-    },
-    {
       "name": "CBRE Vietnam",
       "url": "https://www.cbrevietnam.com",
       "sector": "partners"
-    },
-    {
-      "name": "Vietnam Investment Review",
-      "url": "https://vir.com.vn",
-      "sector": "general_news"
-    },
-    {
-      "name": "TTDecor",
-      "url": "https://ttdecor.net/gioi-thieu-art",
-      "sector": "customers"
-    },
-    {
-      "name": "Vietsoft Pro",
-      "url": "https://vietsoftpro.com/",
-      "sector": "customers"
     },
     {
       "name": "BM Windows",
@@ -455,7 +240,7 @@
   ],
   "_metadata": {
     "country": "Vietnam",
-    "date": "2026-07-08",
-    "date_display": "08 July 2026"
+    "date": "2026-07-13",
+    "date_display": "13 July 2026"
   }
 }

@@ -1,0 +1,73 @@
+{
+  "executive_summary": [],
+  "signals_by_sector": {
+    "Industry Associations": [
+      {
+        "entity": "GreenRE",
+        "signal": "GreenRE has partnered with CamTech University in Cambodia. This partnership aims to advance sustainable practices through education and research collaboration. Specific details on the partnership's scope and objectives are not provided.",
+        "source_name": "GreenRE",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      }
+    ]
+  },
+  "opportunities": [],
+  "synthesis": [],
+  "competition_risks": [],
+  "data_sources": [
+    {
+      "name": "GreenRE",
+      "url": "https://www.greenre.org/#",
+      "sector": "associations"
+    },
+    {
+      "name": "REDHA Institute",
+      "url": "https://rehdainstitute.com/#",
+      "sector": "associations"
+    },
+    {
+      "name": "PKNS FM Integrated Sdn Bhd",
+      "url": "https://pknsfmi.com/",
+      "sector": "customers"
+    },
+    {
+      "name": "City Motor Group",
+      "url": "https://citymotorsgroup.com.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "NCT Borneo Sdn Bhd",
+      "url": "https://nct.net.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "UOA Development Berhad",
+      "url": "https://uoa.com.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "Sunway Property",
+      "url": "https://sunwayproperty.com/",
+      "sector": "customers"
+    },
+    {
+      "name": "TA Global",
+      "url": "https://taglobal.com.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "ITMAX System Berhad",
+      "url": "https://itmax.com.my/",
+      "sector": "partners"
+    },
+    {
+      "name": "Serve Deck Innovation Sdn Bhd",
+      "url": "https://www.servedeck.com/",
+      "sector": "competitors"
+    }
+  ],
+  "_metadata": {
+    "country": "Malaysia",
+    "date": "2026-07-13",
+    "date_display": "13 July 2026"
+  }
+}
