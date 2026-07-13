@@ -20,8 +20,10 @@ Feedback submissions:
 {feedback_text}"""
 
 
-def aggregate_feedback() -> None:
-    """Read unprocessed feedback, summarize via LLM, store digest in vector store."""
+def aggregate_feedback(country_code: str = None) -> None:
+    """Read unprocessed feedback for one country, summarize via LLM, store digest in vector store.
+    country_code=None processes ALL pending feedback regardless of country (legacy/manual-run
+    behavior); pass an explicit code to scope to one country's submissions."""
     if not os.path.isdir(FEEDBACK_DIR):
         return
 
@@ -29,14 +31,20 @@ def aggregate_feedback() -> None:
     if not json_files:
         return
 
+    matched_files = []
     submissions = []
     for filename in json_files:
         filepath = os.path.join(FEEDBACK_DIR, filename)
         try:
             with open(filepath, "r", encoding="utf-8-sig") as f:
-                submissions.append(json.load(f))
+                sub = json.load(f)
         except (json.JSONDecodeError, OSError):
             continue
+        sub_country = sub.get("country", "SG")
+        if country_code and sub_country != country_code:
+            continue
+        submissions.append(sub)
+        matched_files.append(filename)
 
     if not submissions:
         return
@@ -61,20 +69,20 @@ def aggregate_feedback() -> None:
     )
 
     digest = response.choices[0].message.content
-    add_documents(
-        FEEDBACK_DIGESTS,
-        [digest],
-        metadatas=[{
-            "date": datetime.date.today().isoformat(),
-            "submissions_count": str(len(submissions)),
-        }],
-    )
+    metadata = {
+        "date": datetime.date.today().isoformat(),
+        "submissions_count": str(len(submissions)),
+    }
+    if country_code:
+        metadata["country"] = country_code
+    add_documents(FEEDBACK_DIGESTS, [digest], metadatas=[metadata])
 
     os.makedirs(PROCESSED_DIR, exist_ok=True)
-    for filename in json_files:
+    for filename in matched_files:
         shutil.move(os.path.join(FEEDBACK_DIR, filename), os.path.join(PROCESSED_DIR, filename))
 
-    print(f"  Feedback: aggregated {len(submissions)} submission(s) into vector store digest")
+    scope_note = f" [{country_code}]" if country_code else ""
+    print(f"  Feedback: aggregated {len(submissions)} submission(s) into vector store digest{scope_note}")
 
 
 CONSOLIDATION_PROMPT = """Compress these {count} feedback digests into ONE consolidated priority summary.
@@ -85,25 +93,25 @@ Digests:
 {digests_text}"""
 
 
-def consolidate_feedback_digests(max_digests: int = 10) -> None:
-    """Merge oldest feedback digests when collection exceeds cap.
+def consolidate_feedback_digests(max_digests: int = 10, country_code: str = None) -> None:
+    """Merge oldest feedback digests when one country's digest count exceeds cap.
     Mirrors pipeline/weekly.py's delete-then-replace pattern."""
-    # placeholder cap, untuned — revisit with real usage data
     collection = get_collection(FEEDBACK_DIGESTS)
-    count = collection.count()
-    if count <= max_digests:
-        return
-
-    results = collection.get(include=["documents", "metadatas"])
+    get_kwargs = {"include": ["documents", "metadatas"]}
+    if country_code:
+        get_kwargs["where"] = {"country": country_code}
+    results = collection.get(**get_kwargs)
     documents = results.get("documents", [])
     metadatas = results.get("metadatas", [])
     ids = results.get("ids", [])
+    count = len(ids)
+    if count <= max_digests:
+        return
 
     # Sort by date, oldest first
     paired = list(zip(ids, documents, metadatas))
     paired.sort(key=lambda x: (x[2] or {}).get("date", ""))
 
-    # Consolidate just enough to get back under the cap
     n_to_consolidate = count - max_digests + 1
     old_ids = [p[0] for p in paired[:n_to_consolidate]]
     old_docs = [p[1] for p in paired[:n_to_consolidate]]
@@ -126,14 +134,14 @@ def consolidate_feedback_digests(max_digests: int = 10) -> None:
     consolidated = response.choices[0].message.content
 
     delete_documents(FEEDBACK_DIGESTS, old_ids)
-    add_documents(
-        FEEDBACK_DIGESTS,
-        [consolidated],
-        metadatas=[{
-            "date": datetime.date.today().isoformat(),
-            "type": "consolidated",
-            "source_count": str(len(old_ids)),
-        }],
-    )
+    metadata = {
+        "date": datetime.date.today().isoformat(),
+        "type": "consolidated",
+        "source_count": str(len(old_ids)),
+    }
+    if country_code:
+        metadata["country"] = country_code
+    add_documents(FEEDBACK_DIGESTS, [consolidated], metadatas=[metadata])
 
-    print(f"  Feedback: consolidated {len(old_ids)} old digests into 1 summary")
+    scope_note = f" [{country_code}]" if country_code else ""
+    print(f"  Feedback: consolidated {len(old_ids)} old digests into 1 summary{scope_note}")

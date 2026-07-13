@@ -1,0 +1,271 @@
+{
+  "executive_summary": [
+    "TA Global launched CloutHaus Residences, a mixed-use development, and The Arden office tower, planned for 1Q2026, potentially requiring smart building solutions.",
+    "Malaysia Airport Holding Berhad had a groundbreaking ceremony for the Subang MRO Logistics Complex Project, a partnership with Mitsui Fudosan, which may involve smart facility management.",
+    "GreenRE partnered with CamTech University in Cambodia to advance sustainable practices through education and training, possibly leveraging digital twin or smart building technologies."
+  ],
+  "signals_by_sector": {
+    "Government & Agencies": [
+      {
+        "entity": "National Art Gallery",
+        "signal": "The National Art Gallery has issued a tender for 'Sebut Harga Bagi Kerja-Kerja Baik Pulih Dan Penggantian Paip Bekalan Air Serta Kerja-Kerja Berkaitan' with no stated deadline. Another tender for 'Sebut Harga Bagi Perkhidmatan Penyeggaraan Secara Komprehensif Sistem Penyahlembapan (Dehumidifier)' is also available with no deadline stated. These tenders are part of the gallery's procurement activities.",
+        "source_name": "National Art Gallery",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      },
+      {
+        "entity": "National Art Gallery",
+        "signal": "The National Art Gallery is hosting several exhibitions including 'Pameran Cinta Buatan Malaysia', 'Pameran KePulauan: Refleksi BIMP-EAGA', 'Pameran Orang Timur', 'Pameran Asal Tanah', and 'Pameran Bakat Muda Sezaman' with no dates stated. Additionally, 'Festival Budaya Malaysia Perak 2026' is scheduled for 2026 and 'Pesta Buku Antarabangsa 2026' is also set for 2026. The gallery is planning various cultural events.",
+        "source_name": "National Art Gallery",
+        "implication": "Relevant to Silversea's BIM-to-digital-twin workflow."
+      },
+      {
+        "entity": "Balai Seni Negara",
+        "signal": "Balai Seni Negara has strengthened its partnership with media as a strategic partner for 'Hawana 2026'. This move aims to enhance collaboration and promotion of cultural events. The partnership was announced to support the upcoming cultural festival.",
+        "source_name": "Balai Seni Negara",
+        "implication": "Government initiative that could create procurement opportunities or regulatory tailwinds for Silversea's digital twin, smart FM, or education-technology solutions."
+      }
+    ],
+    "Industry Associations": [
+      {
+        "entity": "GreenRE",
+        "signal": "GreenRE has partnered with CamTech University in Cambodia. This partnership aims to advance sustainable practices through education and training. No further details on the partnership are provided.",
+        "source_name": "GreenRE",
+        "implication": "Industry body activity that could provide networking, certification, or partnership channels for Silversea Media."
+      }
+    ],
+    "Customers": [
+      {
+        "entity": "TA Global",
+        "signal": "TA Global launched CloutHaus Residences, a mixed-use development. Additionally, they launched The Arden office tower, planned for 1Q2026. The company aims to expand its portfolio with these new projects.",
+        "source_name": "source not specified",
+        "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
+      },
+      {
+        "entity": "Malaysia Airport Holding Berhad",
+        "signal": "Malaysia Airport Holding Berhad had a groundbreaking ceremony for the Subang MRO Logistics Complex Project. This project is a partnership with Mitsui Fudosan. The partnership aims to enhance airport facilities and services.",
+        "source_name": "source not specified",
+        "implication": "Activity from a potential or existing customer that may signal demand for digital twin, smart FM, or campus/education technology solutions."
+      }
+    ],
+    "Partners": [
+      {
+        "entity": "ITMAX System Berhad",
+        "signal": "No actionable signals found for ITMAX System Berhad.",
+        "source_name": "source text",
+        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
+      },
+      {
+        "entity": "Redtone",
+        "signal": "No actionable signals found for Redtone.",
+        "source_name": "source text",
+        "implication": "Partner ecosystem development that could strengthen Silversea's go-to-market or delivery capabilities."
+      }
+    ],
+    "Competitors": [
+      {
+        "entity": "Accenture",
+        "signal": "Accenture partnered with UNICEF (GenU) to drive youth development through technology and innovation. Accenture also partnered with ServiceNow to launch AI-powered services, aiming to enhance digital transformation for clients. Additionally, Accenture teamed up with Siemens Digital Industries to strengthen capabilities for software and automation solutions.",
+        "source_name": "Extracted signals",
+        "implication": "Competitive activity to monitor — may indicate market trends or areas where Silversea needs to differentiate."
+      }
+    ]
+  },
+  "opportunities": [
+    {
+      "title": "TA Global's CloutHaus Residences",
+      "source_quote": "TA Global launched CloutHaus Residences, a mixed-use development.",
+      "named_entry_point": "CloutHaus Residences",
+      "concrete_action": "Explore smart building solutions for the mixed-use development.",
+      "deadline": "No deadline found in source",
+      "source_name": "TA Global",
+      "product_fit": "Smart Facility Management System, Digital Twin",
+      "scores": {
+        "strategic_fit": 3,
+        "revenue_potential": 3,
+        "win_probability": 3,
+        "urgency": 1,
+        "intelligence_quality": 3
+      },
+      "total_score": 13
+    },
+    {
+      "title": "Malaysia Airport Holding Berhad's Subang MRO Logistics Complex Project",
+      "source_quote": "Malaysia Airport Holding Berhad had a groundbreaking ceremony for the Subang MRO Logistics Complex Project.",
+      "named_entry_point": "Subang MRO Logistics Complex Project",
+      "concrete_action": "Investigate smart facility management opportunities for the project.",
+      "deadline": "No deadline found in source",
+      "source_name": "Malaysia Airport Holding Berhad",
+      "product_fit": "Smart Facility Management System, Building Automation",
+      "scores": {
+        "strategic_fit": 3,
+        "revenue_potential": 5,
+        "win_probability": 3,
+        "urgency": 1,
+        "intelligence_quality": 3
+      },
+      "total_score": 15
+    },
+    {
+      "title": "GreenRE's partnership with CamTech University",
+      "source_quote": "GreenRE partnered with CamTech University in Cambodia to advance sustainable practices through education and training.",
+      "named_entry_point": "GreenRE-CamTech University partnership",
+      "concrete_action": "Explore opportunities for digital twin or smart building technologies in sustainable education and training.",
+      "deadline": "No deadline found in source",
+      "source_name": "GreenRE",
+      "product_fit": "Digital Twin, Smart Building",
+      "scores": {
+        "strategic_fit": 3,
+        "revenue_potential": 3,
+        "win_probability": 3,
+        "urgency": 1,
+        "intelligence_quality": 3
+      },
+      "total_score": 13
+    }
+  ],
+  "synthesis": [
+    "The signals indicate potential opportunities for Silversea's smart building and facility management solutions in the Malaysian market.",
+    "Partnerships and projects in sustainable practices, education, and airport facilities may require digital twin and smart building technologies.",
+    "Silversea should explore collaborations with industry associations and customers to provide innovative solutions for smart buildings and facilities."
+  ],
+  "competition_risks": [
+    {
+      "entity": "Accenture",
+      "signal": "Accenture partnered with UNICEF (GenU) to drive youth development through technology and innovation. Accenture also partnered with ServiceNow to launch AI-powered services, aiming to enhance digital transformation for clients. Additionally, Accenture teamed up with Siemens Digital Industries to strengthen capabilities for software and automation solutions.",
+      "threat_level": "MEDIUM",
+      "mitigation": "Growing capability that could overlap with Silversea's market. Track Accenture's strategic direction and partnership outcomes."
+    }
+  ],
+  "data_sources": [
+    {
+      "name": "National Art Gallery",
+      "url": "https://www.artgallery.gov.my/",
+      "sector": "gov_agencies"
+    },
+    {
+      "name": "GreenRE",
+      "url": "https://www.greenre.org/#",
+      "sector": "associations"
+    },
+    {
+      "name": "REDHA Institute",
+      "url": "https://rehdainstitute.com/#",
+      "sector": "associations"
+    },
+    {
+      "name": "PKNS FM Integrated Sdn Bhd",
+      "url": "https://pknsfmi.com/",
+      "sector": "customers"
+    },
+    {
+      "name": "Avisena Women's & Children Specialist Hospital",
+      "url": "https://ash2.avisena.com.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "Capri by Fraser",
+      "url": "https://www.frasershospitality.com/en/malaysia/kualalumpur/capri-by-fraser-bukit-bintang/",
+      "sector": "customers"
+    },
+    {
+      "name": "City Motor Group",
+      "url": "https://citymotorsgroup.com.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "NCT Borneo Sdn Bhd",
+      "url": "https://nct.net.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "IHH Healthcare",
+      "url": "https://www.ihhhealthcare.com/",
+      "sector": "customers"
+    },
+    {
+      "name": "UCSI Hospital",
+      "url": "https://www.ucsiuniversity.edu.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "UOA Development Berhad",
+      "url": "https://uoa.com.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "Sunway Group",
+      "url": "https://www.sunway.com.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "Sunway Medical Centre",
+      "url": "https://www.sunwaymedical.com/en/",
+      "sector": "customers"
+    },
+    {
+      "name": "Sunway Property",
+      "url": "https://sunwayproperty.com/",
+      "sector": "customers"
+    },
+    {
+      "name": "TA Global",
+      "url": "https://taglobal.com.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "Bandar Utama City Center Sdn Bhd",
+      "url": "https://www.1utama.com.my/",
+      "sector": "customers"
+    },
+    {
+      "name": "Malaysia Airlines",
+      "url": "https://www.malaysiaairlines.com/my/en/home.html",
+      "sector": "customers"
+    },
+    {
+      "name": "Malaysia Airport Holding Berhad",
+      "url": "https://corporate.malaysiaairports.com.my/en",
+      "sector": "customers"
+    },
+    {
+      "name": "ITMAX System Berhad",
+      "url": "https://itmax.com.my/",
+      "sector": "partners"
+    },
+    {
+      "name": "Redtone",
+      "url": "https://www.redtone.com/",
+      "sector": "partners"
+    },
+    {
+      "name": "Serve Deck Innovation Sdn Bhd",
+      "url": "https://www.servedeck.com/",
+      "sector": "competitors"
+    },
+    {
+      "name": "Accenture",
+      "url": "https://www.accenture.com/my-en",
+      "sector": "competitors"
+    },
+    {
+      "name": "Virtualtech Frontier",
+      "url": "https://www.virtualtechfrontier.com/",
+      "sector": "competitors"
+    },
+    {
+      "name": "3 Particles",
+      "url": "https://www.3particle.com/",
+      "sector": "competitors"
+    },
+    {
+      "name": "Dreamory",
+      "url": "https://dreamorygroup.com/",
+      "sector": "general_news"
+    }
+  ],
+  "_metadata": {
+    "country": "Malaysia",
+    "date": "2026-07-10",
+    "date_display": "10 July 2026"
+  }
+}

@@ -3,6 +3,11 @@ import json
 import os
 import sys
 import datetime
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 from dotenv import load_dotenv
 load_dotenv()
 from config.sources import COUNTRIES
@@ -41,12 +46,12 @@ def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: s
         active_countries = [c for c in active_countries if c["code"] == country_arg]
     print(f"Running pipeline for {len(active_countries)} active country/countries...\n")
 
-    print("Processing feedback from previous run...")
-    aggregate_feedback()
-    consolidate_feedback_digests()
-
     for country in active_countries:
         print(f"=== {country['name']} ({country['code']}) ===")
+
+        print("Processing feedback from previous run...")
+        aggregate_feedback(country_code=country["code"])
+        consolidate_feedback_digests(country_code=country["code"])
 
         sources = country["sources"]
         if domain_arg:
@@ -80,7 +85,7 @@ def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: s
             "sources_scraped": len(scraped),
             "sources_passed_filter": len(filtered),
         }
-        metadata_path = os.path.join("data", "run_metadata.json")
+        metadata_path = os.path.join("data", f"run_metadata_{country['code']}.json")
         os.makedirs("data", exist_ok=True)
         with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(run_metadata, f, indent=2)
@@ -97,7 +102,8 @@ def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: s
 
     if datetime.date.today().weekday() == 6:  # Sunday
         print("Running weekly summary (Sunday)...")
-        generate_weekly_summary()
+        for country in active_countries:
+            generate_weekly_summary(country_code=country["code"], country_name=country["name"])
 
 
 if __name__ == "__main__":

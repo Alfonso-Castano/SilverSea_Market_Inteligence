@@ -12,6 +12,7 @@ load_dotenv()
 from flask import Flask, render_template, request, session, redirect, url_for
 
 from pipeline import source_suggestions
+from config.sources import load_sources
 
 app = Flask(__name__)
 
@@ -79,39 +80,58 @@ def _demo_mode():
 
 def _domain_mode():
     domain = request.args.get("domain", "BER")
-    return domain if domain in ("EDU", "BER", "GENERAL") else "BER"
+    return domain if domain in ("EDU", "BER", "GENERAL", "RCC", "HLS", "MFG", "CTE", "PSS") else "BER"
+
+
+def _country_mode():
+    valid_codes = {c["code"] for c in load_sources()}
+    country = request.args.get("country", "SG")
+    return country if country in valid_codes else "SG"
 
 
 @app.route("/")
 def report():
     demo_mode = _demo_mode()
     domain = _domain_mode()
-    domain_filename = f"latest_report_SG_{domain}.json"
+    country = _country_mode()
+    domain_filename = f"latest_report_{country}_{domain}.json"
     report_data = _load_json(os.path.join("presentation", f"{demo_mode}_report.json"), {})
     if not report_data:
         if os.path.exists(os.path.join(DATA_DIR, domain_filename)):
             report_data = _load_json(domain_filename, {})
         else:
             # Only fall back to the pre-domain-scoping legacy report if NO domain-scoped
-            # file exists yet anywhere — never substitute a different domain's content
-            # for one that simply has no report yet, which would silently mislabel
-            # stale cross-domain data as belonging to this domain.
+            # file exists yet anywhere for THIS country — never substitute a different
+            # domain's or country's content for one that simply has no report yet, which
+            # would silently mislabel stale cross-domain/cross-country data as belonging
+            # to this one.
             any_domain_file_exists = any(
-                os.path.exists(os.path.join(DATA_DIR, f"latest_report_SG_{d}.json"))
-                for d in ("BER", "EDU", "GENERAL")
+                os.path.exists(os.path.join(DATA_DIR, f"latest_report_{country}_{d}.json"))
+                for d in ("EDU", "BER", "GENERAL", "RCC", "HLS", "MFG", "CTE", "PSS")  # keep in sync with _domain_mode()
             )
             if not any_domain_file_exists:
                 report_data = _load_json("latest_report.json", {})
-    return render_template("report.html", report=report_data, demo_mode=demo_mode, current_domain=domain)
+    return render_template("report.html", report=report_data, demo_mode=demo_mode,
+                            current_domain=domain, current_country=country)
 
 
 @app.route("/internals")
 def internals():
     demo_mode = _demo_mode()
+    country = _country_mode()
     scores = _load_json("source_scores.json", {})
     metadata = _load_json(os.path.join("presentation", f"{demo_mode}_metadata.json"), {})
     if not metadata:
-        metadata = _load_json("run_metadata.json", {})
+        country_metadata_filename = f"run_metadata_{country}.json"
+        if os.path.exists(os.path.join(DATA_DIR, country_metadata_filename)):
+            metadata = _load_json(country_metadata_filename, {})
+        else:
+            any_country_metadata_exists = any(
+                os.path.exists(os.path.join(DATA_DIR, f"run_metadata_{c['code']}.json"))
+                for c in load_sources()
+            )
+            if not any_country_metadata_exists:
+                metadata = _load_json("run_metadata.json", {})
 
     collections_data = {}
     try:
@@ -133,6 +153,7 @@ def internals():
         metadata=metadata,
         collections=collections_data,
         demo_mode=demo_mode,
+        current_country=country,
     )
 
 
@@ -149,6 +170,10 @@ def receive_feedback():
     now = datetime.datetime.now(datetime.timezone.utc)
     raw_submitter = (data.get("submitter") or "anonymous").strip()
     submitter = re.sub(r"[^A-Za-z0-9_-]", "_", raw_submitter) or "anonymous"
+
+    raw_country = (data.get("country") or "SG").strip()
+    valid_codes = {c["code"] for c in load_sources()}
+    country_code = raw_country if raw_country in valid_codes else "SG"
 
     raw_rating = data.get("relevance_rating") or data.get("relevance") or 0
     try:
@@ -172,6 +197,7 @@ def receive_feedback():
 
     feedback = {
         "report_date": data.get("report_date", ""),
+        "country": country_code,
         "relevance_rating": relevance_rating,
         "most_useful": data.get("most_useful", ""),
         "missed_topics": data.get("missed_topics", ""),
@@ -225,7 +251,9 @@ def admin():
         return redirect(url_for("login"))
     pending = source_suggestions.list_pending()
     interest_signals = source_suggestions.list_interest_signals()
-    return render_template("admin.html", pending=pending, interest_signals=interest_signals)
+    countries = load_sources()
+    return render_template("admin.html", pending=pending, interest_signals=interest_signals,
+                            countries=countries)
 
 
 @app.route("/admin/change-viewer-password", methods=["POST"])

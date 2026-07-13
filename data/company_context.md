@@ -26,23 +26,23 @@ Smart Facility Management System, Digital Twin, Smart Virtual Mockup, Smart Virt
 Inspection, 3D/VR Virtual Tour, 3D Scanning to 3D Model, IoT & AI Solutions, CCTV Video
 Analytics Solution.
 
-### Manufacturing & Industry 4.0 (MFG) — reference only, not active this round
+### Manufacturing & Industry 4.0 (MFG)
 Digital Twin, Smart Virtual Inspection, IoT & AI Solutions, Smart Facility Management
 System, Customized AR/VR Content, 3D Scanning to 3D Model.
 
-### Healthcare & Life Sciences (HLS) — reference only, not active this round
+### Healthcare & Life Sciences (HLS)
 Smart Facility Management System, 3D/VR Virtual Tour, Customized AR/VR Content, Digital
 Twin, IoT Solution, CCTV Video Analytics Solution.
 
-### Retail, Commerce & Consumer Goods (RCC) — reference only, not active this round
+### Retail, Commerce & Consumer Goods (RCC)
 Virtual Showroom, Smart Virtual Mockup, Interactive Digital Content, Metaverse Platform,
 3D Scanning to 3D Model, Customized AR/VR Content.
 
-### Culture, Tourism & Events (CTE) — reference only, not active this round
+### Culture, Tourism & Events (CTE)
 Virtual Event Platform, 3D/VR Virtual Tour, Interactive Digital Content, Metaverse
 Platform, 3D Scanning to 3D Model.
 
-### Public Sector & Smart Cities (PSS) — reference only, not active this round
+### Public Sector & Smart Cities (PSS)
 Digital Twin, Smart Facility Management System, Smart Virtual Inspection, IoT & AI
 Solutions, Customized AR/VR Content.
 
@@ -104,6 +104,93 @@ Competitor moves to watch: new product launches, government tender wins, new par
 
 **Government agencies tracked for tender and policy signals:** BCA (Building and Construction Authority — Green Mark, IDD policy), MND (Ministry of National Development), URA (Urban Redevelopment Authority), HDB (Housing & Development Board), GeBIZ (government tender portal), Smart Nation/GovTech (Smart Nation initiatives), JTC Corporation (industrial estate digital twin potential).
 
+### Vietnam
+
+**Vingroup** — Vietnam's largest private conglomerate, real estate/smart city developer.
+Prospective buyer of Digital Twin for smart-city and large-scale development projects.
+
+**Sun Group** — Major Vietnamese developer (resorts, urban, entertainment). Prospective buyer of
+Digital Twin and 3D/VR Virtual Tour for new development marketing and facilities planning.
+
+**VSIP (Vietnam Singapore Industrial Park)** — Industrial park developer/operator. Prospective
+buyer of Smart Facility Management System and Digital Twin for industrial park asset management.
+
+**VNPT** — State-owned telecom group active in smart city initiatives. Prospective partner/buyer
+for Digital Twin and IoT & AI Solutions in smart city programmes.
+
+**Panasonic Vietnam** — Manufacturing operations. Prospective buyer of Smart Facility Management
+System and IoT & AI Solutions for smart factory initiatives.
+
+**Samsung Vietnam** — Large-scale manufacturing operations. Prospective buyer of Smart Facility
+Management System and Digital Twin for factory digitalization.
+
+**Education prospects:** Văn Lang University and HUIT (Ho Chi Minh City University of Industry
+and Trade) — campus digital twin (Digital Twin) and virtual event/orientation use cases (3D/VR
+Virtual Tour, Virtual Event Platform), same profile as NUS/NTU in Singapore. Sao Mai Group
+(Vrealab platform) and Lạc Việt (VR training for medical/education) are additional
+education-technology-adjacent prospects worth tracking for partnership or competitive signals.
+
+**Government agencies tracked for tender and policy signals:** ITPC (Ho Chi Minh City Investment
+& Trade Promotion Centre — IT solution focus), Ministry of Construction (MOC — BIM policy, smart
+buildings, digital twin), Ministry of Industry & Trade (MOIT — Industry 4.0, energy), Ministry of
+Science & Technology (MOST — AI, innovation), Ministry of Health (MOH — smart hospital), Ministry
+of Education & Training (MOET — smart campus), National Innovation Center (NIC — innovation
+funding).
+
+### Malaysia
+
+**Sunway Group** — Major Malaysian conglomerate spanning property, retail, hospitality, and
+healthcare. Prospective buyer of Digital Twin and Smart Facility Management System across its
+property portfolio, AR way-finding for its Umrah/Hajj travel operations (Culture, Tourism &
+Events), and AR way-finding for Sunway Medical Centre (Healthcare & Life Sciences).
+
+**PKNS FM Integrated Sdn Bhd** — Existing client for the metaverse-integrated operation centre and
+smart facilities platform (Smart Facility Management System).
+
+**TOGL Technology Sdn Bhd** — Existing client for a metaverse solution built for their annual
+gathering event (Metaverse Platform), delivered across two versions.
+
+**Property developers (4D Virtual Tour rendering prospects):** BDB Land, UOA Development Berhad,
+TA Global, Sunsuria Berhad, Skyworld Development Berhad, and Sunway Property — all prospective
+buyers of 3D/VR Virtual Tour rendering services for property marketing; UOA additionally a
+prospect for AR way-finding at its Bangsar South car park.
+
+**Healthcare prospects:** Avisena Women's & Children Specialist Hospital (existing client, VR
+safety courseware rental, potential Deepmoo scanning upsell for a new hospital launch), IHH
+Healthcare and UCSI Hospital (AR way-finding prospects), and Sunway Medical Centre (AR
+way-finding) — all Healthcare & Life Sciences prospects (Smart Facility Management System,
+Customized AR/VR Content).
+
+**Manufacturing prospects:** Perodua and Daikin Malaysia — automotive and appliance manufacturers,
+prospective buyers of Smart Facility Management System and IoT & AI Solutions for smart-factory
+initiatives, with Perodua also a prospect for immersive roadshow content and Digital Twin.
+
+**Retail/hospitality prospects:** Ricoh (Malaysia), Panasonic Appliances Marketing Asia Pacific,
+and Sharp — prospective buyers of Virtual Showroom and AI-enabled Digital Twin with Smart Facility
+Management System; Capri by Fraser (existing client, 4D Virtual Tour scanning) and City Motor
+Group (existing client, virtual showroom/facilities landing page embed) round out the Retail,
+Commerce & Consumer Goods relationship base.
+
+**Telecom/media prospects:** U Mobile — Digital Twin aligned with its Ultra 5G rollout, plus AR
+way-finding for a BERJAYA-group shopping mall; YTL Info Screen — AR solution for marketing
+campaigns.
+
+**Aviation prospects:** Malaysia Airlines (VR training courseware for cabin crew) and Malaysia
+Airport Holding Berhad (AR way-finding and Digital Twin) — both Public Sector & Smart Cities
+prospects.
+
+**Education-adjacent partners:** Inkube Edu Sdn Bhd (existing partner, Vrealab solution to
+government schools and metaverse solution to a government university) and U Learning (potential
+partner, Vrealab solutions) — same education-technology-adjacent profile as NUS/NTU in Singapore.
+
+**Government agencies tracked for tender and policy signals:** MDEC (Malaysia Digital Economy
+Corporation — grants, tech-industry business opportunities), Air Selangor (water utilities, tender
+pipeline), JPJ (Jabatan Pengangkutan Jalan — Road Transport Department, VR safety driving
+simulation potential), Think City (Kuala Lumpur Council-appointed agency, Digital Twin/Smart
+Facility Management System for KL city area), SEDIA (Sabah Economic Development and Investment
+Authority — metaverse career and VR training prospects), National Art Gallery (immersive
+experience centre prospect), and PR1MA Corporation Berhad (4D Virtual Tour prospect).
+
 ## Ecosystem Players
 
 Companies in Silversea's broader market ecosystem — not direct BD targets, but sources of partnership, channel, and competitive signals.
@@ -134,6 +221,54 @@ Companies in Silversea's broader market ecosystem — not direct BD targets, but
 - Cushman & Wakefield — Global real estate services; existing partner, potential Smart Facility Management System customer for FM portfolio management
 - ST Synthesis (ST Engineering) — Singapore defence/engineering conglomerate's smart FM arm; potential customer or competitor for government facility management contracts
 - Savills — Global property consultancy with Singapore operations; potential Digital Twin / Smart Facility Management System customer for portfolio-wide digital twin adoption
+
+**Vietnam — technology dealers/suppliers** — Infrastructure and platform partners whose products
+complement Silversea's delivery stack, not direct BD targets:
+- NVIDIA — AI GPUs, Omniverse; potential technology partner for Digital Twin/3D rendering
+  infrastructure
+- Microsoft Azure — Cloud AI; potential cloud infrastructure partner
+- Amazon Web Services — Cloud; potential cloud infrastructure partner
+- Dell Technologies — Workstations; potential hardware supplier for 3D scanning/rendering
+  workloads
+- Cisco — Networking; potential infrastructure partner for large-scale smart building deployments
+
+**Vietnam — facility management firms** — Potential customers for Smart Facility Management
+System, or channel partners reselling FM services on top of it:
+- Savills Vietnam — Global property consultancy's Vietnam arm; potential Smart Facility
+  Management System / Digital Twin customer for portfolio-wide FM contracts
+- CBRE Vietnam — Global real estate services' Vietnam arm; potential Smart Facility Management
+  System customer for FM portfolio management
+
+**Malaysia — main partners and channel prospects** — Potential collaboration/JV or channel
+partners, not direct BD targets:
+- Ezytap Sdn Bhd — Existing partner delivering the Sabah Tourism Metaverse to KePKAS; potential
+  collaboration on AR gamification for the Sandakan Heritage Trail (Culture, Tourism & Events)
+- ITMAX System Berhad — Potential partner for AI-enabled Digital Twin with Smart Facility
+  Management System; NDA pending
+- SAINS — Potential partner for AI-enabled Digital Twin with Smart Facility Management System
+- TRB Ventures Sdn Bhd (Mhub) — Existing partner for 4D Virtual Tour rendering; potential upsell to
+  a digital-twin property booking platform
+- Huawei Cloud — Potential technology/referral partner across multiple solution lines
+- CelcomDigi — Potential partner for AI-enabled Digital Twin and Vrealab solutions; NDA pending
+- Redtone — Dormant existing partner (4D Virtual Tour rendering and scanning); relationship needs
+  re-establishing with the right point of contact
+- Art Network Events — Potential partner for creative-tech event content (AR launch gimmicks, AR
+  gamification)
+
+**Malaysia — government/association ecosystem:**
+- GreenRE — Potential collaborator on AI-enabled Digital Twin with Smart Facility Management
+  System (green-building certification body)
+- REDHA Institute — Potential association membership for developer-industry connections
+- Malaysia Retail Chain Association (MRCA) — Potential association membership for retail-industry
+  connections
+
+**Malaysia — competitors to watch:**
+- Esri Malaysia — GIS technology including digital twin solutions
+- Serve Deck Innovation Sdn Bhd — Smart facilities management platform
+- Accenture — Metaverse and AI solutions; also a potential partnership-collaboration angle
+- Virtualtech Frontier, EDT, THEXRA, 3 Particles — Metaverse/VR/AR/immersive and creative-tech
+  content solution providers
+- Unbound Malaysia — AI, AR, and education-related solutions
 
 ## BD Priorities
 

@@ -58,16 +58,21 @@ Respond with ONLY valid JSON, no other text:
 
 If there are no actionable signals, respond with: []"""
 
-SUMMARY_PROMPT = """You are writing an executive summary for a market intelligence report for Silversea Media, a digital twin / smart FM company in Singapore.
+SUMMARY_PROMPT = """You are writing an executive summary for a market intelligence report for Silversea Media, a digital twin / smart FM company operating in {country_name}.
 
 You will receive structured signals already organized by sector. Your job is to produce ONLY the summary fields — the signals themselves are already finalized.
 
 Silversea products (for opportunity identification):
 - Built Environment & Real Estate (BER): Smart Facility Management System, Digital Twin, Smart Virtual Mockup, Smart Virtual Inspection, 3D/VR Virtual Tour, 3D Scanning to 3D Model, IoT & AI Solutions, CCTV Video Analytics Solution.
 - Education & EdTech (EDU): STEM 3D Virtual Lab, Virtual Campus, Virtual Event Platform, 3D/VR Virtual Tour, Metaverse Platform, Customized AR/VR Content.
+- Manufacturing & Industry 4.0 (MFG): Digital Twin, Smart Virtual Inspection, IoT & AI Solutions, Smart Facility Management System, Customized AR/VR Content, 3D Scanning to 3D Model.
+- Healthcare & Life Sciences (HLS): Smart Facility Management System, 3D/VR Virtual Tour, Customized AR/VR Content, Digital Twin, IoT Solution, CCTV Video Analytics Solution.
+- Retail, Commerce & Consumer Goods (RCC): Virtual Showroom, Smart Virtual Mockup, Interactive Digital Content, Metaverse Platform, 3D Scanning to 3D Model, Customized AR/VR Content.
+- Culture, Tourism & Events (CTE): Virtual Event Platform, 3D/VR Virtual Tour, Interactive Digital Content, Metaverse Platform, 3D Scanning to 3D Model.
+- Public Sector & Smart Cities (PSS): Digital Twin, Smart Facility Management System, Smart Virtual Inspection, IoT & AI Solutions, Customized AR/VR Content.
 - Core tech: digital twin, BIM, 3D scanning, XR/AR/VR, smart FM, IoT, virtual/immersive content.
 
-OPPORTUNITIES: Only include signals that explicitly mention digital twin, BIM, 3D scanning, XR, smart FM, smart building, building automation, proptech, edtech, virtual campus, STEM lab, e-learning, or virtual/immersive learning. Zero opportunities is correct when nothing qualifies. Every opportunity must carry the source_name of the specific signal it was extracted from — copy it verbatim from the structured signals input, do not invent a new value.
+OPPORTUNITIES: Only include signals that explicitly mention digital twin, BIM, 3D scanning, XR, smart FM, smart building, building automation, proptech, edtech, virtual campus, STEM lab, e-learning, virtual/immersive learning, virtual showroom, retail chain, healthcare, hospital, manufacturing, factory, tourism, heritage trail, smart city, or government digitalization. Zero opportunities is correct when nothing qualifies. Every opportunity must carry the source_name of the specific signal it was extracted from — copy it verbatim from the structured signals input, do not invent a new value.
 
 SCORING RUBRIC — each dimension is an integer from 1 to 5. total_score is the sum of all five (max 25).
 
@@ -208,7 +213,7 @@ def _clamp_opportunity_scores(opportunities: list) -> list:
     return opportunities
 
 
-def _synthesize_summary(client, signals_by_sector: dict) -> dict:
+def _synthesize_summary(client, signals_by_sector: dict, country_name: str) -> dict:
     """Produce executive_summary, opportunities, and synthesis from structured signals."""
     sections = []
     for sector_name, signals in signals_by_sector.items():
@@ -218,12 +223,13 @@ def _synthesize_summary(client, signals_by_sector: dict) -> dict:
         sections.append(f"=== {sector_name} ===\n" + "\n".join(lines))
 
     user_message = "Structured signals by sector:\n\n" + "\n\n".join(sections)
+    system_prompt = SUMMARY_PROMPT.replace("{country_name}", country_name)
 
     try:
         response = client.chat.completions.create(
             model=GROQ_MODEL,
             messages=[
-                {"role": "system", "content": SUMMARY_PROMPT},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
             ],
             max_tokens=2000,
@@ -332,7 +338,7 @@ def _derive_competition_risks(report_data: dict) -> None:
 
 def analyse(filtered_results: list, country: dict) -> dict:
     """Multi-pass analysis: extract per sector, synthesize per sector, then summarize."""
-    client = Groq(api_key=os.environ["GROQ_API_KEY"])
+    client = Groq(api_key=os.environ.get("GROQ_API_KEY", ""))
 
     substantive = [r for r in filtered_results if len(r.get("content", "")) >= MIN_CONTENT_CHARS]
 
@@ -366,7 +372,7 @@ def analyse(filtered_results: list, country: dict) -> dict:
     # Phase 4: summary synthesis (executive_summary + opportunities + synthesis)
     print("    Generating summary...")
     time.sleep(CALL_DELAY)
-    summary = _synthesize_summary(client, signals_by_sector)
+    summary = _synthesize_summary(client, signals_by_sector, country["name"])
 
     # Assemble final report
     report_data = {
