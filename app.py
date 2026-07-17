@@ -40,7 +40,7 @@ _VIEWER_PASSWORD_PATH = os.path.join(DATA_DIR, "viewer_password.txt")
 
 def _get_viewer_password():
     if not os.path.exists(_VIEWER_PASSWORD_PATH):
-        seed = os.environ.get("VIEWER_PASSWORD", "changeme")
+        seed = os.environ.get("VIEWER_PASSWORD") or "changeme"
         with open(_VIEWER_PASSWORD_PATH, "w", encoding="utf-8") as f:
             f.write(seed)
         return seed

@@ -66,6 +66,10 @@ Output overwrites `data/latest_report_{COUNTRY}_{DOMAIN}.json` (e.g. `data/lates
 
 `/admin` (source-approval queue, viewer-password rotation) is gated by a separate `ADMIN_PASSWORD` in `.env`. Unlike the viewer password, **there is no default** — if it's unset, admin login is refused outright regardless of what you type. This is intentional (a previous version of this app had an auth bypass here), not a bug to work around. Ask whoever owns Silversea's shared secrets for the real value.
 
+#### A note on `.env` and shared passwords
+
+`.env` is per-machine and gitignored — it is never committed to either repo, so there is nothing to "configure in the repo" for `VIEWER_PASSWORD` or `ADMIN_PASSWORD`. Each person who runs this locally pastes the same shared value into their own `.env`. Get the real values from whoever owns Silversea's shared secrets for this project — not from a `.env.example`-style default, and not by pasting them into a chat with an AI assistant or any other logged channel (secrets pasted into a chat transcript should be treated as compromised, the same way an exposed API token would be).
+
 ### 3. Troubleshooting
 
 The fast-path fixes for what's most likely to trip you up, even though each is explained in full above:
@@ -114,4 +118,4 @@ The extract-then-synthesize split exists because feeding a single large synthesi
 
 **A local-LLM backend exists but isn't part of `main`.** `feature/002-local-llm-backend` adds a config-switchable Ollama-based backend as a free alternative to the Groq API. It's unmerged and its own smoke test has never produced a verified pass against a real model — treat it as experimental and check that branch's own notes before relying on it.
 
-Full architectural decision history (including reverted approaches and why) lives in `.context/DECISIONS.md`; current known issues and in-flight work in `.context/STATE.md`.
+Full architectural decision history and current known issues are tracked internally (`.context/DECISIONS.md` / `.context/STATE.md`) — those files are intentionally excluded from this repo's tree; ask Alfonso if you need that history.
