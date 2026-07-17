@@ -4,6 +4,23 @@ Running record of decisions that constrain future work. Newest first. Check here
 
 ---
 
+## [2026-07-17] — Two-remote setup: `main`→GitHub, `gitlab-main`→GitLab, Claude-internal files stripped for GitLab
+
+**Decision:** This repo now pushes to two remotes — `origin` (personal GitHub, unchanged) and `gitlab` (the company-wide repo at `git.silversea-media.net/silversea-media/marketintelligent/ai-mi`). A dedicated branch, `gitlab-main`, was created from `main` specifically to be what gets pushed to GitLab's `main`. On `gitlab-main` only, `.claude/`, `.context/`, and `CLAUDE.md` were untracked via `git rm -r --cached` (files remain on disk, still fully tracked on `main`) and added to `.gitignore` on that branch only. `main`'s own `.gitignore` and tracked files are untouched — `main` keeps `.claude/`/`.context/`/`CLAUDE.md` tracked and keeps pushing to `origin` exactly as before.
+
+**Rationale:** `.claude/`, `.context/`, and `CLAUDE.md` drive how Claude Code sessions work in this specific repo (session protocol, auto-loaded project state, decision history) — genuinely useful locally, but internal tooling with no reason to be visible to the rest of the Silversea team on the company GitLab instance. Two full separate repos would mean maintaining two histories by hand; a second branch with the internal files untracked (not deleted) keeps one shared commit history while letting each remote see a different tree.
+
+**Ongoing publish workflow (this is the part that matters for every future session):**
+1. Do normal work on `main` as always — this is still the working branch, still pushes to `origin`/GitHub, nothing about day-to-day work changes.
+2. When it's time to publish to GitLab: `git checkout gitlab-main`, then `git merge main`.
+3. This will conflict on `.gitignore` every time (main's version doesn't ignore the Claude files; `gitlab-main`'s does) — resolve by keeping `gitlab-main`'s version of `.gitignore`, not `main`'s.
+4. `git push gitlab gitlab-main:main` — note the `:main`, this pushes the local `gitlab-main` branch to become GitLab's `main` branch. This is always a normal (non-force) push; GitLab's `main` is protected against force-push.
+5. Switch back to `main` for further work: `git checkout main`.
+
+**Security note, not a decision but worth keeping here since it explains why the push flow looks the way it does:** a GitLab personal access token was pasted into a chat transcript during initial setup and had to be treated as compromised — revoked and replaced. The replacement token is never embedded in the remote URL (`git remote -v` shows a clean URL with no credentials); Git prompts for it once per machine and Git Credential Manager caches it in Windows Credential Manager afterward. If a session needs to push to `gitlab` and hits an auth failure, that's a credential-cache problem to solve outside the chat (`cmdkey /delete:git:https://git.silversea-media.net` and retry), not something to fix by putting a token in a command or a chat message.
+
+---
+
 ## [2026-07-13] — Presentation-prep session: domain-tab consolidation, gap-fill runs, three investigated non-bugs
 
 **Decision:** Reversed part of Feature 005's 8-domain-tab UI back to 3 visible tabs (EDU/BER/GENERAL) for all countries, per Alfonso's direction ahead of today's presentation. RCC/HLS/MFG/CTE/PSS content is folded into the GENERAL view at render time in `app.py`'s `report()` route (not in the pipeline — each domain's `main.py --domain=X` run still produces its own independent report file), tagging each merged-in signal/opportunity/competition-risk with a `domain` badge so provenance isn't lost if a future run populates one of those 5 domains. `_domain_mode()`'s 8-value whitelist and `?domain=RCC` etc. URLs were deliberately left functional (UI simplification only, not a routing lockdown). Explicitly deferred: any deeper rework of GENERAL's internal section layout, and merging `executive_summary`/`synthesis` prose from the 5 extra domains (left GENERAL-only, to avoid incoherent mixed-domain prose).
