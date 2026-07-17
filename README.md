@@ -27,8 +27,8 @@ Open **http://localhost:5000**.
 
 **You will immediately hit a login screen — this is expected, not a bug.** Every route redirects to `/login` until you authenticate:
 
-- Set `VIEWER_PASSWORD` in `.env` to whatever your team's shared viewer password is.
-- If you leave it blank, the app silently seeds `data/viewer_password.txt` with the literal string `changeme` the first time anyone submits the login form, and that becomes the real password from then on. So: if you didn't set `VIEWER_PASSWORD`, log in with `changeme`.
+- Log in with `Silversea` — this is the built-in shared default, no `.env` setup required.
+- If an admin has since rotated it via `/admin`, or if `VIEWER_PASSWORD` is set in `.env`, use that value instead — either one overrides the built-in default the first time anyone submits the login form (after that, whatever's in `data/viewer_password.txt` is the real password until an admin rotates it again).
 
 That's the whole dashboard-only path. `ADMIN_PASSWORD`, `GROQ_API_KEY`, and the email vars are irrelevant here — see [Run the full pipeline](#2-run-the-full-pipeline) and [Admin access](#admin-access) below if you need those.
 
@@ -68,7 +68,7 @@ Output overwrites `data/latest_report_{COUNTRY}_{DOMAIN}.json` (e.g. `data/lates
 
 #### A note on `.env` and shared passwords
 
-`.env` is per-machine and gitignored — it is never committed to either repo, so there is nothing to "configure in the repo" for `VIEWER_PASSWORD` or `ADMIN_PASSWORD`. Each person who runs this locally pastes the same shared value into their own `.env`. Get the real values from whoever owns Silversea's shared secrets for this project — not from a `.env.example`-style default, and not by pasting them into a chat with an AI assistant or any other logged channel (secrets pasted into a chat transcript should be treated as compromised, the same way an exposed API token would be).
+`.env` is per-machine and gitignored — it is never committed to either repo. `VIEWER_PASSWORD` has a working built-in default (`Silversea`, hardcoded in `app.py`) precisely because it's meant to be known company-wide — nobody needs to touch `.env` for it unless an admin has rotated it to something else. `ADMIN_PASSWORD` is the opposite: it has **no** built-in default on purpose (see [Admin access](#admin-access) above), because baking an admin credential into a git-committed file would give every clone of this repo admin rights. Get the real `ADMIN_PASSWORD` value from whoever owns Silversea's shared secrets for this project and paste it into your own local `.env` — not into a chat with an AI assistant or any other logged channel (secrets pasted into a chat transcript should be treated as compromised, the same way an exposed API token would be).
 
 ### 3. Troubleshooting
 
@@ -76,7 +76,7 @@ The fast-path fixes for what's most likely to trip you up, even though each is e
 
 | Symptom | Fix |
 |---|---|
-| Redirected to `/login` immediately, don't know the password | You didn't set `VIEWER_PASSWORD` — log in with `changeme` (auto-seeded into `data/viewer_password.txt` on first login attempt) |
+| Redirected to `/login` immediately, don't know the password | Log in with `Silversea` — the built-in shared default (auto-seeded into `data/viewer_password.txt` on first login attempt, unless an admin has since rotated it) |
 | Pipeline fails with `Executable doesn't exist at ...chrome-win64\chrome.exe` | You skipped `scrapling install` after `pip install -r requirements.txt` — run it now, it's a one-time step |
 | `pip install -r requirements.txt` fails, or things behave oddly after installing | Check `python3 --version` against [`.python-version`](.python-version) (`3.12.3`) — this repo's dependencies (`numpy`/`onnxruntime` via `chromadb`) have a real floor of Python 3.11+, and the pinned versions were only tested against 3.12.3 specifically |
 | `/admin` always redirects you away, even after logging in | `ADMIN_PASSWORD` isn't set in `.env` — there's no default for it, unlike the viewer password |
