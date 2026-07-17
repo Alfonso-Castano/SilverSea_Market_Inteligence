@@ -28,7 +28,7 @@ git checkout main                       # back to normal work
 ```
 Full rationale in `.context/DECISIONS.md` (2026-07-17 entry). A GitLab personal access token was pasted into an earlier chat and had to be treated as compromised — revoked and replaced. The new token is never embedded in the remote URL or typed into a chat; it's cached by Git Credential Manager (Windows Credential Manager) after one manual authenticated `git fetch gitlab` in a real terminal. If push/fetch against `gitlab` ever fails with an auth error, that's a stale-credential problem to solve outside the chat, not something to fix by putting a token anywhere in a command or message.
 
-Current state: `gitlab-main` has been pushed once (commit `e597320`, confirmed live on GitLab — `.claude`/`.context`/`CLAUDE.md` verified absent from `gitlab/main`'s tree via `git ls-tree`). No changes have been made to `main` since that push yet, so `gitlab-main` and `main` are currently in sync content-wise (modulo the tracked-file difference).
+Current state: `gitlab-main` has been pushed three times now — most recently commit `9654272` (GitHub `main` at `ab71597`), confirmed live on GitLab via `git ls-tree` after each push (`.claude`/`.context`/`CLAUDE.md` verified absent every time). **The GitLab repo has now been announced to the team as ready for testing** (message sent 2026-07-17) — this is the first time this repo has been handed to anyone outside Alfonso.
 
 ## What's Done
 
@@ -39,18 +39,20 @@ Current state: `gitlab-main` has been pushed once (commit `e597320`, confirmed l
 - **Presentation-prep session (2026-07-13)** — UI consolidated to 3 visible domain tabs (EDU/BER/GENERAL) per country, folding RCC/HLS/MFG/CTE/PSS content into GENERAL with per-item domain badges (source tagging and `--domain` routing for all 8 domains still fully intact underneath); leaked "No actionable signals" placeholder cards removed (render-time filter + prompt hardening); "Log in as Admin" shortcut added for viewer sessions; admin source-approval card layout fixed (was overflowing its container since Feature 005 added 5 more domain checkboxes without adjusting the layout); VN/MY report gaps filled via live pipeline runs (MY/BER and VN/GENERAL newly generated, VN/BER refreshed to fix stale pre-Feature-005 domain tags); both Vietnam's and Malaysia's source-submission PDFs cross-referenced line-by-line against `config/sources.json` — confirmed 60/60 VN and 55/55 MY sources present and correctly tagged.
 - **GitLab clone-readiness audit + fixes** — `sentence-transformers` added to `requirements.txt` (was silently missing, broke `main.py`/`feedback.py`/`weekly.py` with `ModuleNotFoundError` on a fresh install); `requirements.txt` pinned to exact versions from a clean install under Python 3.12.3 (matching prod, not this dev machine's 3.13.5); `.python-version` added; `.env.example` added listing all 6 real env vars; README rewritten twice — first for accuracy (login wall, `scrapling install` step, current multi-country architecture), then reordered so Build & Run comes before the project description, per a team request that a new person get to a running app before reading about RAG/ChromaDB/scoring. Both README passes were verified against genuine fresh `git clone` tests, not just written from memory.
 - **Two-remote GitLab split** — see "Repository Setup" above.
+- **GitLab clone-readiness live review + shared-password fix (2026-07-17)** — a genuinely fresh `git clone` of the GitLab repo (separate scratch directory, not Alfonso's working copy) was walked through the README's Build & Run section end-to-end: dependency install, `.env` setup, app boot, login flow, admin-refusal check, and a zero-cost `--domain=EDU --country=SG` pipeline run — all confirmed working. Found and fixed a real bug in the process: `.env`'s `VIEWER_PASSWORD=` (present but blank) was being read by `python-dotenv` as an empty string, not an unset variable, so `os.environ.get("VIEWER_PASSWORD", "changeme")` never applied its default — a new teammate following the README's own instructions (log in with `changeme`) would hit "Incorrect password." Fixed by changing the viewer password to a hardcoded shared default (`Silversea`, in `app.py`) rather than an env-only fallback, since `VIEWER_PASSWORD` is meant to be known company-wide by design — every clone now gets working dashboard access with zero `.env` setup. `ADMIN_PASSWORD` deliberately kept `.env`-only with no default, since baking an admin credential into a git-committed file would give every clone admin rights. Both fixes verified live (not just logic-checked) against a second fresh clone after publishing. README also had a dead link to `.context/DECISIONS.md`/`STATE.md` removed (those files don't exist in the GitLab tree) and gained a short note on `.env` being local-only/per-machine. **The GitLab repo was then announced to the team as ready for testing.**
 
 ## What's In Progress
 
-Nothing actively in flight. The repo is in a stable, presented, dual-remote state.
+Team is now testing the GitLab clone for the first time. Nothing else actively in flight.
 
 ## What's Next (Ordered)
 
-1. Alfonso to make the "practical changes" mentioned as needed right now (not yet specified in this session) — will happen in a separate chat, then publish to `gitlab-main` per the workflow above.
-2. Decide how to sequence the deferred-work list below — the `source_name` attribution breakage is the most severe open item.
-3. `feature/002-local-llm-backend` needs real end-to-end verification against actual Ollama + a real model on GPU hardware — the code has been statically reviewed twice and looks correct, but has never produced a verified pass anywhere (see below).
-4. Malaysia's thin signal density needs manual re-sourcing of better newsroom URLs (not a code fix) if BD wants deeper MY coverage.
-5. Decide whether/when to bring `feature/002-local-llm-backend` into the GitLab-facing tree, once it's actually verified — right now it should stay GitHub-only/experimental.
+1. Watch for team feedback on the GitLab clone-and-run experience — first real external test of the README and onboarding flow.
+2. **Alfonso has confirmed he wants tighter, per-person access control eventually** (not just a shared admin password) — likely real user accounts instead of the current two-shared-static-password model. Explicitly fine to defer while the team is just testing; revisit once testing feedback comes in. Not yet scoped as a feature.
+3. Decide how to sequence the deferred-work list below — the `source_name` attribution breakage is the most severe open item.
+4. `feature/002-local-llm-backend` needs real end-to-end verification against actual Ollama + a real model on GPU hardware — the code has been statically reviewed twice and looks correct, but has never produced a verified pass anywhere (see below).
+5. Malaysia's thin signal density needs manual re-sourcing of better newsroom URLs (not a code fix) if BD wants deeper MY coverage.
+6. Decide whether/when to bring `feature/002-local-llm-backend` into the GitLab-facing tree, once it's actually verified — right now it should stay GitHub-only/experimental.
 
 ## Current Blockers
 
@@ -61,12 +63,15 @@ None. All work described above is committed on `main` and (as of the last publis
 - Domain UI consolidated back to 3 tabs (EDU/BER/GENERAL) per country, with the other 5 domains folded into GENERAL rather than removed — preserves the underlying 8-domain data model, just simplifies what's shown until there's real content in those domains.
 - Ollama was installed on this dev machine for `feature/002` investigation, then explicitly **not** used to pull a model or run a real test, per Alfonso's direction mid-session — that branch's real verification is deferred to actual target GPU hardware, not this machine.
 - Two-remote setup (`origin`=GitHub, `gitlab`=company) chosen over two separate repos, to keep one shared commit history — `gitlab-main` untracks the Claude-tooling files rather than a second repo maintained by hand. Full rationale in `.context/DECISIONS.md`.
+- `VIEWER_PASSWORD` given a hardcoded shared default (`Silversea`) instead of relying on an `.env`-blank fallback that turned out to be broken; `ADMIN_PASSWORD` deliberately kept env-only, no default, distributed out-of-band only to admin-role people. Alfonso confirmed he'll want real per-user access control later, but the shared-password model is fine while the team is just testing. Full rationale in `.context/DECISIONS.md`.
 
 ## Notes for Next Session
 
 - If asked to publish to GitLab: use the workflow above, don't improvise a different merge/push sequence.
 - `feature/002-local-llm-backend` is real, unmerged, and genuinely untested against a live model — don't claim it works, don't merge it into `main` or `gitlab-main` without Alfonso explicitly confirming it's been verified on real hardware.
 - Known bugs below are mostly still open — nothing in this session touched `SECTOR_EXTRACT_PROMPT`/`SECTOR_SYNTHESIS_PROMPT` (the `source_name` fix) or the fabricated-product-name issue.
+- The team is now actually using the GitLab clone — expect real feedback/bug reports from people other than Alfonso for the first time. Don't assume issues they report are code-review-confirmed already; treat as fresh reports.
+- If asked to build tighter access control: this means moving off the two-shared-static-password model toward real per-user accounts — a genuinely new architectural decision (reversing the OVERVIEW.md "explicitly out of scope" call on per-user auth), not a tweak. Treat as its own `/feature-discuss`, not a quick fix.
 
 ## Known Bugs / Open Items
 
@@ -87,6 +92,9 @@ None. All work described above is committed on `main` and (as of the last publis
 - **Never verified against a real model on any machine.** Its own smoke test has never produced a pass — always skips cleanly (no Ollama server present) rather than actually exercising a live call. Ollama is now installed on this dev machine but deliberately untested (no model pulled) per Alfonso's explicit direction.
 - Branched from an older `main` (pre-Vietnam/Malaysia) — bringing it into current `main` will need a real merge/rebase, not just a checkout.
 - **Do not present this as working or bring it into the GitLab-facing tree until it's actually been run against a real model on real hardware.**
+
+**Explicitly deferred future work (Alfonso confirmed intent, not yet scoped):**
+- **Real per-user access control**, replacing the two-shared-static-password model — Alfonso confirmed (2026-07-17) he wants this once the team moves past just testing. Current model has no audit trail (can't tell which admin approved a source or rotated a password, only that *someone* with the shared secret did) and no way to revoke one person's access without changing the password for every admin. This reverses `.context/OVERVIEW.md`'s "explicitly out of scope" call on per-user auth — treat as a real scope change needing its own discussion, not a quick patch.
 
 **Smaller, longstanding, lower priority:**
 - SG has no real sources tagged for the 5 newer verticals (RCC/HLS/MFG/CTE/PSS) — will show empty under those domains until sources are added.
