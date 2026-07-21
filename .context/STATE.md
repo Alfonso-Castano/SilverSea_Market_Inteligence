@@ -10,7 +10,7 @@ See: .context/DECISIONS.md
 
 **Core value:** A daily report that surfaces actionable, source-cited BD signals and opportunities the sales team wouldn't otherwise catch — and gets measurably better over time from team feedback, without fabricating connections that aren't actually in the source material.
 
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-21
 
 ## Repository Setup — read this first
 
@@ -21,14 +21,16 @@ This repo now pushes to **two remotes**, each seeing a different tree:
 
 **Publish workflow, every time there's something ready for the team:**
 ```
+git fetch gitlab                        # check GitLab's main hasn't moved since your last push (see 2026-07-21 note)
 git checkout gitlab-main
-git merge main                          # will conflict on .gitignore — keep gitlab-main's version
+git merge main                          # will conflict on .context/* modify-delete — resolve with `git rm --cached` (NOT plain `git rm`), keep files on disk
 git push gitlab gitlab-main:main
 git checkout main                       # back to normal work
 ```
+**As of 2026-07-21, always `git fetch gitlab` and check `git rev-parse gitlab-main gitlab/main` match before assuming `gitlab-main` is current** — a teammate now has direct push access and can move GitLab's `main` without going through this workflow. See that date's entry in `.context/DECISIONS.md`.
 Full rationale in `.context/DECISIONS.md` (2026-07-17 entry). A GitLab personal access token was pasted into an earlier chat and had to be treated as compromised — revoked and replaced. The new token is never embedded in the remote URL or typed into a chat; it's cached by Git Credential Manager (Windows Credential Manager) after one manual authenticated `git fetch gitlab` in a real terminal. If push/fetch against `gitlab` ever fails with an auth error, that's a stale-credential problem to solve outside the chat, not something to fix by putting a token anywhere in a command or message.
 
-Current state: `gitlab-main` has been pushed three times now — most recently commit `9654272` (GitHub `main` at `ab71597`), confirmed live on GitLab via `git ls-tree` after each push (`.claude`/`.context`/`CLAUDE.md` verified absent every time). **The GitLab repo has now been announced to the team as ready for testing** (message sent 2026-07-17) — this is the first time this repo has been handed to anyone outside Alfonso.
+Current state: GitHub `main` is at `554d40c`; GitLab `main` is at `76ef187` — confirmed identical content (`.claude`/`.context`/`CLAUDE.md` absent, `.env` absent, `.gitignore` correctly excludes `.env`) via `git ls-tree` on 2026-07-21. **The GitLab repo has been announced to the team as ready for testing** (message sent 2026-07-17) — this is the first time this repo has been handed to anyone outside Alfonso. **A teammate now has direct push access to GitLab's `main`** (see 2026-07-21 entry below) — don't assume `gitlab-main` is still current without fetching first.
 
 ## What's Done
 
@@ -40,19 +42,21 @@ Current state: `gitlab-main` has been pushed three times now — most recently c
 - **GitLab clone-readiness audit + fixes** — `sentence-transformers` added to `requirements.txt` (was silently missing, broke `main.py`/`feedback.py`/`weekly.py` with `ModuleNotFoundError` on a fresh install); `requirements.txt` pinned to exact versions from a clean install under Python 3.12.3 (matching prod, not this dev machine's 3.13.5); `.python-version` added; `.env.example` added listing all 6 real env vars; README rewritten twice — first for accuracy (login wall, `scrapling install` step, current multi-country architecture), then reordered so Build & Run comes before the project description, per a team request that a new person get to a running app before reading about RAG/ChromaDB/scoring. Both README passes were verified against genuine fresh `git clone` tests, not just written from memory.
 - **Two-remote GitLab split** — see "Repository Setup" above.
 - **GitLab clone-readiness live review + shared-password fix (2026-07-17)** — a genuinely fresh `git clone` of the GitLab repo (separate scratch directory, not Alfonso's working copy) was walked through the README's Build & Run section end-to-end: dependency install, `.env` setup, app boot, login flow, admin-refusal check, and a zero-cost `--domain=EDU --country=SG` pipeline run — all confirmed working. Found and fixed a real bug in the process: `.env`'s `VIEWER_PASSWORD=` (present but blank) was being read by `python-dotenv` as an empty string, not an unset variable, so `os.environ.get("VIEWER_PASSWORD", "changeme")` never applied its default — a new teammate following the README's own instructions (log in with `changeme`) would hit "Incorrect password." Fixed by changing the viewer password to a hardcoded shared default (`Silversea`, in `app.py`) rather than an env-only fallback, since `VIEWER_PASSWORD` is meant to be known company-wide by design — every clone now gets working dashboard access with zero `.env` setup. `ADMIN_PASSWORD` deliberately kept `.env`-only with no default, since baking an admin credential into a git-committed file would give every clone admin rights. Both fixes verified live (not just logic-checked) against a second fresh clone after publishing. README also had a dead link to `.context/DECISIONS.md`/`STATE.md` removed (those files don't exist in the GitLab tree) and gained a short note on `.env` being local-only/per-machine. **The GitLab repo was then announced to the team as ready for testing.**
+- **First outside contributor + direct-push reconciliation (2026-07-21)** — a teammate (`leo.li@silversea-media.com`, committer name "mac") pushed directly to GitLab's `main`, bypassing the `main`→`gitlab-main` publish workflow for the first time. Their commit added real deployment infrastructure (`deploy/start.sh` — a Gunicorn start/stop script targeting a real Ubuntu server path `/www/wwwroot/ai-mi` — plus bilingual `deploy/deployment-en.md`/`deployment-zh.md` guides), almost certainly the person testing from China who's currently blocked on Groq. It also accidentally committed a blank `.env` and commented out `.env`'s `.gitignore` exclusion (a `git add .` slip, not intentional — the deployment docs themselves correctly say "never commit `.env`"). Reconciled same-day: pulled the commit into local `gitlab-main` (clean fast-forward, no divergence), restored `.env` to `.gitignore` and untracked the committed file (verified no real secrets had leaked — only blank template values were committed), pushed the fix to GitLab, then pulled just the `deploy/` files (not the `.env`/`.gitignore` mistake) into `main` too via targeted `git checkout gitlab-main -- deploy/` so they're not GitLab-only content. Confirmed both remotes byte-identical afterward via `git ls-tree`. See `.context/DECISIONS.md`'s 2026-07-21 entry for full detail.
 
 ## What's In Progress
 
-Team is now testing the GitLab clone for the first time. Nothing else actively in flight.
+Team is testing the GitLab clone. **China-based teammates are blocked: Groq is not reachable/usable from China**, so a new work thread is starting to research China-accessible LLM APIs and build a swappable LLM-backend layer (Alfonso explicitly wants to be able to switch between providers, e.g. to test candidate China-side LLMs against the existing Groq-based pipeline). This is a distinct, dedicated effort — see `.context/DECISIONS.md`'s 2026-07-21 entry for the handoff framing.
 
 ## What's Next (Ordered)
 
-1. Watch for team feedback on the GitLab clone-and-run experience — first real external test of the README and onboarding flow.
-2. **Alfonso has confirmed he wants tighter, per-person access control eventually** (not just a shared admin password) — likely real user accounts instead of the current two-shared-static-password model. Explicitly fine to defer while the team is just testing; revisit once testing feedback comes in. Not yet scoped as a feature.
-3. Decide how to sequence the deferred-work list below — the `source_name` attribution breakage is the most severe open item.
-4. `feature/002-local-llm-backend` needs real end-to-end verification against actual Ollama + a real model on GPU hardware — the code has been statically reviewed twice and looks correct, but has never produced a verified pass anywhere (see below).
-5. Malaysia's thin signal density needs manual re-sourcing of better newsroom URLs (not a code fix) if BD wants deeper MY coverage.
-6. Decide whether/when to bring `feature/002-local-llm-backend` into the GitLab-facing tree, once it's actually verified — right now it should stay GitHub-only/experimental.
+1. **China-accessible LLM research + swappable-backend design** — new work thread just starting. Needs: which LLM APIs are actually usable/compliant from mainland China, how `pipeline/analyst.py`'s Groq-specific calls generalize to a provider-agnostic interface, and how a user picks/switches providers (Alfonso wants this configurable, not hardcoded to whichever one China ends up using — so the existing Groq path stays available too). `feature/002-local-llm-backend` (Ollama, unmerged, GitHub-only) is prior art for "swappable backend" but solves a different problem (local/free vs. China-network-reachable) — read it before designing this, don't start from zero.
+2. Watch for team feedback on the GitLab clone-and-run experience — first real external test of the README and onboarding flow (independent of the China-LLM blocker above, which is a network/API-access issue, not a bug in the app itself).
+3. **Alfonso has confirmed he wants tighter, per-person access control eventually** (not just a shared admin password) — likely real user accounts instead of the current two-shared-static-password model. Explicitly fine to defer while the team is just testing; revisit once testing feedback comes in. Not yet scoped as a feature.
+4. Decide how to sequence the deferred-work list below — the `source_name` attribution breakage is the most severe open item.
+5. `feature/002-local-llm-backend` needs real end-to-end verification against actual Ollama + a real model on GPU hardware — the code has been statically reviewed twice and looks correct, but has never produced a verified pass anywhere (see below).
+6. Malaysia's thin signal density needs manual re-sourcing of better newsroom URLs (not a code fix) if BD wants deeper MY coverage.
+7. Decide whether/when to bring `feature/002-local-llm-backend` into the GitLab-facing tree, once it's actually verified — right now it should stay GitHub-only/experimental.
 
 ## Current Blockers
 
