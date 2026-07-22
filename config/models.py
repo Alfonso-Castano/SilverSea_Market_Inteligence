@@ -5,7 +5,14 @@ import os
 # pipeline/feedback.py and pipeline/weekly.py import it directly for their own,
 # independent Groq-only LLM calls — out of this feature's scope (see
 # .context/features/007-multi-provider-llm-backend/RESEARCH.md §7). Do not remove it.
-GROQ_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
+#
+# meta-llama/llama-4-scout-17b-16e-instruct was removed from Groq's catalog entirely
+# (confirmed via a live models.list() call, 2026-07-22 — 404 model_not_found, independent
+# of any client library). Reverted to llama-3.3-70b-versatile, this project's original,
+# historically-validated model (21/25 quality score, see .context/DECISIONS.md's 2026-06-19
+# entry) before Groq deprecated *that* model and llama-4-scout replaced it for TPM headroom.
+# Confirmed live on this account's model list as of this fix.
+GROQ_MODEL = "llama-3.3-70b-versatile"
 
 # LLM_DEFAULT: set to a PROVIDERS (or "local") key to silently pick a backend with no
 # prompt, regardless of how many providers have a configured API key — the
@@ -34,7 +41,8 @@ PROVIDERS = {
         "label": "Groq",
         "base_url": "https://api.groq.com/openai/v1",
         "key_env": "GROQ_API_KEY",
-        "model": "meta-llama/llama-4-scout-17b-16e-instruct",
+        # Kept in sync with GROQ_MODEL above — see its comment for why this changed.
+        "model": "llama-3.3-70b-versatile",
     },
     "qwen": {
         "label": "Qwen (DashScope)",
