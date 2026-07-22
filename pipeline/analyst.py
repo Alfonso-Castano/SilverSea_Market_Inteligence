@@ -211,6 +211,18 @@ def _chat_completion(client, provider_key: str, system_prompt: str, user_message
     kwargs = {}
     if json_schema is not None:
         kwargs["response_format"] = {"type": "json_object"}
+    if provider_key.startswith("openrouter"):
+        # OpenRouter's free NVIDIA Nemotron models default to emitting an internal
+        # reasoning trace that can consume the large majority of max_tokens before any
+        # real content is produced, truncating/malforming JSON output — confirmed live
+        # during feature 008's planning (1300+ reasoning tokens observed against a
+        # max_tokens=2000 sector-synthesis call; see
+        # .context/features/008-openrouter-company-provider/RESEARCH.md §4). Disabling
+        # reasoning via OpenRouter's unified `reasoning` request parameter frees that
+        # budget for real content. Applied to every call site (extraction, sector
+        # synthesis, summary synthesis), not just the JSON-mode ones, since all three
+        # share the same max_tokens=2000 ceiling and the same overhead risk.
+        kwargs["extra_body"] = {"reasoning": {"enabled": False}}
     response = client.chat.completions.create(
         model=PROVIDERS[provider_key]["model"],
         messages=[
@@ -283,7 +295,13 @@ def _synthesize_sector(client, provider_key: str, sector_name: str, extraction_t
     label = SECTOR_LABELS.get(sector_name, sector_name.replace("_", " ").title())
 
     user_message = f"Sector: {label}\n\nExtracted signals:\n{extraction_text}"
-    if provider_key == "local":
+    if provider_key == "local" or provider_key.startswith("openrouter"):
+        # Loose response_format={"type": "json_object"} mode nudges free-tier OpenRouter
+        # models toward a bare JSON *object*, not the array SECTOR_SYNTHESIS_PROMPT asks
+        # for — confirmed live (RESEARCH.md §4). The same object-wrapper phrasing already
+        # used for Ollama's native schema mode fixes it here too, since
+        # _synthesize_sector()'s own unwrap logic below already handles a
+        # {"signals": [...]} shape.
         user_message += '\n\nReturn a JSON object with a top-level "signals" array of the entries.'
 
     try:
