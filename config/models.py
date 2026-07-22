@@ -61,6 +61,60 @@ PROVIDERS = {
         # RESEARCH.md §4, §8).
         "model": "kimi-k3",
     },
+    "openrouter-nemotron": {
+        "label": "OpenRouter (NVIDIA Nemotron Super, free)",
+        "base_url": "https://openrouter.ai/api/v1",
+        "key_env": "OPENROUTER_API_KEY",
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        # Default OpenRouter entry — see RESEARCH.md §5. NVIDIA is not named among the
+        # providers OpenRouter enforces China-account-blocking for (unlike OpenAI/
+        # Anthropic/Google-provided models — see RESEARCH.md §2), and this is the more
+        # token-efficient of the two NVIDIA free JSON-capable candidates under this
+        # pipeline's real per-signal output shape (see RESEARCH.md §4). Requires the
+        # dispatch-side reasoning-disable + JSON-array wrapper-hint fix in
+        # pipeline/analyst.py (see feature 008's task 002) — without it, this model
+        # (like its sibling below) burns most of its output budget on an internal
+        # reasoning trace and returns malformed/incomplete JSON.
+    },
+    "openrouter-nemotron-nano": {
+        "label": "OpenRouter (NVIDIA Nemotron Nano, free)",
+        "base_url": "https://openrouter.ai/api/v1",
+        "key_env": "OPENROUTER_API_KEY",
+        "model": "nvidia/nemotron-nano-9b-v2:free",
+        # Non-default alternative — also China-safe (see RESEARCH.md §2) and confirmed
+        # working with the same reasoning-disable + wrapper-hint fix as the entry above,
+        # but ~7x more verbose per extracted signal in live testing (RESEARCH.md §4),
+        # leaving meaningfully less headroom under max_tokens=2000 for sectors with many
+        # real signals. Do not promote this to LLM_DEFAULT without re-testing against a
+        # large, real multi-source sector first.
+    },
+    "company-qwen-flash": {
+        "label": "Company Qwen (paid) — 3.6 Flash",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "key_env": "COMPANY_QWEN_API_KEY",
+        "model": "qwen3.6-flash",
+        # China-domestic DashScope endpoint, genuinely distinct from the existing "qwen"
+        # entry above (dashscope-intl.aliyuncs.com, a different account/region) — not a
+        # duplicate. Model string independently confirmed twice: matches Alibaba Cloud's
+        # official Model Studio docs AND was live-smoke-tested successfully against the
+        # real company key in the prior planning session (see RESEARCH.md §6). Paid —
+        # label says so on purpose; do not make this LLM_DEFAULT.
+    },
+    "company-qwen-plus": {
+        "label": "Company Qwen (paid) — 3.7 Plus",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "key_env": "COMPANY_QWEN_API_KEY",
+        "model": "qwen3.7-plus",
+        # Same key/endpoint as company-qwen-flash above. Model string matches Alibaba
+        # Cloud's official Model Studio docs (a current, real flagship model) but has NOT
+        # been live-tested against the real company account/key — confirm it actually
+        # authenticates before relying on this in production (see RESEARCH.md §6, same
+        # caveat this registry already carries for kimi-k3 above). Two other guessed
+        # strings from this feature's original scope (qwen3.6-plus, qwen3.7-flash) were
+        # deliberately NOT added here — documentation research found no evidence either
+        # exists in DashScope's current catalog. If a human confirms one is real, adding
+        # it is a one-entry follow-up to this dict, not a new feature.
+    },
 }
 
 # Local backend (Ollama) — reused from feature/002-local-llm-backend, never verified
