@@ -19,6 +19,13 @@ except Exception:
 
 from config.models import PROVIDERS, LOCAL_MODEL, LOCAL_NUM_CTX
 CALL_DELAY = 2
+# Groq's llama-3.3-70b-versatile (reinstated after llama-4-scout was deprecated — see the
+# GROQ_MODEL comment in config/models.py) has a much lower TPM ceiling (~6-12k) than
+# llama-4-scout's 30k, which is what justified cutting CALL_DELAY from 25s to 2s in the first
+# place (.context/DECISIONS.md's 2026-06-26 entry). Restoring that original spacing for Groq
+# only — every other provider keeps the fast 2s delay, since none of them share this TPM
+# constraint.
+GROQ_CALL_DELAY = 25
 MIN_CONTENT_CHARS = 150
 
 SECTOR_LABELS = {
@@ -487,6 +494,7 @@ def analyse(filtered_results: list, country: dict, provider_key: str) -> dict:
         client = openai.OpenAI(base_url=provider["base_url"], api_key=os.environ.get(provider["key_env"], ""))
 
     substantive = [r for r in filtered_results if len(r.get("content", "")) >= MIN_CONTENT_CHARS]
+    call_delay = GROQ_CALL_DELAY if provider_key == "groq" else CALL_DELAY
 
     sectors = {}
     for r in substantive:
@@ -499,14 +507,14 @@ def analyse(filtered_results: list, country: dict, provider_key: str) -> dict:
         print(f"    Extracting {label} ({len(sources)} sources)...")
         sector_extractions[sector_name] = _extract_sector(client, provider_key, sector_name, sources)
         if i < len(sectors) - 1:
-            time.sleep(CALL_DELAY)
+            time.sleep(call_delay)
 
     # Phase 2: per-sector JSON synthesis
     signals_by_sector = {}
     for i, (sector_name, extraction_text) in enumerate(sector_extractions.items()):
         label = SECTOR_LABELS.get(sector_name, sector_name)
         print(f"    Structuring {label}...")
-        time.sleep(CALL_DELAY)
+        time.sleep(call_delay)
         signals = _synthesize_sector(client, provider_key, sector_name, extraction_text)
         if signals:
             signals_by_sector[label] = signals
@@ -517,7 +525,7 @@ def analyse(filtered_results: list, country: dict, provider_key: str) -> dict:
 
     # Phase 4: summary synthesis (executive_summary + opportunities + synthesis)
     print("    Generating summary...")
-    time.sleep(CALL_DELAY)
+    time.sleep(call_delay)
     summary = _synthesize_summary(client, provider_key, signals_by_sector, country["name"])
 
     # Assemble final report

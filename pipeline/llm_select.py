@@ -8,6 +8,19 @@ from config.models import PROVIDERS, LLM_DEFAULT
 
 _ALL_KEYS = list(PROVIDERS.keys()) + ["local"]
 
+# When one credential unlocks multiple PROVIDERS entries (OpenRouter's and company-Qwen's
+# paid/free-tier siblings each share one key_env), auto-detect needs to know which entry counts
+# as "the" default for that key so a single-credential .env still gets the zero-friction
+# silent-select .env.example promises ("auto-detect... if exactly one of the keys above is
+# set") — that promise is about credentials, not PROVIDERS dict entries. openrouter-nemotron is
+# already documented as OpenRouter's own default (more token-efficient than the nano variant);
+# company-qwen-flash is the cheaper/faster tier, picked over -plus since defaulting a paid
+# credential to its more expensive option isn't something to do silently.
+_DEFAULT_FOR_SHARED_KEY = {
+    "OPENROUTER_API_KEY": "openrouter-nemotron",
+    "COMPANY_QWEN_API_KEY": "company-qwen-flash",
+}
+
 
 def resolve_provider(cli_arg: str | None) -> str:
     """Resolve which provider key this run uses. Priority order:
@@ -31,8 +44,14 @@ def resolve_provider(cli_arg: str | None) -> str:
         return LLM_DEFAULT
 
     configured = [k for k, p in PROVIDERS.items() if os.environ.get(p["key_env"], "").strip()]
-    if len(configured) == 1:
-        return configured[0]
+    distinct_key_envs = {PROVIDERS[k]["key_env"] for k in configured}
+    if len(distinct_key_envs) == 1:
+        key_env = next(iter(distinct_key_envs))
+        default = _DEFAULT_FOR_SHARED_KEY.get(key_env)
+        if default and default in configured:
+            return default
+        if len(configured) == 1:
+            return configured[0]
 
     return _interactive_pick(configured)
 
@@ -45,6 +64,30 @@ def _validate_or_exit(key: str) -> None:
         env_name = PROVIDERS[key]["key_env"]
         if not os.environ.get(env_name, "").strip():
             print(f"--llm={key} (or LLM_DEFAULT={key}) requires {env_name} to be set in .env — refusing to start scraping without it.", file=sys.stderr)
+            sys.exit(1)
+    else:
+        # Remote providers fail fast on a missing key above; "local" needs no key but was
+        # previously only checked deep inside pipeline/analyst.py's _chat_completion(), after
+        # scraping/filtering had already run — every sector would fail there and the pipeline
+        # would still exit 0 with a report full of "Extraction failed" text. Check here instead,
+        # before any of that work starts. A reachable-server check alone isn't enough — Ollama's
+        # server runs as a background service even with zero models pulled, so ollama.list()
+        # succeeding doesn't mean LOCAL_MODEL is actually usable; check it's in the pulled list.
+        from config.models import LOCAL_MODEL
+        try:
+            import ollama
+            pulled = [m.model for m in ollama.list().models]
+        except Exception as e:
+            print(f"--llm=local (or LLM_DEFAULT=local) requires a running, reachable Ollama server — refusing to start scraping without it. ({e})", file=sys.stderr)
+            sys.exit(1)
+        if LOCAL_MODEL not in pulled:
+            print(
+                f"--llm=local (or LLM_DEFAULT=local) requires the model \"{LOCAL_MODEL}\" to already be "
+                f"pulled in Ollama (ollama list shows: {pulled or 'nothing'}) — refusing to start scraping "
+                f"without it. Run `ollama pull {LOCAL_MODEL}` first, or set LOCAL_LLM_MODEL in .env to a "
+                f"model you've already pulled.",
+                file=sys.stderr,
+            )
             sys.exit(1)
 
 
