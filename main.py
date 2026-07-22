@@ -18,6 +18,7 @@ from pipeline.report import save_report_json
 from pipeline.emailer import send_digest
 from pipeline.feedback import aggregate_feedback, consolidate_feedback_digests
 from pipeline.weekly import generate_weekly_summary
+from pipeline.llm_select import resolve_provider
 
 
 def _format_email_text(report_data: dict) -> str:
@@ -40,7 +41,7 @@ def _format_email_text(report_data: dict) -> str:
     return "\n".join(lines)
 
 
-def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: str = None) -> None:
+def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: str = None, provider_key: str = None) -> None:
     active_countries = [c for c in COUNTRIES if c["active"]]
     if country_arg:
         active_countries = [c for c in active_countries if c["code"] == country_arg]
@@ -68,7 +69,7 @@ def run_pipeline(send_email: bool = True, domain_arg: str = None, country_arg: s
             continue
 
         print("Analysing with LLM...")
-        report_data = analyse(filtered, country)
+        report_data = analyse(filtered, country, provider_key)
 
         report_data["data_sources"] = [
             {"name": r["name"], "url": r["url"], "sector": r["sector"]}
@@ -119,4 +120,11 @@ if __name__ == "__main__":
         if arg.startswith("--country="):
             country_arg = arg.split("=", 1)[1]
 
-    run_pipeline(send_email=send_email, domain_arg=domain_arg, country_arg=country_arg)
+    llm_arg = None
+    for arg in sys.argv:
+        if arg.startswith("--llm="):
+            llm_arg = arg.split("=", 1)[1]
+
+    provider_key = resolve_provider(llm_arg)
+
+    run_pipeline(send_email=send_email, domain_arg=domain_arg, country_arg=country_arg, provider_key=provider_key)
