@@ -47,6 +47,19 @@ This is a separate, easy-to-miss step. `pip install` only installs the Scrapling
 
 **Set one provider's API key in `.env`.** By default the pipeline uses DeepSeek — sign up free at [platform.deepseek.com](https://platform.deepseek.com), no card needed for the initial free grant, and reachable from mainland China (unlike Groq). Groq, Qwen (DashScope), Kimi (Moonshot), and OpenRouter (free tier, two NVIDIA models, also reachable from mainland China and not subject to OpenRouter's OpenAI/Anthropic/Google-specific China restrictions) are also supported — see `.env.example` for the full list, including two paid company-shared Qwen options if you've been given that key. Nothing else in `.env` is required to run the pipeline itself (`GMAIL_*`/`RECIPIENT_EMAILS` only matter if you want the optional email digest, off by default).
 
+**To use a different provider than the default:** add the matching line below to your `.env` (copy from `.env.example`), then either pass `--llm=<key>` on the command line or set `LLM_DEFAULT=<key>` in `.env` so you don't have to pass the flag every time.
+
+| Provider | `--llm=` key | `.env` variable | Sign up |
+|---|---|---|---|
+| DeepSeek (default) | `deepseek` | `DEEPSEEK_API_KEY` | [platform.deepseek.com](https://platform.deepseek.com) — free |
+| Groq | `groq` | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) — free, not reachable from mainland China |
+| Qwen (DashScope, personal) | `qwen` | `DASHSCOPE_API_KEY` | [alibabacloud.com](https://www.alibabacloud.com/en/product/modelstudio) — international account required |
+| Kimi (Moonshot) | `kimi` | `MOONSHOT_API_KEY` | [platform.moonshot.ai](https://platform.moonshot.ai) — free to create, small prepaid credit to use |
+| OpenRouter (free, NVIDIA) | `openrouter-nemotron` / `openrouter-nemotron-nano` | `OPENROUTER_API_KEY` | [openrouter.ai](https://openrouter.ai) — free, 50 requests/day |
+| Company Qwen (paid) | `company-qwen-flash` / `company-qwen-plus` | `COMPANY_QWEN_API_KEY` | Ask whoever owns Silversea's shared secrets — not a self-signup option |
+
+If you don't pass `--llm` or set `LLM_DEFAULT`, and more than one of the keys above is configured, you'll get an interactive picker (a popup window, or a terminal prompt if no display is available) each time you run the pipeline.
+
 **Run it scoped to one country and one domain:**
 
 ```bash
