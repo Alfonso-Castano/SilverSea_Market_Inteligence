@@ -243,18 +243,38 @@ alongside this REVIEW.md rather than leaving planning artifacts perpetually untr
     model string again. Re-spending Groq's shared daily quota to re-confirm unchanged code would
     violate this project's own quota-discipline norm (CLAUDE.md).
 
+## Fix verification (post-FAIL re-check)
+
+Task 008 regenerated `requirements.txt` from a genuinely isolated, throwaway `.venv-regen`
+(installed exactly the documented top-level dependency list plus this feature's `openai`/`ollama`
+additions, nothing else), then deleted the venv. Independently re-run by the dispatching session,
+not just trusting the executor's own report:
+
+```
+git show ad81ca161e35f148eb86bd9313e65d4bc4bda2f9:requirements.txt | grep -oE '^[A-Za-z0-9_.\-]+' | sort -u > old_pkgs.txt
+grep -oE '^[A-Za-z0-9_.\-]+' requirements.txt | sort -u > new_pkgs.txt
+comm -13 old_pkgs.txt new_pkgs.txt | grep -viE '^(openai|ollama)$'
+```
+→ `jiter` only (a legitimate transitive dependency of `openai`). None of the 79 previously-injected
+unrelated packages (`fastapi`, `pygame`, `nba_api`, 22 `tree-sitter-*` grammars, etc.) remain.
+BOM check (`open('requirements.txt','rb').read()[:3]`) → `b'# P'`, confirmed clean. File is 131
+lines, down from the polluted version. `py -m pytest tests/test_clamp.py -q` → `6 passed`,
+confirming the regeneration didn't break the import chain. Finding 2 (untracked `CONTEXT.md`/
+`RESEARCH.md`) also resolved — both committed alongside this file.
+
 ## Result
 
-**FAIL**
+**PASS**
 
-Sole blocking reason: Finding 1 (`requirements.txt` polluted with 79 unrelated packages via an
-ungated global-environment `pip freeze`). Every task's actual code deliverable (001, 003, 004, 005,
-006, 007) matches its spec, every CONTEXT.md decision is correctly implemented, and the DeepSeek-
-native live-verification deferral is judged acceptable on its own merits (see the dedicated
-section above) — this is not a broad rejection of the feature's design or of Task 007's amendment,
-narrowly a data-hygiene defect in one generated artifact that must be fixed before this can ship,
-since a fresh clone following this project's own README would otherwise inherit it.
+Both findings from the original FAIL pass are resolved and independently re-verified in this same
+session (task 008, commit `90936cd`). Every task's code deliverable (001, 003, 004, 005, 006, 007,
+008) matches its spec, every `CONTEXT.md` Implementation Decision is correctly implemented, the
+DeepSeek-native live-verification deferral is judged acceptable on its own merits (external billing
+failure, not a code-path ambiguity — the shared dispatch code was already proven end-to-end via
+Groq's live call), and `requirements.txt` now installs cleanly with no unrelated packages.
 
-Fix task generated: `tasks/008-clean-requirements-txt.md`. Scoped narrowly to re-generating
-`requirements.txt` correctly; does not touch DeepSeek/OpenRouter verification, which stays out of
-scope per CONTEXT.md and Alfonso's own redirection (not a fix task for this feature).
+**Carry-forward for the next feature (OpenRouter + company-key work), not a defect in this one:**
+DeepSeek-native's live "China-reachable default" claim remains code-complete but not live-proven —
+the account's `402 Insufficient Balance` was never resolved, and Alfonso is redirecting the
+practical default path to OpenRouter instead. A future feature's own evidence gate should carry
+that live verification, against whichever provider ends up being the actual default.
