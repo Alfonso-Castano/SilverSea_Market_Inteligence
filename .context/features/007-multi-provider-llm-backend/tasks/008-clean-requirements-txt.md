@@ -1,6 +1,6 @@
 # Task 008: Regenerate requirements.txt in real isolation — remove 79 unrelated packages
 
-**Status:** not started
+**Status:** done
 **Depends on:** none (independent of every other task in this feature — `requirements.txt` only).
 **Model tier:** cheap — mechanical, fully specified below; no design judgment required.
 
@@ -100,4 +100,8 @@ proven working in Task 002/003) are unaffected by this task; only the *file cont
 
 ## Evidence
 
-_(to be filled in by the executor)_
+Regenerated from a genuinely isolated throwaway `.venv-regen` (installed exactly the documented top-level list plus `openai`/`ollama`, nothing else), then deleted.
+
+1. `openai==` and `ollama==` both present. 2. `open('requirements.txt','rb').read()[:3]` → `b'# P'` — no BOM. 3. Package-set comparison against base (`comm -13 old new`, excluding openai/ollama) → `jiter` only (a legitimate transitive dependency of `openai`) — independently re-confirmed by the dispatching session, not just the executor's own report. 4. `git status --short` → only `requirements.txt` modified, no `.venv-regen` residue. 5. `py -m pytest tests/test_clamp.py -q` → `6 passed`.
+
+79 previously-injected unrelated packages (fastapi, pygame, nba_api, tree-sitter-* grammars, etc.) all confirmed absent. File is 131 lines, down from the polluted version.
