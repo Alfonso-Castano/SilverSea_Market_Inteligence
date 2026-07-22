@@ -5,7 +5,7 @@
 Everything below has been run and verified against this exact repo state (not just written from memory of what should work). Two independent paths, pick the one you need:
 
 - **[View the dashboard only](#1-view-the-dashboard-only)** — no API keys, reads pre-generated report data already in the repo.
-- **[Run the full pipeline](#2-run-the-full-pipeline)** — scrapes real sources, calls an LLM, regenerates the report. Needs a Groq API key.
+- **[Run the full pipeline](#2-run-the-full-pipeline)** — scrapes real sources, calls an LLM, regenerates the report. Needs an LLM provider API key (DeepSeek by default; Groq and others also supported).
 
 Both need **Python 3.12.3** (pinned in [`.python-version`](.python-version) — check it matches what you have: `python3 --version`).
 
@@ -45,7 +45,7 @@ scrapling install
 
 This is a separate, easy-to-miss step. `pip install` only installs the Scrapling and Playwright *Python packages* — the actual browser binaries some sources need (to get past anti-bot pages or render JS-heavy sites) are a separate download that `scrapling install` fetches. Skip this and you'll see errors like `Executable doesn't exist at ...\chrome-win64\chrome.exe` the first time the pipeline hits a source tagged `"fetcher": "stealth"` or `"fetcher": "dynamic"` in `config/sources.json` (sources on the default fetcher are unaffected either way).
 
-**Set `GROQ_API_KEY` in `.env`.** Sign up free at [console.groq.com](https://console.groq.com) — no payment info needed for the free tier. Nothing else in `.env` is required to run the pipeline itself (`GMAIL_*`/`RECIPIENT_EMAILS` only matter if you want the optional email digest, off by default).
+**Set one provider's API key in `.env`.** By default the pipeline uses DeepSeek — sign up free at [platform.deepseek.com](https://platform.deepseek.com), no card needed for the initial free grant, and reachable from mainland China (unlike Groq). Groq, Qwen (DashScope), and Kimi (Moonshot) are also supported — see `.env.example` for all four. Nothing else in `.env` is required to run the pipeline itself (`GMAIL_*`/`RECIPIENT_EMAILS` only matter if you want the optional email digest, off by default).
 
 **Run it scoped to one country and one domain:**
 
@@ -56,6 +56,7 @@ python3 main.py --country=SG --domain=BER --no-email
 - `--country` — which country's source list to run: `SG` (Singapore), `VN` (Vietnam), or `MY` (Malaysia).
 - `--domain` — which business-domain-tagged subset of that country's sources to run: `BER` (Built Environment) and `GENERAL` have the most source coverage today; `EDU` exists but is thin for most countries; `RCC`/`HLS`/`MFG`/`CTE`/`PSS` exist as source tags but don't have dedicated UI tabs yet (see Part 2).
 - `--no-email` — skip the optional email digest step entirely (recommended unless you've set up the `GMAIL_*` vars).
+- `--llm` — which LLM provider to use for this run: `deepseek` (default), `groq`, `qwen`, `kimi`, or `local` (Ollama, unverified — see `.context/STATE.md` if you have access to it). Omitting it uses `LLM_DEFAULT` from `.env` if set, auto-detects if exactly one provider's key is configured, or prompts interactively (a popup, falling back to a terminal prompt) if it can't tell which one you mean.
 - Omitting `--country`/`--domain` runs every active combination — this is slow and burns much more quota than scoping to one. Don't do this while just testing.
 
 **Real caveat, not a hypothetical one:** Groq's free tier is a 100,000-token daily quota, shared across every run you make that day. A single scoped `--country`/`--domain` run costs roughly 15,000-30,000 tokens depending on how many sources are tagged for that domain. Don't loop over combinations speculatively — pick the one you actually need to test.
@@ -106,7 +107,7 @@ config/sources.json (per-country source list, sector + domain tags)
 
 The extract-then-synthesize split exists because feeding a single large synthesis call too much raw content at once caused the model to silently drop most of the signal — splitting per-sector fixed that (signal count went from single digits to 65+ in testing).
 
-**Stack:** Python, Flask + Jinja2, Tailwind CSS (CDN, no build step), Groq API (Llama 4 Scout 17B) for LLM calls, ChromaDB (via `sentence-transformers` embeddings) for the RAG feedback loop and report history.
+**Stack:** Python, Flask + Jinja2, Tailwind CSS (CDN, no build step), a configurable LLM backend (DeepSeek by default; Groq, Qwen, Kimi, or local Ollama — see `--llm`) for LLM calls, ChromaDB (via `sentence-transformers` embeddings) for the RAG feedback loop and report history.
 
 **Auth:** two shared passwords (viewer, admin), not per-user accounts — matches the actual requirement (company-wide gated access, admin-only password rotation) without building account infrastructure nobody asked for.
 
