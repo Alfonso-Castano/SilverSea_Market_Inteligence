@@ -223,6 +223,17 @@ def _chat_completion(client, provider_key: str, system_prompt: str, user_message
         # synthesis, summary synthesis), not just the JSON-mode ones, since all three
         # share the same max_tokens=2000 ceiling and the same overhead risk.
         kwargs["extra_body"] = {"reasoning": {"enabled": False}}
+        if json_schema is not None:
+            # Even with reasoning disabled, a real live run (Singapore/BER, 2026-07-22,
+            # openrouter-nemotron — the token-efficient default, not the nano variant)
+            # hit "Unterminated string..." on the Partners sector (11 sources, many real
+            # signals): max_tokens=2000 got fully consumed by genuine JSON content and
+            # cut off mid-string before the array could close. Free-tier OpenRouter
+            # models aren't billed per token, so there's no cost downside to raising the
+            # ceiling for the two JSON-mode call sites (sector synthesis, summary) —
+            # free-text extraction is left alone since a truncated extraction degrades
+            # gracefully rather than breaking JSON parsing.
+            max_tokens = max(max_tokens, 4000)
     response = client.chat.completions.create(
         model=PROVIDERS[provider_key]["model"],
         messages=[
