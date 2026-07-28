@@ -9,7 +9,7 @@ import re
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, send_from_directory
 
 from pipeline import source_suggestions
 from config.sources import load_sources
@@ -19,6 +19,12 @@ app = Flask(__name__)
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 FEEDBACK_DIR = os.path.join(DATA_DIR, "feedback")
 PRESENTATION_DIR = os.path.join(DATA_DIR, "presentation")
+ARCHIVE_DIR = os.path.join(DATA_DIR, "archive")
+_ARCHIVE_FILENAME_RE = re.compile(r"^\d{4}-\d{2}-\d{2}\.pdf$")
+# Same 8-code whitelist used by _domain_mode() elsewhere in this file — kept as its own literal
+# here rather than factored into a shared constant, matching this file's existing pattern (the
+# same tuple already appears twice, in _domain_mode() and report()'s any_domain_file_exists check).
+_VALID_ARCHIVE_DOMAINS = ("EDU", "BER", "GENERAL", "RCC", "HLS", "MFG", "CTE", "PSS")
 
 _SECRET_KEY_PATH = os.path.join(DATA_DIR, ".flask_secret_key")
 
@@ -138,6 +144,34 @@ def _merge_domain_reports(report_data, country):
 _NO_SIGNAL_RE = re.compile(r"no actionable signals?", re.IGNORECASE)
 
 
+def _list_archives():
+    """Scan data/archive/{country}/{domain}/{date}.pdf and return a flat list of dicts (newest
+    first) for the /internals archive browsing section. Returns [] if the archive dir doesn't
+    exist yet (e.g. before the wrapper script has ever run) — not an error state."""
+    archives = []
+    if not os.path.isdir(ARCHIVE_DIR):
+        return archives
+    for country in sorted(os.listdir(ARCHIVE_DIR)):
+        country_dir = os.path.join(ARCHIVE_DIR, country)
+        if not os.path.isdir(country_dir):
+            continue
+        for domain in sorted(os.listdir(country_dir)):
+            domain_dir = os.path.join(country_dir, domain)
+            if not os.path.isdir(domain_dir):
+                continue
+            for filename in os.listdir(domain_dir):
+                if not _ARCHIVE_FILENAME_RE.match(filename):
+                    continue
+                archives.append({
+                    "country": country,
+                    "domain": domain,
+                    "date": filename[:-4],
+                    "filename": filename,
+                })
+    archives.sort(key=lambda a: a["date"], reverse=True)
+    return archives
+
+
 def _strip_no_actionable_signals(report_data):
     """Drop signal/risk entries that are just the LLM's anti-hallucination abstain
     token, leaked into the final report as a fake entry instead of being omitted."""
@@ -218,13 +252,25 @@ def internals():
     except Exception as e:
         collections_data = {"error": str(e)}
 
+    archives = _list_archives()
+
     return render_template("internals.html",
         scores=scores,
         metadata=metadata,
         collections=collections_data,
         demo_mode=demo_mode,
         current_country=country,
+        archives=archives,
     )
+
+
+@app.route("/internals/archive/<country>/<domain>/<filename>")
+def download_archive(country, domain, filename):
+    valid_codes = {c["code"] for c in load_sources()}
+    if country not in valid_codes or domain not in _VALID_ARCHIVE_DOMAINS or not _ARCHIVE_FILENAME_RE.match(filename):
+        return "Not found", 404
+    directory = os.path.join(ARCHIVE_DIR, country, domain)
+    return send_from_directory(directory, filename, as_attachment=True)
 
 
 @app.route("/feedback", methods=["POST", "OPTIONS"])

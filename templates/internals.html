@@ -187,6 +187,41 @@
     </div>
     {% endif %}
   </section>
+
+  <!-- 5. Report Archive -->
+  <section class="mb-10">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Report Archive</h2>
+    {% if archives %}
+    <div class="bg-bg-card dark:bg-dark-card border border-border-card dark:border-dark-border rounded-xl shadow-soft overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 dark:bg-dark-card-hover text-left text-xs uppercase tracking-wider text-gray-400">
+            <th class="px-6 py-3 font-semibold">Date</th>
+            <th class="px-6 py-3 font-semibold">Country</th>
+            <th class="px-6 py-3 font-semibold">Domain</th>
+            <th class="px-6 py-3 font-semibold text-right">Download</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border-card dark:divide-dark-border">
+          {% for a in archives %}
+          <tr class="hover:bg-gray-50 dark:hover:bg-dark-card-hover">
+            <td class="px-6 py-3 text-gray-700 dark:text-gray-300">{{ a.date }}</td>
+            <td class="px-6 py-3 text-gray-700 dark:text-gray-300">{{ a.country }}</td>
+            <td class="px-6 py-3 text-gray-700 dark:text-gray-300">{{ a.domain }}</td>
+            <td class="px-6 py-3 text-right">
+              <a href="{{ url_for('download_archive', country=a.country, domain=a.domain, filename=a.filename) }}" class="text-green-accent hover:underline font-medium">Download PDF</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="bg-bg-card dark:bg-dark-card border border-border-card dark:border-dark-border rounded-xl shadow-soft p-6 text-center text-gray-400">
+      No archived reports yet.
+    </div>
+    {% endif %}
+  </section>
 {% endblock %}
 
 {% block scripts %}
