@@ -1,7 +1,7 @@
 # Pinned to exact versions from a clean install under Python 3.12.3 (see .python-version).
 # Direct top-level dependencies: groq, requests, beautifulsoup4, python-dotenv,
-# chromadb, sentence-transformers, scrapling[fetchers], flask, Jinja2, openai, ollama ? everything
-# else below is a transitive dependency pinned via `pip freeze` for reproducibility.
+# chromadb, sentence-transformers, scrapling[fetchers], flask, Jinja2, openai, ollama, playwright —
+# everything else below is a transitive dependency pinned via `pip freeze` for reproducibility.
 # To regenerate: create a fresh venv under 3.12.3, `pip install groq requests
 # beautifulsoup4 python-dotenv chromadb sentence-transformers "scrapling[fetchers]"
 # flask Jinja2 openai ollama`, then `pip freeze > requirements.txt`.
