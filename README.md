@@ -92,6 +92,7 @@ The fast-path fixes for what's most likely to trip you up, even though each is e
 |---|---|
 | Redirected to `/login` immediately, don't know the password | Log in with `Silversea` — the built-in shared default (auto-seeded into `data/viewer_password.txt` on first login attempt, unless an admin has since rotated it) |
 | Pipeline fails with `Executable doesn't exist at ...chrome-win64\chrome.exe` | You skipped `scrapling install` after `pip install -r requirements.txt` — run it now, it's a one-time step |
+| Local PDF archival fails with a browser-not-found error | You skipped `playwright install chromium` after `pip install -r requirements.txt` — run it now, it's a one-time step (see Report Archival below) |
 | `pip install -r requirements.txt` fails, or things behave oddly after installing | Check `python3 --version` against [`.python-version`](.python-version) (`3.12.3`) — this repo's dependencies (`numpy`/`onnxruntime` via `chromadb`) have a real floor of Python 3.11+, and the pinned versions were only tested against 3.12.3 specifically |
 | `/admin` always redirects you away, even after logging in | `ADMIN_PASSWORD` isn't set in `.env` — there's no default for it, unlike the viewer password |
 
@@ -133,3 +134,91 @@ The extract-then-synthesize split exists because feeding a single large synthesi
 **A local-LLM backend exists but isn't part of `main`.** `feature/002-local-llm-backend` adds a config-switchable Ollama-based backend as a free alternative to the Groq API. It's unmerged and its own smoke test has never produced a verified pass against a real model — treat it as experimental and check that branch's own notes before relying on it.
 
 Full architectural decision history and current known issues are tracked internally (`.context/DECISIONS.md` / `.context/STATE.md`) — those files are intentionally excluded from this repo's tree; ask Alfonso if you need that history.
+
+---
+
+## Part 3 — Daily Automation & Report Archival
+
+The production pipeline is designed to run automatically once a day for all 9 country×domain
+combinations (SG/VN/MY × EDU/BER/GENERAL), and archive each freshly-generated report as a
+downloadable PDF snapshot.
+
+### How it works
+
+- `scripts/daily_pipeline.py` loops all 9 combinations sequentially (not parallel — avoids
+  concurrent ChromaDB writes across processes), invoking `main.py --country=<CODE>
+  --domain=<CODE> --no-email` as a subprocess per combination. A combination whose `main.py` run
+  fails (non-zero exit code, or the subprocess itself couldn't be launched) is logged and skipped
+  — it doesn't abort the rest of the run.
+- After each combination's `main.py` run succeeds, its report is immediately rendered to a PDF via
+  headless Chromium (Playwright) and saved to `data/archive/{COUNTRY}/{DOMAIN}/{YYYY-MM-DD}.pdf`
+  — reusing the dashboard's own print stylesheet (`static/style.css`'s `@media print` block)
+  rather than building a second rendering path. The renderer also has to work around two things a
+  simple `@media print` alone doesn't cover: collapsed entity groups (expanded via the same
+  one-line JS the dashboard's own "Export PDF" button already runs before printing) and a
+  scroll-reveal animation library (AOS) that leaves every section below the fold at `opacity:0`
+  until it's scrolled into view — never triggered by a single-shot headless render — worked around
+  by resizing the browser viewport to the full page height before printing. If archiving fails
+  after `main.py` itself already succeeded, that failure is logged too but doesn't affect the
+  already-saved report data — only that day's PDF snapshot is missing.
+- Every combination's outcome is appended as one line to `data/logs/daily_pipeline.log`.
+- Archived PDFs are browsable and downloadable from `/internals` (open to any logged-in user, no
+  admin requirement — same as the rest of `/internals`), via
+  `/internals/archive/<country>/<domain>/<filename>`.
+- `scripts/daily_pipeline.sh` is the entrypoint meant to be invoked by a scheduled task on the
+  production server (see "Production deployment — still pending" below).
+
+### Local setup
+
+The archival step needs Playwright's Chromium browser, a separate download from the pip package:
+
+```bash
+pip install -r requirements.txt   # playwright is already a pinned dependency
+playwright install chromium       # one-time, fetches the actual browser binary
+```
+
+By default, `pipeline/archive.py` archives against `http://127.0.0.1:8001` (matching production's
+Gunicorn bind — see `deploy/start.sh`). For local testing against `py app.py`'s dev server
+instead, set `ARCHIVE_BASE_URL=http://localhost:5000` in `.env` (or pass `base_url` directly if
+calling `archive_report_pdf()` from Python).
+
+### Production deployment — still pending
+
+The wrapper script and archival code are built and locally verified, but **not yet installed or
+scheduled on the production server** — this is a deliberate handoff, not an oversight. What
+remains, once server access is actually confirmed:
+
+1. **SSH access.** A dedicated deploy keypair was generated specifically for this purpose (not
+   anyone's personal key — independently revocable). The public key has already been shared
+   out-of-band (not committed to this repo, not pasted into any AI chat transcript). Still needed:
+   the server hostname/IP, the deploy username the key should be added under, and confirmation the
+   key's actually in that user's `authorized_keys`.
+2. **Install Playwright's Chromium on the server**, inside the existing venv (`im-env`, per
+   `deploy/start.sh`):
+   ```bash
+   source /www/wwwroot/ai-mi/im-env/bin/activate
+   pip install -r requirements.txt
+   playwright install chromium
+   playwright install-deps chromium   # or: playwright install --with-deps chromium
+   ```
+   The `install-deps` step is easy to miss: `playwright install chromium` alone only fetches the
+   browser binary — headless Chromium on a fresh Ubuntu box also needs a set of OS-level shared
+   libraries that aren't there by default. `playwright install-deps` installs those via `apt` and
+   needs sudo/root.
+3. **Confirm the production Gunicorn instance is already running** (`bash deploy/start.sh`,
+   listening on `127.0.0.1:8001`) before enabling the scheduled task below — the archival step
+   authenticates against and renders from that already-running app, it does not start its own
+   second instance. If Gunicorn isn't up when the daily job runs, `main.py` itself still succeeds
+   and writes a fresh report, but that combination's PDF archival step fails (logged, not fatal to
+   the other combinations).
+4. **Create the scheduled task.** The production server is managed via aaPanel — use its built-in
+   "Scheduled Tasks" UI (Shell script type, execution cycle: every day) to run
+   `scripts/daily_pipeline.sh`, rather than editing crontab directly. A plain crontab entry works
+   too if preferred:
+   ```
+   0 8 * * * bash /www/wwwroot/ai-mi/scripts/daily_pipeline.sh >> /www/wwwroot/ai-mi/data/logs/cron_stdout.log 2>&1
+   ```
+   (8am **Singapore time**, confirmed as the server's actual timezone.)
+
+No alerting/notification on failure is built (not requested) — check `data/logs/daily_pipeline.log`
+(per-combination outcomes) or `/internals`'s archive list to see how a given day's run went.
