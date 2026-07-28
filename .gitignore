@@ -9,6 +9,8 @@ data/source_scores.json
 data/.flask_secret_key
 data/viewer_password.txt
 data/pending_sources/
+data/archive/
+data/logs/
 app_pid.txt
 app_stdout.log
 app_stderr.log
