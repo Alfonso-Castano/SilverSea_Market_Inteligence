@@ -122,5 +122,5 @@ PROVIDERS = {
 # .context/STATE.md's Known Bugs section). Not part of PROVIDERS above since it has no
 # base_url/api_key shape — pipeline/analyst.py and pipeline/llm_select.py both special-case
 # the string "local" instead.
-LOCAL_MODEL = os.environ.get("LOCAL_LLM_MODEL", "qwen3-32b-q6k")
-LOCAL_NUM_CTX = int(os.environ.get("LOCAL_LLM_NUM_CTX", "32768"))
+LOCAL_MODEL = os.environ.get("LOCAL_LLM_MODEL") or "qwen3-32b-q6k"
+LOCAL_NUM_CTX = int(os.environ.get("LOCAL_LLM_NUM_CTX") or "32768")
